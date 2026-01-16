@@ -1,0 +1,17 @@
+with "../components.gpr";
+with "../components-connections_server-modbus.gpr";
+
+project Components.Connections_Server.MODBUS.Test_MODBUS_Client is
+
+   for Source_Files use ("test_modbus_client.adb");
+   for Main use ("test_modbus_client.adb");
+
+   for Object_Dir use Components.Object_Dir_Path;
+
+   package Compiler renames Components.Connections_Server.MODBUS.Compiler;
+   package Binder   renames Components.Connections_Server.MODBUS.Binder;
+   package Builder  renames Components.Connections_Server.MODBUS.Builder;
+   package Linker   renames Components.Connections_Server.MODBUS.Linker;
+   
+end Components.Connections_Server.MODBUS.Test_MODBUS_Client;
+

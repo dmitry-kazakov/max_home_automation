@@ -1,0 +1,47 @@
+with "components.gpr";
+with "tables.gpr";
+
+project Components.Python is
+   for Languages use ("Ada", "C");
+
+   case Tables.Target_OS is
+      when "Windows" | "Windows_NT" =>
+         for Source_Dirs use (".", "os/windows");
+      when "Linux" | "UNIX" | "auto" =>
+         for Source_Dirs use (".", "os/linux");
+      when "FreeBSD" =>
+         for Source_Dirs use (".", "os/pthreads");
+      when "OSX" =>
+         for Source_Dirs use (".", "os/pthreads");
+      when others =>
+         null;
+   end case;   
+
+   for Source_Files use
+       (  "py.adb",
+          "py.ads",
+          "py-generic_class.adb",
+          "py-generic_class.ads",
+          "py-generic_class-generic_keyed_method.adb",
+          "py-generic_class-generic_keyed_method.ads",
+          "py-generic_class-generic_member.adb",
+          "py-generic_class-generic_member.ads",
+          "py-generic_class-generic_no_argument_method.adb",
+          "py-generic_class-generic_no_argument_method.ads",
+          "py-generic_class-generic_one_argument_method.adb",
+          "py-generic_class-generic_one_argument_method.ads",
+          "py-generic_class-generic_positional_method.adb",
+          "py-generic_class-generic_positional_method.ads",
+          "py-load_python_library.adb",
+          "py-load_python_library.ads",
+          "py_conversions.c"
+       );
+
+   for Object_Dir use Components'Object_Dir;
+
+   package Compiler renames Components.Compiler;
+   package Binder   renames Components.Binder;
+   package Builder  renames Components.Builder;
+   package Linker   renames Components.Linker;
+
+end Components.Python;

@@ -1,0 +1,251 @@
+<html>
+<head>
+   <title>Dashboard sample</title>
+   <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/fusioncharts.js"></script>
+   <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/themes/fusioncharts.theme.fusion.js"></script>
+   <script type="text/javascript">
+
+var HttpClient = function ()
+{
+   this.get = function (URL, Callback)
+   {
+      var Request = new XMLHttpRequest();
+      Request.onreadystatechange = function()
+      { 
+         if (Request.readyState == 4 && Request.status == 200)
+         {
+            Callback (Request.responseText);
+      }  }
+      Request.open ("GET", URL, true);
+      Request.send (null);
+   }
+}
+
+var Client = new HttpClient ();
+var Topology = {};  // The rooms map id->room data
+var Actions  = [];  // The queue of actions to perform
+var Location = 0;   // Where to place a new widget
+
+function Do_Room (Cube, Room)
+{
+   if (Topology [Cube] [Room].temperature.source == 0) return;
+   Topology [Cube] [Room].temperature.widget =
+      new FusionCharts
+          (  {  type:       'thermometer',
+                renderAt:   Topology [Cube] [Room].location,
+                width:      240,
+                height:     310,
+                dataFormat: 'json',
+                dataSource:
+                {  "chart":
+                   {  "caption":              Topology [Cube] [Room].name,
+//                    "subcaption":           "",
+                      "lowerLimit":           0,
+                      "upperLimit":           30,
+                      "decimals":             1,
+                      "numberSuffix":         "°C",
+                      "showhovereffect":      1,
+                      "thmFillColor":         "#008ee4",
+                      "showGaugeBorder":      1,
+                      "gaugeBorderColor":     "#008ee4",
+                      "gaugeBorderThickness": 2,
+                      "gaugeBorderAlpha":     30,
+                      "gaugeFillColor":       "#008ee4",
+                      "gaugeFillAlpha":       100,                      
+                      "thmOriginX":           100,
+                      "chartBottomMargin":    20,
+                      "valueFontColor":       "#000000",
+                      "showValue":            1,
+                      "adjustTM":             1,
+                      "ticksOnRight":         0,
+                      "tickMarkDistance":     5,
+                      "tickValueDistance":    2,
+                      "majorTMNumber":        9,
+                      "majorTMHeight":        12,
+                      "minorTMNumber":        4,
+                      "minorTMHeight":        7,
+                      "tickValueStep":        2,
+                      "valueFontSize":        46,
+                      "valueFontBold":        1,
+                      "ValuePadding":         35,
+                      "valueFontColor":       "#808080",
+                      "showhovereffect":      1,
+                      "use3DLighting":        1,
+                      "theme":                "fusion"
+                   },
+                   "value": 0,
+             }  }
+          );
+ }
+ 
+function Refresh ()
+{
+   for (var Cube in Topology)
+   {
+      Client.get
+      (  window.location.origin + '/get-status-json?cube=' + Cube,
+         function (Response)
+         {
+            State = JSON.parse (Response);
+
+            for (var Device in State.devices)
+            {
+               var Address = State.devices [Device].address;
+                     
+               for (var Room in Topology [Cube])
+               {
+                  if (Topology [Cube] [Room].temperature.source == Address)
+                  {
+                     Topology [Cube] [Room].temperature.widget.feedData
+                     (  "&value=" + State.devices [Device].temperature
+                     );
+         }  }  }  }
+      );
+   }
+}
+
+function Pump ()
+{
+   if (Actions.length > 0)
+   {
+      var This = Actions.pop ();
+      
+      This.Function (This.Cube, This.Room, This.Device);
+      return;
+   }
+   for (var Cube in Topology)
+   {
+      for (var Room in Topology [Cube])
+      {
+         Do_Room (Cube, Room);
+   }  }
+   FusionCharts.ready
+   (  function ()
+      {
+         for (var Cube in Topology)
+         {
+            for (var Room in Topology [Cube])
+            {
+               if (Topology [Cube] [Room].temperature.widget != null)
+               {
+                  Topology [Cube] [Room].temperature.widget.render ();
+         }  }  }
+         setInterval (Refresh, 1000);
+      }
+   );
+}
+
+function On_Device_Status (Response, Cube, Room, Device)
+{
+   var Status = JSON.parse (Response);
+
+   if (Status.type == "wall thermostat")
+   {
+      Topology [Cube] [Room].temperature.source = Device;
+      Topology [Cube] [Room].is_wall = true;
+   }
+   else if (Status.type == "radiator thermostat")
+   {
+      if (Topology [Cube] [Room].temperature.source == 0)
+      {
+         Topology [Cube] [Room].temperature.source = Device;
+   }  }
+   Pump ();
+}
+
+function On_Rooms_List (Response, Cube)
+{
+   var Rooms_List = JSON.parse (Response);
+
+   for (var Room_No = 0; Room_No < Rooms_List.length; Room_No++)
+   {
+      var Room_ID = Rooms_List [Room_No].id;
+      var At      = Location;
+      
+      Location++;
+      Topology [Cube] [Room_ID] =
+         {  "name":        Rooms_List [Room_No].name,
+            "id":          Room_ID,
+            "location":    At.toString (10),
+            "temperature": {  "source":  0,
+                              "is_wall": false,
+                              "widget":  null
+         }                 };
+      for (  var Device_No = 0;
+             Device_No < Rooms_List [Room_No].devices.length;
+             Device_No++
+          )
+      {
+         var Device = Rooms_List [Room_No].devices [Device_No];
+
+         Actions.push
+         (  {  "Function":
+                  function (Cube, Room, Device)
+                  {
+                     Client.get
+                     (  window.location.origin   +
+                        '/get-status-json?cube=' +
+                        Cube                     +
+                        '&device='               +
+                        Device.toString (16),
+                        function (Response)
+                        {
+                           On_Device_Status (Response, Cube, Room, Device);
+                        }
+                     );
+                  },
+               "Cube":   Cube,
+               "Room":   Room_ID,
+               "Device": Device
+            }
+         );
+   }  }
+   Pump ();
+}
+
+function On_Cubes_List (Response)
+{
+   var Cubes_List  = JSON.parse (Response);
+      
+   for (var Cube_No = 0; Cube_No < Cubes_List.length; Cube_No++)
+   {  // Query list of rooms
+      var Cube = Cubes_List [Cube_No].toString (16);
+
+      Topology [Cube] = {};
+      Actions.push
+      (  {  "Function" :
+               function (Cube, Room, Device)
+               {
+                  Client.get
+                  (  window.location.origin      +
+                     '/get-rooms-json-list?cube=' +
+                     Cube.toString (16),
+                     function (Response) { On_Rooms_List (Response, Cube); }
+                  );
+               },
+            "Cube" : Cube
+          }
+      );
+   }
+   Pump ();
+}
+
+Client.get (window.location.origin + '/get-cubes-json-list', On_Cubes_List);
+
+   </script>
+</head>
+<body>
+<table border="0" width="100%">
+<tr>
+   <td><div class='chartCont' id='0'></div></td>
+   <td><div class='chartCont' id='1'></div></td>
+   <td><div class='chartCont' id='2'></div></td>
+</tr>
+<tr>
+   <td><div class='chartCont' id='3'></div></td>
+   <td><div class='chartCont' id='4'></div></td>
+   <td><div class='chartCont' id='5'></div></td>
+</tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,24 @@
+with "../components.gpr";
+with "../components-gnade.gpr";
+
+project Components.GNADE.ODBC_Persistence_Tests is
+
+   for Source_Files use
+       (  "test_odbc_persistence.adb",
+          "test_odbc_session.ads",
+          "test_odbc_session.adb",
+          "test_persistent_object.adb",
+          "test_persistent_object.ads",
+          "test_persistent_tree.adb",
+          "test_persistent_tree.ads"
+       );
+   for Main use ("test_odbc_persistence.adb");
+   for Object_Dir use Components.Object_Dir_Path;
+
+   package Compiler renames Components.GNADE.Compiler;
+   package Binder   renames Components.GNADE.Binder;
+   package Builder  renames Components.GNADE.Builder;
+   package Linker   renames Components.GNADE.Linker;
+   
+end Components.GNADE.ODBC_Persistence_Tests;
+

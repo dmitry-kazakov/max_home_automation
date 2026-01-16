@@ -1,0 +1,395 @@
+--                                                                    --
+--  procedure Test_Ada_Parser       Copyright (c)  Dmitry A. Kazakov  --
+--  Test file                                      Luebeck            --
+--                                                 Summer, 2025       --
+--                                                                    --
+--                                Last revision :  13:43 19 Mar 2011  --
+--                                                                    --
+--  This  library  is  free software; you can redistribute it and/or  --
+--  modify it under the terms of the GNU General Public  License  as  --
+--  published by the Free Software Foundation; either version  2  of  --
+--  the License, or (at your option) any later version. This library  --
+--  is distributed in the hope that it will be useful,  but  WITHOUT  --
+--  ANY   WARRANTY;   without   even   the   implied   warranty   of  --
+--  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU  --
+--  General  Public  License  for  more  details.  You  should  have  --
+--  received  a  copy  of  the GNU General Public License along with  --
+--  this library; if not, write to  the  Free  Software  Foundation,  --
+--  Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.    --
+--                                                                    --
+--  As a special exception, if other files instantiate generics from  --
+--  this unit, or you link this unit with other files to produce  an  --
+--  executable, this unit does not by  itself  cause  the  resulting  --
+--  executable to be covered by the GNU General Public License. This  --
+--  exception  does not however invalidate any other reasons why the  --
+--  executable file might be covered by the GNU Public License.       --
+--____________________________________________________________________--
+
+-- Identifier examples from ARM 2.3(8)
+Count;       -- ?1,6:Count
+X;           -- ?1,2:X
+Get_Symbol;  -- ?1,11:Get_Symbol
+Ethelyn;     -- ?1,8:Ethelyn
+Marion;      -- ?1,7:Marion
+Snobol_4;    -- ?1,9:Snobol_4
+X1;          -- ?1,3:X1
+Page_Count;  -- ?1,11:Page_Count
+Store_Next_Item;  -- ?1,16:Store_Next_Item
+
+-- Decimal literal examples from ARM 2.4.1(9)
+12;               -- integer literals ?1,3:12
+0;                --                  ?1,2:0
+1E6;              --                  ?1,4:1E6
+123_456;          --                  ?1,8:123456
+12.0;             -- real literals    ?1,5:12.0
+0.0;              --                  ?1,4:0.0
+0.456;            --                  ?1,6:0.456
+3.14159_26;       --                  ?1,11:3.1415926
+
+-- Based literal examples from ARM 2.4.2(9)
+2#1111_1111#;     -- integer literals of value 255 ?1,13:2#11111111#
+16#FF#;           --                               ?1,7:16#FF#
+016#0ff#;         --                               ?1,9:16#ff#
+16#E#E1;          -- integer literals of value 224 ?1,8:16#E#E1
+2#1110_0000#;     --                               ?1,13:2#11100000#
+16#F.FF#E+2;      -- real literals of value 4095.0 ?1,12:16#FFF.0#
+2#1.1111_1111_1110#E11;                         -- ?1:23:2#1.111111111110#E11
+
+-- Character literal examples from ARM 2.5(5)
+'A';  -- ?1,4,'A'
+'*';  -- ?1,4,'*'
+''';  -- ?1,4,'''
+' ';  -- ?1,4,' '
+
+'ä';  -- ?1,5,'ä'
+
+-- String literal examples from ARM 2.6(9)
+"Message of the day:";                                        --  ?1,22:"Message of the day:"
+"";                   -- a null string literal                    ?1,3:""
+" ";                  -- three string literals of length 1        ?1,4:" "
+"A";                                                          --  ?1,4:"A"
+"""";                                                         --  ?1,5:""""
+"Characters such as $, %, and } are allowed in string literals";  ?1,64:"Characters such as $, %, and } are allowed in string literals"
+"""Hello""";                                                  --  ?1,12:"""Hello"""
+"embed""dq";                                                  --  ?1,12:"embed""dq"
+
+-- Indexed component examples from ARM 4.1.1(9)
+My_Schedule(Sat); -- a component of a one-dimensional array (see 3.6.1)  ?1,17:My_Schedule (Sat)
+Page(10);         -- a component of a one-dimensional array (see 3.6)    ?1,9:Page (10)
+Board(M, J + 1);  -- a component of a two-dimensional array (see 3.6.1)  ?1,16:Board (M, (J + 1))
+Page(10)(20);     -- a component of a component (see 3.6)                ?1,13:Page (10) (20)
+Request(Medium);  -- an entry in a family of entries (see 9.1)           ?1,16:Request (Medium)
+Next_Frame(L)(M, N); -- a component of a function call (see 6.1)         ?1,20:Next_Frame (L) (M, N)
+
+-- Slices from ARM 4.1.2
+Stars(1 .. 15);        -- a slice of 15 characters (see 3.6.3)           ?1,15:Stars (1..15)
+Page(10 .. 10 + Size); -- a slice of 1 + Size components (see 3.6)       ?1,22:Page (10..(10 + Size))
+Page(L)(A .. B);       -- a slice of the array Page(L) (see 3.6)         ?1,16:Page (L) (A..B)
+Stars(1 .. 0);         -- a null slice (see 3.6.3)                       ?1,14:Stars (1..0)
+My_Schedule(Weekday);  -- bounds given by subtype (see 3.6.1 and 3.5.1)  ?1,21:My_Schedule (Weekday)
+Stars(5 .. 15)(K);     -- same as Stars(K) (see 3.6.3)                   ?1,18:Stars (5..15) (K)
+                       -- provided that K is in 5 .. 15 
+-- Selected component examples from ARM 4.1.3
+Tomorrow.Month;      -- a record component (see 3.8)      ?1,15:Tomorrow.Month
+Next_Car.Owner;      -- a record component (see 3.10.1)   ?1,15:Next_Car.Owner
+Next_Car.Owner.Age;  -- a record component (see 3.10.1)   ?1,19:Next_Car.Owner.Age
+                     -- the previous two lines involve
+                     -- implicit dereferences
+Writer.Unit;         -- a record component (a discriminant) (see 3.8.1)  ?1,12:Writer.Unit
+Min_Cell(H).Value;   -- a record component of the result (see 6.1)       ?1,18:Min_Cell (H).Value
+                     -- of the function call Min_Cell(H) 
+Control.Seize;    -- an entry of a protected object (see 9.4)            ?1,14:Control.Seize
+Pool(K).Write;    -- an entry of the task Pool(K) (see 9.4)              ?1,14:Pool (K).Write
+Key_Manager."<";  -- an operator of the visible part of                  ?1,16:Key_Manager."<"
+                  -- a package (see 7.3.1) 
+Dot_Product.Sum;  -- a variable declared in a function body (see 6.1)    ?1,16:Dot_Product.Sum
+Buffer.Pool;      -- a variable declared in a protected unit (see 9.11)  ?1,12:Buffer.Pool
+Buffer.Read;      -- an entry of a protected unit (see 9.11)             ?1,12:Buffer.Read
+Swap.Temp;        -- a variable declared in a block statement (see 5.6)  ?1,10:Swap.Temp
+Standard.Boolean; -- the name of a predefined type (see A.1)             ?1,17:Standard.Boolean
+
+-- Examples of attributes from ARM 4.1.4
+Color'First;        -- minimum value of the enumeration type Color (see 3.5.1)  ?1,12:Color'First
+Rainbow'Base'First; -- same as Color'First (see 3.5.1)                          ?1,19:Rainbow'Base'First
+Real'Digits;        -- precision of the type Real (see 3.5.7)                   ?1,12:Real'Digits
+Board'Last(2);      -- upper bound of the second dimension of Board (see 3.6.1) ?1,14:Board'Last (2)
+Board'Range(1);     -- index range of the first dimension of Board (see 3.6.1)  ?1,15:Board'Range (1)
+Pool(K)'Terminated; -- True if task Pool(K) is terminated (see 9.1)             ?1,19:Pool (K)'Terminated
+Date'Size;          -- number of bits for records of type Date (see 3.8)        ?1,10:Date'Size
+Message'Address;    -- address of the record variable Message (see 3.7.1)       ?1,16:Message'Address
+
+-- Record aggregate examples from ARM 4.3.1
+(4, July, 1776); -- see 3.8                                         ?1,16:(4, July, 1776)
+(Day => 4, Month => July, Year => 1776);                        --  ?1,40:(Day => 4, Month => July, Year => 1776)
+(Month => July, Day => 4, Year => 1776);                        --  ?1,40:(Month => July, Day => 4, Year => 1776)
+(Disk, Closed, Track => 5, Cylinder => 12); -- see 3.8.1        --  ?1,43:(Disk, Closed, Track => 5, Cylinder => 12)
+(Unit => Disk, Status => Closed, Cylinder => 9, Track => 1);    --  ?1,60:(Unit => Disk, Status => Closed, Cylinder => 9, Track => 1)
+(Value => 0, Succ|Pred => new Cell'(0, null, null)); -- see 3.10.1  ?1,52:(Value => 0, Succ | Pred => new (Cell'(0, null, null)))
+Expression'(null record);                                       --  ?1,25:Expression'null record
+Literal'(Value => 0.0);                                         --  ?1,23:Literal'(Value => 0.0)
+Painted_Point'(0.0, Pi/2.0, Paint => Red);                      --  ?1,42:Painted_Point'(0.0, (Pi / 2.0), Paint => Red)
+
+-- Extension aggregates examples from ARM 4.3.2
+Painted_Point'(Point with Red);                                 --  ?1,31:Painted_Point'(Point with Red)
+(Point'(P) with Paint => Black);                                --  ?1,32:(Point'P with Paint => Black)
+
+(Expression with Left => 1.2, Right => 3.4);                    --  ?1,44:(Expression with Left => 1.2, Right => 3.4)
+Addition'(Binop with null record);                              --  ?1,34:Addition'(Binop with null record)
+   -- presuming Binop is of type Binary_Operation 
+
+-- Array aggregates from ARM 4.3.3
+(7, 9, 5, 1, 3, 2, 4, 8, 6, 0);                                 --  ?1,31:(7, 9, 5, 1, 3, 2, 4, 8, 6, 0)
+Table'(5, 8, 4, 1, others => 0); -- see 3.6                         ?1,32:Table'(5, 8, 4, 1, others => 0)
+
+(1 .. 5 => (1 .. 8 => 0.0)); -- two-dimensional                 --  ?1,28:(1..5 => (1..8 => 0.0))
+(1 .. N => new Cell); -- N new cells, in particular for N = 0   --  ?1,21:(1..N => new (Cell))
+
+Table'(2 | 4 | 10 => 1, others => 0);                           --  ?1,37:Table'(2 | 4 | 10 => 1, others => 0)
+Schedule'(Mon .. Fri => True, others => False); -- see 3.6          ?1,47:Schedule'(Mon..Fri => True, others => False)
+Schedule'(Wed | Sun => False, others => True);                  --  ?1,46:Schedule'(Wed | Sun => False, others => True)
+Vector'(1 => 2.5); -- single-component vector                       ?1,18:Vector'(1 => 2.5)
+
+((1.1, 1.2, 1.3), (2.1, 2.2, 2.3));                             --  ?1,35:((1.1, 1.2, 1.3), (2.1, 2.2, 2.3))
+(1 => (1.1, 1.2, 1.3), 2 => (2.1, 2.2, 2.3));                   --  ?1,45:(1 => (1.1, 1.2, 1.3), 2 => (2.1, 2.2, 2.3))
+(  1 => (1 => 1.1, 2 => 1.2, 3 => 1.3),
+   2 => (1 => 2.1, 2 => 2.2, 3 => 2.3)
+);                                                              --  ?1,2:(1 => (1 => 1.1, 2 => 1.2, 3 => 1.3), 2 => (1 => 2.1, 2 => 2.2, 3 => 2.3))
+
+(7, 9, 5, 1, 3, 2, 4, 8, 6, 0); -- A(1)=7, A(10)=0                  ?1,31:(7, 9, 5, 1, 3, 2, 4, 8, 6, 0)
+(2 | 4 | 10 => 1, others => 0); -- B(1)=0, B(10)=1                  ?1,31:(2 | 4 | 10 => 1, others => 0)
+(1 .. 5 => (1 .. 8 => 0.0));    -- C'Last(1)=5, C'Last(2)=8         ?1,28:(1..5 => (1..8 => 0.0))
+
+(M .. N => True); -- see 3.6                                        ?1,17:(M..N => True)
+(others => True);                                                   ?1,17:(others => True)
+(1 => 'F'); -- a one component aggregate: same as F                 ?1,11:(1 => 'F')
+
+-- Container Aggregates from ARM 4.3.5
+["abc", "def"];                                                 --  ?1,15:["abc", "def"]
+[1 => "this", 2 => "is", 3 => "a", 4 => "test"];                --  ?1,48:[1 => "this", 2 => "is", 3 => "a", 4 => "test"]
+[];                                                             --  ?1,3:[]
+
+-- Examples from ARM 4.4
+Volume;                      -- primary            ?1,7:Volume
+not Destroyed;               -- factor             ?1,14:not (Destroyed)
+2*Line_Count;                -- term               ?1,13:(2 * Line_Count)
+-4.0;                        -- simple expression  ?1,5:-(4.0)
+-4.0 + A;                    -- simple expression  ?1,9:(-(4.0) + A)
+B**2 - 4.0*A*C;              -- simple expression  ?1,15:((B ** 2) - (4.0 * A * C))
+Password(1 .. 3) = "Bwv";    -- relation           ?1,25:(Password (1..3) = "Bwv")
+Count in Small_Int;          -- relation           ?1,19:Count in Small_Int
+Count not in Small_Int;      -- relation           ?1,23:Count not in Small_Int
+Index = 0 or Item_Hit;       -- expression         ?1,22:((Index = 0) or Item_Hit)
+(Cold and Sunny) or Warm;    -- expression (parentheses are required)  ?1,25:((Cold and Sunny) or Warm)
+A**(B**C);                   -- expression (parentheses are required)  ?1,10:(A ** (B ** C))
+
+-- Examples from ARM 4.5
+not Sunny or Warm;   -- same as (not Sunny) or Warm      ?1,18:(not (Sunny) or Warm)
+X > 4.0 and Y > 0.0; -- same as (X > 4.0) and (Y > 0.0)  ?1,20:((X > 4.0) and (Y > 0.0))
+
+-4.0*A**2;      -- same as -(4.0 * (A**2))               ?1,10:-((4.0 * (A ** 2)))
+abs(1 + A) + B; -- same as (abs (1 + A)) + B             ?1,15:(abs((1 + A)) + B)
+Y**(-3);        -- parentheses are necessary             ?1,8:(Y ** -(3))
+A / B * C;      -- same as (A/B)*C                       ?1,10:(A / B / ⅟(C))
+A + (B + C);    -- evaluate B + C before adding it to A  ?1,12:(A + (B + C))
+
+-- Examples from ARM 4.5.1
+Sunny or Warm;                                           --  ?1,14:(Sunny or Warm)
+Filter(1 .. 10) and Filter(15 .. 24); -- see 3.6.1           ?1,37:(Filter (1..10) and Filter (15..24))
+
+Next_Car.Owner /= null and then Next_Car.Owner.Age > 25; -- see 3.10.1  ?1,56:((Next_Car.Owner /= null) and then (Next_Car.Owner.Age > 25))
+N = 0 or else A(N) = Hit_Value;                                     --  ?1,31:((N = 0) or else (A (N) = Hit_Value))
+
+-- Examples from ARM 4.5.2
+X /= Y;                               --  ?1,7:(X /= Y)
+
+"" < "A" and "A" < "Aa"; -- True          ?1,24:(("" < "A") and ("A" < "Aa"))
+"Aa" < "B" and "A" < "A "; -- True        ?1,26:(("Aa" < "B") and ("A" < "A "))
+
+My_Car = null; -- true if My_Car has been set to null (see 3.10.1)  ?1,14:(My_Car = null)
+My_Car = Your_Car; -- true if we both share the same car            ?1,18:(My_Car = Your_Car)
+My_Car.all = Your_Car.all; -- true if the two cars are identical    ?1,26:(My_Car.all = Your_Car.all)
+
+N not in 1 .. 10;     -- range membership test                      ?1,17:N not in 1..10
+Today in Mon .. Fri;  -- range membership test                      ?1,20:Today in Mon..Fri
+Today in Weekday;     -- subtype membership test (see 3.5.1)        ?1,17:Today in Weekday
+Archive in Disk_Unit; -- subtype membership test (see 3.8.1)        ?1,21:Archive in Disk_Unit
+Tree.all in Addition'Class; -- class membership test (see 3.9.1)    ?1,27:Tree.all in Addition'Class
+
+-- Examples from ARM 4.5.3
+Z + 0.1; -- Z has to be of a real type                                    ?1,8:(Z + 0.1)
+
+"A" & "BCD"; -- concatenation of two string literals                      ?1,12:("A" & "BCD")
+'A' & "BCD"; -- concatenation of a character literal and a string literal ?1,12:('A' & "BCD")
+'A' & 'A'; -- concatenation of two character literals                     ?1,10:('A' & 'A')
+
+-- Examples from ARM 4.5.4
+I*J;           --  ?1,4:(I * J)
+K/J;           --  ?1,4:(K / J)
+K mod J;       --  ?1,8:(K mod J)
+X/Y;           --  ?1,4:(X / Y)
+F/2;           --  ?1,4:(F / 2)
+3*F;           --  ?1,4:(3 * F)
+0.75*G;        --  ?1,7:(0.75 * G)
+Fraction(F*G); --  ?1,14:Fraction ((F * G))
+Real(J)*Y;     --  ?1,10:(Real (J) * Y)
+
+N = 0 or else A(N) = Hit_Value; -- Should stop at the semicolon  ?1,31:((N = 0) or else (A (N) = Hit_Value))
+
+Arbeitnehmerüberlassung + 4 then      -- This is OK and should stop at then  ?1,29:(Arbeitnehmerüberlassung + 4)
+A or 4 else     -- This is also OK and should stop at else                   ?1,7:(A or 4)
+A not in not B; -- This is OK                                                ?1,15:A not in not (B)
+A in -B;        -- OK                                                        ?1,8:A in -(B)
+-B**C;          -- OK                                                        ?1,6:-((B ** C))
+-abs A;         -- OK                                                        ?1,7:-(abs(A))
+A and then B;                                                            --  ?1,13:(A and then B)
+A =>            -- Stops at =>                                               ?1,2:A
+A is            -- Stops at is                                               ?1,2:A
+A with          -- Stops at with                                             ?1,2:A
+A (B) do        -- Stops at do                                               ?1,6:A (B)
+
+("Casey is " &
+      (if Casey.Sex = M then "Male" else "Female")); -- ARM 4.5.7  ?1,52:("Casey is " & (if (Casey.Sex = M) then "Male" else "Female"))
+(case Card is
+      when Clubs  | Spades   => Black,
+      when Hearts | Diamonds => Red);                -- ARM 4.5.7  ?1,37:(case Card when Clubs | Spades => Black when Hearts | Diamonds => Red)
+(if A then B elsif C + 1 then D);                              --  ?1,33:(if A then B elsif (C + 1) then D)
+
+-- Now some erroneous stuff
+Cold and Sunny or Warm;        -- Brackets required ?Brackets required. Operation at 258:6..8 cannot be associated with one at 258:16..17
+Cold and Sunny and then Warm;  -- Brackets required ?Brackets required. Operation at 259:6..8 cannot be associated with one at 259:16..23
+Cold and then Sunny and Warm;  -- Brackets required ?Brackets required. Operation at 260:6..13 cannot be associated with one at 260:21..23
+
+A not B     -- in expected                          ?'in' is expected at 262:6..6 after 'not' at 262:3..5
+-+A;        -- Illegal                              ?Brackets required. Operation at 263:1..1 cannot be associated with one at 263:2..2
+A++B;       -- Illegal                              ?Brackets required. Operation at 264:2..2 cannot be associated with one at 264:3..3
+A**+B;      -- Illegal                              ?Brackets required. Operation at 265:2..3 cannot be associated with one at 265:4..4
+K'-Range;   -- Illegal                              ?Brackets required. Operation at 266:2..2 cannot be associated with one at 266:3..3
+abs -A;     -- Illegal                              ?Brackets required. Operation at 267:1..3 cannot be associated with one at 267:5..5
+abs not A;  -- Illegal                              ?Brackets required. Operation at 268:1..3 cannot be associated with one at 268:5..7
+A**B**C;                   -- expression (parentheses are required)  ?Brackets required. Operation at 269:2..3 cannot be associated with one at 269:5..6
+A + (if 1 > Y then 2.0 else 4.9;       --           ?Bracket closing if expression's left bracket at 270:6 is expected at 270:32
+A or B xor C;                          --           ?Brackets required. Operation at 271:3..4 cannot be associated with one at 271:8..10
+
+abs_1 (X);                                                                -- ?1,10:abs_1 (X)
+(raise Constraint_Error);                                                 -- ?1,25:(raise Constraint_Error)
+
+1.2 + (raise Constraint_Error);                                           -- ?1,31:(1.2 + (raise Constraint_Error))
+1.2 + (raise Constraint_Error with "Hello");                              -- ?1,44:(1.2 + (raise Constraint_Error with "Hello"))
+new Cell'(0, null, null);                                      -- initialized explicitly, see 3.10.1  ?1,25:new (Cell'(0, null, null))
+new Cell'(Value => 0, Succ => null, Pred => null);             -- initialized explicitly              ?1,50:new (Cell'(Value => 0, Succ => null, Pred => null))
+new Cell;                                                      -- not initialized                     ?1,9:new (Cell)
+new Matrix(1 .. 10, 1 .. 20);                                  -- the bounds only are given           ?1,29:new (Matrix (1..10, 1..20))
+new Matrix'(1 .. 10 => (1 .. 20 => 0.0));                      -- initialized explicitly              ?1,41:new (Matrix'(1..10 => (1..20 => 0.0)))
+new Buffer(100);                                               -- the discriminant only is given      ?1,16:new (Buffer (100))
+new Buffer'(Size => 80, Pos => 0, Value => (1 .. 80 => 'A'));  -- initialized explicitly              ?1,61:new (Buffer'(Size => 80, Pos => 0, Value => (1..80 => 'A')))
+Expr_Ptr'(new Literal);                                        -- allocator for access-to-class-wide type, see 3.9.1  ?1,23:Expr_Ptr'(new (Literal))
+Expr_Ptr'(new Literal'(Expression with 3.5));                  -- initialized explicitly                              ?1,45:Expr_Ptr'(new (Literal'(Expression with 3.5)))
+new (Subpool) Cell;                             -- ?1,19:new (Subpool, Cell)
+new (Subpool) Cell'(0, null, null);             -- ?1,35:new (Subpool, Cell)'(0, null, null)
+new (Subpool) T'Cell;                           -- ?1,21:new (Subpool, T)'Cell
+new (Subpool) Buffer(100);                      -- ?1,26:new (Subpool, Buffer) (100)
+(X, new (Subpool) Buffer(100));                 -- ?1,31:(X, new (Subpool, Buffer) (100))
++F'Access;                                      -- ?1,10:+(F'Access)
+Grid'Range(2);                                  -- ?1,14:Grid'Range (2)
+all1 in Grid'Range(2);                          -- ?1,22:all1 in Grid'Range (2)
+1..2;                                           -- ?1,5:1..2
+A in 1..2;                                      -- ?1,10:A in 1..2
+[1 => A, 2 => <>];                              -- ?1,18:[1 => A, 2 => <>]
+(for all J in Grid'Range(2) => Grid(I,J) = True);                             -- ?1,49:(for all J in Grid'Range (2) => (Grid (I, J) = True))
+(for all1 in Grid'Range(2) => Grid(I,J) = True);                              -- ?1,48:(for all1 in Grid'Range (2) => (Grid (I, J) = True))
+[for J in Grid'Range(2) =>
+              (if Grid (I, J) then 1 else 0)]'Reduce("+",0);                  -- ?1,60:[for J in Grid'Range (2) => (if Grid (I, J) then 1 else 0)]'Reduce ("+", 0)
+[for Item in 1 .. 5 => Item * 2];                                -- ARM 4.5.3    ?1,33:[for Item in 1..5 => (Item * 2)]
+[for Item in 1 .. 5 => Item,
+ for Item in 1 .. 5 => -Item];                                   -- ARM 4.5.3    ?1,30:[for Item in 1..5 => Item, for Item in 1..5 => -(Item)]
+[12 => "house", 14 => "beige"];                                  -- ARM 4.5.3    ?1,31:[12 => "house", 14 => "beige"]
+[(Key => 33, Value => new String'("a nice string")),
+    (Key => 44, Value => new String'("an even better string"))]; -- ARM 4.5.3    ?1,64:[(Key => 33, Value => new (String'("a nice string"))), (Key => 44, Value => new (String'("an even better string")))]
+[for P of Table use P.Key => P.Value.all];                       -- ARM 4.5.3    ?1,42:[for P of Table use P.Key => P.Value.all]
+[1 => "this", 2 => "is", 3 => "a", 4 => "test"];                 -- ARM 4.5.3    ?1,48:[1 => "this", 2 => "is", 3 => "a", 4 => "test"]
+(for some X in 2 .. N when X * X <= N => N mod X = 0);           -- ARM 4.5.8    ?1,54:(for some X in 2..N when ((X * X) <= N) => ((N mod X) = 0))
+(declare
+      Result renames Vectors."&"'Result;
+      Length : constant Count_Type := Left.Length + Right.Length;
+    begin
+      Result.Length = Length and then
+      not Tampering_With_Elements_Prohibited (Result) and then
+      not Tampering_With_Cursors_Prohibited (Result) and then
+      Result.Capacity >= Length);                                -- ARM 4.5.9    ?1,33:(declare Result renames Vectors."&"'Result; Length : constant Count_Type := (Left.Length + Right.Length); begin ((Result.Length = Length) and then not (Tampering_With_Elements_Prohibited (Result)) and then not (Tampering_With_Cursors_Prohibited (Result)) and then (Result.Capacity >= Length)))
+[parallel for Item of X => Item];                                -- ARM 4.5.10   ?1,33:[parallel for Item of X => Item]
+[for J in 1..N => J]'Reduce("*", 1);                             -- ARM 4.5.10   ?1,36:[for J in 1..N => J]'Reduce ("*", 1)
+[for I in 1..Num_Terms =>
+      (-1.0)**(I-1) * X**(2*I-1)/Float(Factorial(2*I-1))]
+         'Reduce("+", 0.0);                                      -- ARM 4.5.10   ?1,27:[for I in 1..Num_Terms => ((-(1.0) ** (I - 1)) * (X ** ((2 * I) - 1)) * ⅟(Float (Factorial (((2 * I) - 1)))))]'Reduce ("+", 0.0)
+[parallel for Val of M when Val > 100.0 => (Val, 1)]
+             'Reduce(Accumulate, (Sum => 0, Count => 0));        -- ARM 4.5.10   ?1,57:[parallel for Val of M when (Val > 100.0) => (Val, 1)]'Reduce (Accumulate, (Sum => 0, Count => 0))
+(declare
+       Acc : constant Accumulator :=
+          [parallel for Val of M when Val > 100.0 => (Val, 1)]
+             'Reduce(Accumulate, (Sum => 0, Count => 0));
+    begin
+       Acc.Sum / Real(Acc.Count));                               -- ARM 4.5.10   ?1,34:(declare Acc : constant Accumulator := [parallel for Val of M when (Val > 100.0) => (Val, 1)]'Reduce (Accumulate, (Sum => 0, Count => 0)); begin (Acc.Sum / Real (Acc.Count)))
+(case A + B is when C + D | E => F * G, when 1 => 2, when others => H / I);   -- ?1,75:(case (A + B) when (C + D) | E => (F * G) when 1 => 2, others => (H / I))
+(if A + B then C - D elsif E + F then G * H else I / J);                      -- ?1,56:(if (A + B) then (C - D) elsif (E + F) then (G * H) else (I / J))
+[for I in A'Range => B + C];                                                  -- ?1,28:[for I in A'Range => (B + C)]
+[for all I in A'Range => B + C];                                              -- ?1,32:[for all I in A'Range => (B + C)]
+[for some I of A.B => C + D];                                                 -- ?1,29:[for some I of A.B => (C + D)]
+[for some I of A.B when K > 0 => C + D];                                      -- ?1,40:[for some I of A.B when (K > 0) => (C + D)]
+[parallel (A.B) with F => 3 + 4, G => 5 * 6 for some I of A.B use X.Y when K > 0 => C + D];  -- ?1,91:[parallel (A.B) with F => (3 + 4), G => (5 * 6) for some I of A.B use X.Y when (K > 0) => (C + D)]
+[parallel for some I of A.B when K > 0 => C + D];                             -- ?1,49:[parallel for some I of A.B when (K > 0) => (C + D)]
+[parallel for all I of A.B when K > 0 => C + D];                              -- ?1,48:[parallel for all I of A.B when (K > 0) => (C + D)]
+[parallel for I of A.B when K > 0 => C + D];                                  -- ?1,44:[parallel for I of A.B when (K > 0) => (C + D)]
+(raise Constraint_Error);                                                     -- ?1,25:(raise Constraint_Error)
+"text" & (raise Constraint_Error with "Error");                               -- ?1,47:("text" & (raise Constraint_Error with "Error"))
+I in 1|2;                                                                     -- ?1,9:I in 1 | 2
+(for I in Integer range 1..2 => 'a');                                         -- ?1,37:(for I in Integer range 1..2 => 'a')
+(declare
+   Result renames Vectors."&"'Result;
+   Length : constant A.Count_Type := Left.Length + Right.Length;
+   S : B.String := "A" & "B";
+   T : B.String;
+begin
+   X + Y);  -- ?1,10:(declare Result renames Vectors."&"'Result; Length : constant A.Count_Type := (Left.Length + Right.Length); S : B.String :=  ("A" & "B"); T : B.String; begin (X + Y))
+((Yesterday with delta Day => 12)                                -- ARM 4.3.4
+                  with delta Month => April);                    -- ?1,45:((Yesterday, with delta Day => 12), with delta Month => April)
+(for I in 1 .. 4 =>                                              -- ARM 4.3.3
+       (for J in 1 .. 4 =>
+          (if I=J then 1.0 else 0.0)));                          -- ?1,39:(for I in 1..4 => (for J in 1..4 => (if (I = J) then 1.0 else 0.0)))
+all1 in Grid'Range(2);                                           -- @-1
+(if A then B elsif C + 1 then D);                                -- @+2
+(case Card is
+      when Clubs  | Spades   => Black,
+      when Hearts | Diamonds => Red);                            -- @+3
+("Casey is " &
+      (if Casey.Sex = M then "Male" else "Female"));             -- @+4
+A + B + C * D + E / 1.2;                                         -- @-5
+[1 => "this", 2 => "is", 3 => "a", 4 => "test"];                 -- @-6
+Table'(5, 8, 4, 1, others => 0);                                 -- @-7
+(1 => (1.1, 1.2, 1.3), 2 => (2.1, 2.2, 2.3));                    -- @-8
+A / B * C;                                                       -- @-9
+Page(L)(A .. B);                                                 -- @-10
+Filter(1 .. 10) and Filter(15 .. 24);                            -- @-11
+Addition'(Binop with null record);                               -- @+12
+(if A then B elsif C + 1 then D else E) + F;                     -- @+13
+(  1 => (1 => 1.1, 2 => 1.2, 3 => 1.3),
+   2 => (1 => 2.1, 2 => 2.2, 3 => 2.3)
+);                                                               -- @-14
+(for all J in Grid'Range(2) => Grid(I,J) = True);                -- @-15
+[(Key => 33, Value => new String'("a nice string")),
+    (Key => 44, Value => new String'("an even better string"))]; -- @-16
+[for P of Table use P.Key => P.Value.all];                       -- @-17
+1.2 + (raise Constraint_Error);                                  -- @-18
+1.2 + (raise Constraint_Error with "Error");                     -- @-19
+(declare
+      Result renames Vectors."&"'Result;
+      Length : constant Count_Type := Left.Length + Right.Length;
+    begin
+      Result.Length = Length and then
+      not Tampering_With_Elements_Prohibited (Result) and then
+      not Tampering_With_Cursors_Prohibited (Result) and then
+      Result.Capacity >= Length);                                -- @+20
+[parallel for Item of X => Item];                                -- @-21
+(for I in Integer range 1..2 => 'a');                            -- @-22
+(for I of Vector => X);                                          -- @-23
+((Yesterday with delta Day => 12)
+                  with delta Month => April);                    -- @-24

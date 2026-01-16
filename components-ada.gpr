@@ -1,0 +1,31 @@
+with "components.gpr";
+
+project Components.Ada is
+
+   for Source_Files use
+       (  "parsers-generic_ada_parser.adb",
+          "parsers-generic_ada_parser.ads",
+          "parsers-generic_ada_parser-generic_dot.adb",
+          "parsers-generic_ada_parser-generic_dot.ads",
+          "parsers-generic_ada_parser-generic_text_io.adb",
+          "parsers-generic_ada_parser-generic_text_io.ads",
+          "parsers-generic_ada_parser-get_case.adb",
+          "parsers-generic_ada_parser-get_character_literal.adb",
+          "parsers-generic_ada_parser-get_declare.adb",
+          "parsers-generic_ada_parser-get_for.adb",
+          "parsers-generic_ada_parser-get_identifier.adb",
+          "parsers-generic_ada_parser-get_if.adb",
+          "parsers-generic_ada_parser-get_numeric_literal.adb",
+          "parsers-generic_ada_parser-get_raise.adb",
+          "parsers-generic_ada_parser-get_string_literal.adb"
+       );
+
+   for Object_Dir use Components'Object_Dir;
+
+   package Compiler renames Components.Compiler;
+   package Binder   renames Components.Binder;
+   package Builder  renames Components.Builder;
+   package Linker   renames Components.Linker;
+
+end Components.Ada;
+

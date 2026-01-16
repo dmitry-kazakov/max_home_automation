@@ -1,0 +1,6287 @@
+Global information
+------------------
+   Total number of allocations        :2576
+   Total number of deallocations      :1633
+   Final Water Mark (non freed mem)   : 16.35 Kilobytes
+   High Water Mark                    : 117.43 Kilobytes
+
+Allocation Root # 1
+-------------------
+ Number of non freed allocations    :  35
+ Final Water Mark (non freed mem)   : 1.09 Kilobytes
+ High Water Mark                    : 1.09 Kilobytes
+ Backtrace                          :
+   gdk-pixbuf.adb:0 ??
+
+Allocation Root # 2
+-------------------
+ Number of non freed allocations    :  32
+ Final Water Mark (non freed mem)   : 1.00 Kilobytes
+ High Water Mark                    : 1.00 Kilobytes
+ Backtrace                          :
+   gtk-oscilloscope-on_button_press.adb:248gtk.oscilloscope.on_button_press
+
+Allocation Root # 3
+-------------------
+ Number of non freed allocations    :  32
+ Final Water Mark (non freed mem)   : 256 Bytes
+ High Water Mark                    : 256 Bytes
+ Backtrace                          :
+   gtk-oscilloscope-on_button_press.adb:248gtk.oscilloscope.on_button_press
+
+Allocation Root # 4
+-------------------
+ Number of non freed allocations    :  26
+ Final Water Mark (non freed mem)   : 832 Bytes
+ High Water Mark                    : 832 Bytes
+ Backtrace                          :
+   gtk-oscilloscope-on_button_release.adb:182gtk.oscilloscope.on_button_release
+
+Allocation Root # 5
+-------------------
+ Number of non freed allocations    :  26
+ Final Water Mark (non freed mem)   : 208 Bytes
+ High Water Mark                    : 208 Bytes
+ Backtrace                          :
+   gtk-oscilloscope-on_button_release.adb:188gtk.oscilloscope.on_button_release
+
+Allocation Root # 6
+-------------------
+ Number of non freed allocations    :  13
+ Final Water Mark (non freed mem)   : 1.32 Kilobytes
+ High Water Mark                    : 1.32 Kilobytes
+ Backtrace                          :
+   gtk-oscilloscope.adb:521 gtk.oscilloscope.add_deviation_channel
+
+Allocation Root # 7
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 200 Bytes
+ High Water Mark                    : 200 Bytes
+ Backtrace                          :
+   glib-values-handling.adb:56 glib.values.handling.copy
+
+Allocation Root # 8
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 104 Bytes
+ High Water Mark                    : 104 Bytes
+ Backtrace                          :
+   glib-generic_properties.adb:144 cairo.line_cap_property.properties.get_property
+
+Allocation Root # 9
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 104 Bytes
+ High Water Mark                    : 104 Bytes
+ Backtrace                          :
+   glib-generic_properties.adb:132 ??
+
+Allocation Root # 10
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 72 Bytes
+ High Water Mark                    : 72 Bytes
+ Backtrace                          :
+   gtk-cell_renderer-abstract_renderer.adb:1028gtk.cell_renderer.abstract_renderer.register_type
+
+Allocation Root # 11
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 34 Bytes
+ High Water Mark                    : 34 Bytes
+ Backtrace                          :
+   gtk-scrollable.adb:0 ??
+
+Allocation Root # 12
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 33 Bytes
+ High Water Mark                    : 33 Bytes
+ Backtrace                          :
+   gtk-scale.adb:0 ??
+
+Allocation Root # 13
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 32 Bytes
+ High Water Mark                    : 32 Bytes
+ Backtrace                          :
+   gtk-scrollbar.adb:0 ??
+
+Allocation Root # 14
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 32 Bytes
+ High Water Mark                    : 32 Bytes
+ Backtrace                          :
+   gtk-scrolled_window.adb:0 ??
+
+Allocation Root # 15
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 32 Bytes
+ High Water Mark                    : 32 Bytes
+ Backtrace                          :
+   gtk-scale.adb:0 ??
+
+Allocation Root # 16
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 30 Bytes
+ High Water Mark                    : 30 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 17
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 30 Bytes
+ High Water Mark                    : 30 Bytes
+ Backtrace                          :
+   gtk-scrollbar.adb:0 ??
+
+Allocation Root # 18
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 29 Bytes
+ High Water Mark                    : 29 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 19
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 29 Bytes
+ High Water Mark                    : 29 Bytes
+ Backtrace                          :
+   gtk-scrollbar.adb:0 ??
+
+Allocation Root # 20
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 28 Bytes
+ High Water Mark                    : 28 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 21
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 28 Bytes
+ High Water Mark                    : 28 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 22
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 28 Bytes
+ High Water Mark                    : 28 Bytes
+ Backtrace                          :
+   gtk-scrollable.adb:0 ??
+
+Allocation Root # 23
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 28 Bytes
+ High Water Mark                    : 28 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 24
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 27 Bytes
+ High Water Mark                    : 27 Bytes
+ Backtrace                          :
+   gtk-scrollbar.adb:0 ??
+
+Allocation Root # 25
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 27 Bytes
+ High Water Mark                    : 27 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 26
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 27 Bytes
+ High Water Mark                    : 27 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 27
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 27 Bytes
+ High Water Mark                    : 27 Bytes
+ Backtrace                          :
+   gtk-scrollbar.adb:0 ??
+
+Allocation Root # 28
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 26 Bytes
+ High Water Mark                    : 26 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 29
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 26 Bytes
+ High Water Mark                    : 26 Bytes
+ Backtrace                          :
+   gtk-scrollbar.adb:0 ??
+
+Allocation Root # 30
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 26 Bytes
+ High Water Mark                    : 26 Bytes
+ Backtrace                          :
+   gtk-frame.adb:0 ??
+
+Allocation Root # 31
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 26 Bytes
+ High Water Mark                    : 26 Bytes
+ Backtrace                          :
+   gtk-scale.adb:0 ??
+
+Allocation Root # 32
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 26 Bytes
+ High Water Mark                    : 26 Bytes
+ Backtrace                          :
+   gtk-scale.adb:0 ??
+
+Allocation Root # 33
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 26 Bytes
+ High Water Mark                    : 26 Bytes
+ Backtrace                          :
+   gtk-scrolled_window.adb:0 ??
+
+Allocation Root # 34
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 26 Bytes
+ High Water Mark                    : 26 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 35
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 26 Bytes
+ High Water Mark                    : 26 Bytes
+ Backtrace                          :
+   gtk-frame.adb:0 ??
+
+Allocation Root # 36
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 26 Bytes
+ High Water Mark                    : 26 Bytes
+ Backtrace                          :
+   gtk-scrollbar.adb:0 ??
+
+Allocation Root # 37
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 26 Bytes
+ High Water Mark                    : 26 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 38
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 26 Bytes
+ High Water Mark                    : 26 Bytes
+ Backtrace                          :
+   gtk-editable.adb:0 ??
+
+Allocation Root # 39
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 26 Bytes
+ High Water Mark                    : 26 Bytes
+ Backtrace                          :
+   gtk-scrolled_window.adb:0 ??
+
+Allocation Root # 40
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 25 Bytes
+ High Water Mark                    : 25 Bytes
+ Backtrace                          :
+   gtk-scrollbar.adb:0 ??
+
+Allocation Root # 41
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 25 Bytes
+ High Water Mark                    : 25 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 42
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 25 Bytes
+ High Water Mark                    : 25 Bytes
+ Backtrace                          :
+   gtk-scrollbar.adb:0 ??
+
+Allocation Root # 43
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 25 Bytes
+ High Water Mark                    : 25 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 44
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 25 Bytes
+ High Water Mark                    : 25 Bytes
+ Backtrace                          :
+   gtk-scrolled_window.adb:0 ??
+
+Allocation Root # 45
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 25 Bytes
+ High Water Mark                    : 25 Bytes
+ Backtrace                          :
+   gtk-file_chooser.adb:0 ??
+
+Allocation Root # 46
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 25 Bytes
+ High Water Mark                    : 25 Bytes
+ Backtrace                          :
+   gtk-tree_selection.adb:0 ??
+
+Allocation Root # 47
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 25 Bytes
+ High Water Mark                    : 25 Bytes
+ Backtrace                          :
+   gtk-scrollbar.adb:0 ??
+
+Allocation Root # 48
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 25 Bytes
+ High Water Mark                    : 25 Bytes
+ Backtrace                          :
+   gtk-scale.adb:0 ??
+
+Allocation Root # 49
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 25 Bytes
+ High Water Mark                    : 25 Bytes
+ Backtrace                          :
+   gtk-scale.adb:0 ??
+
+Allocation Root # 50
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 25 Bytes
+ High Water Mark                    : 25 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 51
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 25 Bytes
+ High Water Mark                    : 25 Bytes
+ Backtrace                          :
+   gtk-scale.adb:0 ??
+
+Allocation Root # 52
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 25 Bytes
+ High Water Mark                    : 25 Bytes
+ Backtrace                          :
+   gtk-scrolled_window.adb:0 ??
+
+Allocation Root # 53
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 25 Bytes
+ High Water Mark                    : 25 Bytes
+ Backtrace                          :
+   gtk-scale.adb:0 ??
+
+Allocation Root # 54
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-menu_shell.adb:0 ??
+
+Allocation Root # 55
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   glib-properties-creation.adb:0 ??
+
+Allocation Root # 56
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-entry_completion.adb:0 ??
+
+Allocation Root # 57
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-button.adb:0 ??
+
+Allocation Root # 58
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   cairo.adb:0 ??
+
+Allocation Root # 59
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-entry_completion.adb:0 ??
+
+Allocation Root # 60
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtkada-handlers.ads:0 ??
+
+Allocation Root # 61
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   glib-variant.adb:0 ??
+
+Allocation Root # 62
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-gentry.adb:0 ??
+
+Allocation Root # 63
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-gentry.adb:0 ??
+
+Allocation Root # 64
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-css_section.adb:0 ??
+
+Allocation Root # 65
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-label.adb:0 ??
+
+Allocation Root # 66
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-scrollbar.adb:0 ??
+
+Allocation Root # 67
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   sqlite3.c:0 ??
+
+Allocation Root # 68
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtkada-handlers.ads:0 ??
+
+Allocation Root # 69
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   sqlite3.c:0 ??
+
+Allocation Root # 70
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-gentry.adb:0 ??
+
+Allocation Root # 71
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   sqlite3.c:0 ??
+
+Allocation Root # 72
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-settings.adb:0 ??
+
+Allocation Root # 73
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-button.adb:0 ??
+
+Allocation Root # 74
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 75
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-entry_buffer.adb:0 ??
+
+Allocation Root # 76
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-target_list.adb:0 ??
+
+Allocation Root # 77
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-print_context.adb:0 ??
+
+Allocation Root # 78
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 79
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-calendar.adb:0 ??
+
+Allocation Root # 80
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-settings.adb:0 ??
+
+Allocation Root # 81
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-scale.adb:0 ??
+
+Allocation Root # 82
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-calendar.adb:0 ??
+
+Allocation Root # 83
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-event_box.adb:0 ??
+
+Allocation Root # 84
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-grid.adb:0 ??
+
+Allocation Root # 85
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-combo_box.adb:0 ??
+
+Allocation Root # 86
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gdk-drag_contexts.adb:0 ??
+
+Allocation Root # 87
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-clipboard.adb:0 ??
+
+Allocation Root # 88
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-combo_box.adb:0 ??
+
+Allocation Root # 89
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-box.adb:0 ??
+
+Allocation Root # 90
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-settings.adb:0 ??
+
+Allocation Root # 91
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-print_operation.adb:0 ??
+
+Allocation Root # 92
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-separator.adb:0 ??
+
+Allocation Root # 93
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-label.adb:0 ??
+
+Allocation Root # 94
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-tree_model.adb:0 ??
+
+Allocation Root # 95
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-print_operation_preview.adb:0 ??
+
+Allocation Root # 96
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-print_operation.adb:0 ??
+
+Allocation Root # 97
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   glib-object.adb:0 ??
+
+Allocation Root # 98
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-cell_renderer.adb:0 ??
+
+Allocation Root # 99
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-action.adb:0 ??
+
+Allocation Root # 100
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-settings.adb:0 ??
+
+Allocation Root # 101
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-cell_renderer_progress.adb:0 ??
+
+Allocation Root # 102
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-print_operation.adb:0 ??
+
+Allocation Root # 103
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-menu_item.adb:0 ??
+
+Allocation Root # 104
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-accel_group.adb:0 ??
+
+Allocation Root # 105
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-page_setup.adb:0 ??
+
+Allocation Root # 106
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-text_view.adb:0 ??
+
+Allocation Root # 107
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 108
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 109
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-scrollbar.adb:0 ??
+
+Allocation Root # 110
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtkada-handlers.ads:0 ??
+
+Allocation Root # 111
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-text_tag.adb:0 ??
+
+Allocation Root # 112
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-grange.adb:0 ??
+
+Allocation Root # 113
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtkada-bindings.adb:0 ??
+
+Allocation Root # 114
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-cell_renderer.adb:0 ??
+
+Allocation Root # 115
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-list_store.adb:0 ??
+
+Allocation Root # 116
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-window.adb:0 ??
+
+Allocation Root # 117
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-entry_completion.adb:0 ??
+
+Allocation Root # 118
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   glib-variant.adb:0 ??
+
+Allocation Root # 119
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-misc.adb:0 ??
+
+Allocation Root # 120
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-cell_area.adb:0 ??
+
+Allocation Root # 121
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-frame.adb:0 ??
+
+Allocation Root # 122
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-text_tag.adb:0 ??
+
+Allocation Root # 123
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-text_view.adb:0 ??
+
+Allocation Root # 124
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-menu.adb:0 ??
+
+Allocation Root # 125
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-gentry.adb:0 ??
+
+Allocation Root # 126
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-box.adb:0 ??
+
+Allocation Root # 127
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   glib-properties-creation.adb:0 ??
+
+Allocation Root # 128
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-cell_renderer_text.adb:0 ??
+
+Allocation Root # 129
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-image.adb:0 ??
+
+Allocation Root # 130
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-scale.adb:0 ??
+
+Allocation Root # 131
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-clipboard.adb:0 ??
+
+Allocation Root # 132
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-style_context.adb:0 ??
+
+Allocation Root # 133
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-print_settings.adb:0 ??
+
+Allocation Root # 134
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gdk-drag_contexts.adb:0 ??
+
+Allocation Root # 135
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-text_child_anchor.adb:0 ??
+
+Allocation Root # 136
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-check_button.adb:0 ??
+
+Allocation Root # 137
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-adjustment.adb:0 ??
+
+Allocation Root # 138
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-text_tag.adb:0 ??
+
+Allocation Root # 139
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-label.adb:0 ??
+
+Allocation Root # 140
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gdk-drag_contexts.adb:0 ??
+
+Allocation Root # 141
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   sqlite3.c:0 ??
+
+Allocation Root # 142
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-image.adb:0 ??
+
+Allocation Root # 143
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   sqlite3.c:0 ??
+
+Allocation Root # 144
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-icon_set.adb:0 ??
+
+Allocation Root # 145
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-cell_renderer_text.adb:0 ??
+
+Allocation Root # 146
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-tree_store.adb:0 ??
+
+Allocation Root # 147
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtkada-handlers.ads:0 ??
+
+Allocation Root # 148
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtk-style.adb:0 ??
+
+Allocation Root # 149
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 24 Bytes
+ High Water Mark                    : 24 Bytes
+ Backtrace                          :
+   gtkada-handlers.ads:0 ??
+
+Allocation Root # 150
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 23 Bytes
+ High Water Mark                    : 23 Bytes
+ Backtrace                          :
+   gtk-scale.adb:0 ??
+
+Allocation Root # 151
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 23 Bytes
+ High Water Mark                    : 23 Bytes
+ Backtrace                          :
+   gtk-scrolled_window.adb:0 ??
+
+Allocation Root # 152
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 23 Bytes
+ High Water Mark                    : 23 Bytes
+ Backtrace                          :
+   gtk-scrolled_window.adb:0 ??
+
+Allocation Root # 153
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 23 Bytes
+ High Water Mark                    : 23 Bytes
+ Backtrace                          :
+   gtk-scrolled_window.adb:0 ??
+
+Allocation Root # 154
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 23 Bytes
+ High Water Mark                    : 23 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 155
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 23 Bytes
+ High Water Mark                    : 23 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 156
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 23 Bytes
+ High Water Mark                    : 23 Bytes
+ Backtrace                          :
+   gtk-calendar.adb:0 ??
+
+Allocation Root # 157
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 23 Bytes
+ High Water Mark                    : 23 Bytes
+ Backtrace                          :
+   gtk-scale.adb:0 ??
+
+Allocation Root # 158
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 23 Bytes
+ High Water Mark                    : 23 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 159
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 23 Bytes
+ High Water Mark                    : 23 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 160
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 23 Bytes
+ High Water Mark                    : 23 Bytes
+ Backtrace                          :
+   gtk-frame.adb:0 ??
+
+Allocation Root # 161
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 23 Bytes
+ High Water Mark                    : 23 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 162
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 23 Bytes
+ High Water Mark                    : 23 Bytes
+ Backtrace                          :
+   gtk-scrolled_window.adb:0 ??
+
+Allocation Root # 163
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 22 Bytes
+ High Water Mark                    : 22 Bytes
+ Backtrace                          :
+   gtk-scale.adb:0 ??
+
+Allocation Root # 164
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 22 Bytes
+ High Water Mark                    : 22 Bytes
+ Backtrace                          :
+   gtk-scale.adb:0 ??
+
+Allocation Root # 165
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 22 Bytes
+ High Water Mark                    : 22 Bytes
+ Backtrace                          :
+   gtk-scale.adb:0 ??
+
+Allocation Root # 166
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 22 Bytes
+ High Water Mark                    : 22 Bytes
+ Backtrace                          :
+   gtk-scale.adb:0 ??
+
+Allocation Root # 167
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 22 Bytes
+ High Water Mark                    : 22 Bytes
+ Backtrace                          :
+   gtk-scale.adb:0 ??
+
+Allocation Root # 168
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 22 Bytes
+ High Water Mark                    : 22 Bytes
+ Backtrace                          :
+   gtk-scrollbar.adb:0 ??
+
+Allocation Root # 169
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 22 Bytes
+ High Water Mark                    : 22 Bytes
+ Backtrace                          :
+   gtk-scrollable.adb:0 ??
+
+Allocation Root # 170
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 22 Bytes
+ High Water Mark                    : 22 Bytes
+ Backtrace                          :
+   glib-properties-creation.adb:0 ??
+
+Allocation Root # 171
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 22 Bytes
+ High Water Mark                    : 22 Bytes
+ Backtrace                          :
+   gtk-scale.adb:0 ??
+
+Allocation Root # 172
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 22 Bytes
+ High Water Mark                    : 22 Bytes
+ Backtrace                          :
+   gtk-drawing_area.adb:0 ??
+
+Allocation Root # 173
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 22 Bytes
+ High Water Mark                    : 22 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 174
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 22 Bytes
+ High Water Mark                    : 22 Bytes
+ Backtrace                          :
+   gtk-cell_area_context.adb:0 ??
+
+Allocation Root # 175
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 22 Bytes
+ High Water Mark                    : 22 Bytes
+ Backtrace                          :
+   gtk-scrollbar.adb:0 ??
+
+Allocation Root # 176
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 21 Bytes
+ High Water Mark                    : 21 Bytes
+ Backtrace                          :
+   gtk-scale.adb:0 ??
+
+Allocation Root # 177
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 21 Bytes
+ High Water Mark                    : 21 Bytes
+ Backtrace                          :
+   gtk-calendar.adb:0 ??
+
+Allocation Root # 178
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 21 Bytes
+ High Water Mark                    : 21 Bytes
+ Backtrace                          :
+   gtk-label.adb:0 ??
+
+Allocation Root # 179
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 21 Bytes
+ High Water Mark                    : 21 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 180
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 21 Bytes
+ High Water Mark                    : 21 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 181
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 21 Bytes
+ High Water Mark                    : 21 Bytes
+ Backtrace                          :
+   gtk-scale.adb:0 ??
+
+Allocation Root # 182
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 21 Bytes
+ High Water Mark                    : 21 Bytes
+ Backtrace                          :
+   gtk-scrollbar.adb:0 ??
+
+Allocation Root # 183
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 21 Bytes
+ High Water Mark                    : 21 Bytes
+ Backtrace                          :
+   gtk-scrollbar.adb:0 ??
+
+Allocation Root # 184
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 21 Bytes
+ High Water Mark                    : 21 Bytes
+ Backtrace                          :
+   gtk-button.adb:0 ??
+
+Allocation Root # 185
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 21 Bytes
+ High Water Mark                    : 21 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 186
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 21 Bytes
+ High Water Mark                    : 21 Bytes
+ Backtrace                          :
+   gtk-print_operation.adb:0 ??
+
+Allocation Root # 187
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 21 Bytes
+ High Water Mark                    : 21 Bytes
+ Backtrace                          :
+   gtk-scrolled_window.adb:0 ??
+
+Allocation Root # 188
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 20 Bytes
+ High Water Mark                    : 20 Bytes
+ Backtrace                          :
+   gtk-scrolled_window.adb:0 ??
+
+Allocation Root # 189
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 20 Bytes
+ High Water Mark                    : 20 Bytes
+ Backtrace                          :
+   gtk-scrollbar.adb:0 ??
+
+Allocation Root # 190
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 20 Bytes
+ High Water Mark                    : 20 Bytes
+ Backtrace                          :
+   gtk-scale.adb:0 ??
+
+Allocation Root # 191
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 20 Bytes
+ High Water Mark                    : 20 Bytes
+ Backtrace                          :
+   gtk-scrollbar.adb:0 ??
+
+Allocation Root # 192
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 20 Bytes
+ High Water Mark                    : 20 Bytes
+ Backtrace                          :
+   gtk-scale.adb:0 ??
+
+Allocation Root # 193
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 20 Bytes
+ High Water Mark                    : 20 Bytes
+ Backtrace                          :
+   gtk-icon_theme.adb:0 ??
+
+Allocation Root # 194
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 20 Bytes
+ High Water Mark                    : 20 Bytes
+ Backtrace                          :
+   gtk-scrolled_window.adb:0 ??
+
+Allocation Root # 195
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 20 Bytes
+ High Water Mark                    : 20 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 196
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 20 Bytes
+ High Water Mark                    : 20 Bytes
+ Backtrace                          :
+   gtk-image.adb:0 ??
+
+Allocation Root # 197
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 20 Bytes
+ High Water Mark                    : 20 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 198
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 20 Bytes
+ High Water Mark                    : 20 Bytes
+ Backtrace                          :
+   gtk-button.adb:0 ??
+
+Allocation Root # 199
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 20 Bytes
+ High Water Mark                    : 20 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 200
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 20 Bytes
+ High Water Mark                    : 20 Bytes
+ Backtrace                          :
+   gtk-cell_area.adb:0 ??
+
+Allocation Root # 201
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 20 Bytes
+ High Water Mark                    : 20 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 202
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 20 Bytes
+ High Water Mark                    : 20 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 203
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 20 Bytes
+ High Water Mark                    : 20 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 204
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 20 Bytes
+ High Water Mark                    : 20 Bytes
+ Backtrace                          :
+   gtk-button.adb:0 ??
+
+Allocation Root # 205
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 19 Bytes
+ High Water Mark                    : 19 Bytes
+ Backtrace                          :
+   gtk-cell_renderer_text.adb:0 ??
+
+Allocation Root # 206
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 19 Bytes
+ High Water Mark                    : 19 Bytes
+ Backtrace                          :
+   gtk-text_tag.adb:0 ??
+
+Allocation Root # 207
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 19 Bytes
+ High Water Mark                    : 19 Bytes
+ Backtrace                          :
+   gtk-file_chooser.adb:0 ??
+
+Allocation Root # 208
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 19 Bytes
+ High Water Mark                    : 19 Bytes
+ Backtrace                          :
+   gtk-accel_group.adb:0 ??
+
+Allocation Root # 209
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 19 Bytes
+ High Water Mark                    : 19 Bytes
+ Backtrace                          :
+   gtk-combo_box_text.adb:0 ??
+
+Allocation Root # 210
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 19 Bytes
+ High Water Mark                    : 19 Bytes
+ Backtrace                          :
+   gtk-notebook.adb:0 ??
+
+Allocation Root # 211
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 19 Bytes
+ High Water Mark                    : 19 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 212
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 19 Bytes
+ High Water Mark                    : 19 Bytes
+ Backtrace                          :
+   gtk-text_tag.adb:0 ??
+
+Allocation Root # 213
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 19 Bytes
+ High Water Mark                    : 19 Bytes
+ Backtrace                          :
+   gtk-print_operation.adb:0 ??
+
+Allocation Root # 214
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 19 Bytes
+ High Water Mark                    : 19 Bytes
+ Backtrace                          :
+   gtk-scrolled_window.adb:0 ??
+
+Allocation Root # 215
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 19 Bytes
+ High Water Mark                    : 19 Bytes
+ Backtrace                          :
+   gtk-scrolled_window.adb:0 ??
+
+Allocation Root # 216
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 19 Bytes
+ High Water Mark                    : 19 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 217
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 19 Bytes
+ High Water Mark                    : 19 Bytes
+ Backtrace                          :
+   gtk-combo_box_text.adb:0 ??
+
+Allocation Root # 218
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 19 Bytes
+ High Water Mark                    : 19 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 219
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 19 Bytes
+ High Water Mark                    : 19 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 220
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 19 Bytes
+ High Water Mark                    : 19 Bytes
+ Backtrace                          :
+   gtk-adjustment.adb:0 ??
+
+Allocation Root # 221
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 19 Bytes
+ High Water Mark                    : 19 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 222
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 19 Bytes
+ High Water Mark                    : 19 Bytes
+ Backtrace                          :
+   gtk-scrollable.adb:0 ??
+
+Allocation Root # 223
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 19 Bytes
+ High Water Mark                    : 19 Bytes
+ Backtrace                          :
+   gtk-gentry.adb:0 ??
+
+Allocation Root # 224
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 19 Bytes
+ High Water Mark                    : 19 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 225
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 19 Bytes
+ High Water Mark                    : 19 Bytes
+ Backtrace                          :
+   gtk-adjustment.adb:0 ??
+
+Allocation Root # 226
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 19 Bytes
+ High Water Mark                    : 19 Bytes
+ Backtrace                          :
+   gtk-scrolled_window.adb:0 ??
+
+Allocation Root # 227
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 19 Bytes
+ High Water Mark                    : 19 Bytes
+ Backtrace                          :
+   gtk-notebook.adb:0 ??
+
+Allocation Root # 228
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 19 Bytes
+ High Water Mark                    : 19 Bytes
+ Backtrace                          :
+   gtk-scrollbar.adb:0 ??
+
+Allocation Root # 229
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 19 Bytes
+ High Water Mark                    : 19 Bytes
+ Backtrace                          :
+   gtk-text_tag.adb:0 ??
+
+Allocation Root # 230
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 19 Bytes
+ High Water Mark                    : 19 Bytes
+ Backtrace                          :
+   gtk-file_chooser.adb:0 ??
+
+Allocation Root # 231
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 19 Bytes
+ High Water Mark                    : 19 Bytes
+ Backtrace                          :
+   gtk-scrollbar.adb:0 ??
+
+Allocation Root # 232
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 19 Bytes
+ High Water Mark                    : 19 Bytes
+ Backtrace                          :
+   glib-properties-creation.adb:0 ??
+
+Allocation Root # 233
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 19 Bytes
+ High Water Mark                    : 19 Bytes
+ Backtrace                          :
+   gtk-cell_renderer_text.adb:0 ??
+
+Allocation Root # 234
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-cell_renderer_text.adb:0 ??
+
+Allocation Root # 235
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-cell_renderer_text.adb:0 ??
+
+Allocation Root # 236
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-tree_selection.adb:0 ??
+
+Allocation Root # 237
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-tree_selection.adb:0 ??
+
+Allocation Root # 238
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-tree_selection.adb:0 ??
+
+Allocation Root # 239
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-tree_selection.adb:0 ??
+
+Allocation Root # 240
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-scale.adb:0 ??
+
+Allocation Root # 241
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   sqlite3.c:0 ??
+
+Allocation Root # 242
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 243
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-combo_box_text.adb:0 ??
+
+Allocation Root # 244
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-adjustment.adb:0 ??
+
+Allocation Root # 245
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-print_operation.adb:0 ??
+
+Allocation Root # 246
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-scrollbar.adb:0 ??
+
+Allocation Root # 247
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-scrollbar.adb:0 ??
+
+Allocation Root # 248
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-cell_area_context.adb:0 ??
+
+Allocation Root # 249
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-scrollable.adb:0 ??
+
+Allocation Root # 250
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-action.adb:0 ??
+
+Allocation Root # 251
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   glib-properties-creation.adb:0 ??
+
+Allocation Root # 252
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 253
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-scrollbar.adb:0 ??
+
+Allocation Root # 254
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-style.adb:0 ??
+
+Allocation Root # 255
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 256
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-grid.adb:0 ??
+
+Allocation Root # 257
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-tree_selection.adb:0 ??
+
+Allocation Root # 258
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-drawing_area.adb:0 ??
+
+Allocation Root # 259
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 260
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-file_chooser.adb:0 ??
+
+Allocation Root # 261
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-scrollable.adb:0 ??
+
+Allocation Root # 262
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-scrollbar.adb:0 ??
+
+Allocation Root # 263
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 264
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 265
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-print_operation.adb:0 ??
+
+Allocation Root # 266
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-print_operation.adb:0 ??
+
+Allocation Root # 267
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-print_operation.adb:0 ??
+
+Allocation Root # 268
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-notebook.adb:0 ??
+
+Allocation Root # 269
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   glib-variant.adb:0 ??
+
+Allocation Root # 270
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 271
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 18 Bytes
+ High Water Mark                    : 18 Bytes
+ Backtrace                          :
+   glib-properties-creation.adb:0 ??
+
+Allocation Root # 272
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 17 Bytes
+ High Water Mark                    : 17 Bytes
+ Backtrace                          :
+   gtk-grange.adb:0 ??
+
+Allocation Root # 273
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 17 Bytes
+ High Water Mark                    : 17 Bytes
+ Backtrace                          :
+   gtk-scrollable.adb:0 ??
+
+Allocation Root # 274
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 17 Bytes
+ High Water Mark                    : 17 Bytes
+ Backtrace                          :
+   gtk-builder.adb:0 ??
+
+Allocation Root # 275
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 17 Bytes
+ High Water Mark                    : 17 Bytes
+ Backtrace                          :
+   gtk-icon_theme.adb:0 ??
+
+Allocation Root # 276
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 17 Bytes
+ High Water Mark                    : 17 Bytes
+ Backtrace                          :
+   gtk-notebook.adb:0 ??
+
+Allocation Root # 277
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 17 Bytes
+ High Water Mark                    : 17 Bytes
+ Backtrace                          :
+   gtk-cell_area_context.adb:0 ??
+
+Allocation Root # 278
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 17 Bytes
+ High Water Mark                    : 17 Bytes
+ Backtrace                          :
+   gtk-scrollbar.adb:0 ??
+
+Allocation Root # 279
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 17 Bytes
+ High Water Mark                    : 17 Bytes
+ Backtrace                          :
+   gtk-scrollable.adb:0 ??
+
+Allocation Root # 280
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 17 Bytes
+ High Water Mark                    : 17 Bytes
+ Backtrace                          :
+   glib-properties-creation.adb:0 ??
+
+Allocation Root # 281
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 17 Bytes
+ High Water Mark                    : 17 Bytes
+ Backtrace                          :
+   gtk-style.adb:0 ??
+
+Allocation Root # 282
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 17 Bytes
+ High Water Mark                    : 17 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 283
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 17 Bytes
+ High Water Mark                    : 17 Bytes
+ Backtrace                          :
+   gtk-file_chooser.adb:0 ??
+
+Allocation Root # 284
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 17 Bytes
+ High Water Mark                    : 17 Bytes
+ Backtrace                          :
+   gtk-combo_box_text.adb:0 ??
+
+Allocation Root # 285
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 17 Bytes
+ High Water Mark                    : 17 Bytes
+ Backtrace                          :
+   gtk-combo_box_text.adb:0 ??
+
+Allocation Root # 286
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 17 Bytes
+ High Water Mark                    : 17 Bytes
+ Backtrace                          :
+   gtk-notebook.adb:0 ??
+
+Allocation Root # 287
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 17 Bytes
+ High Water Mark                    : 17 Bytes
+ Backtrace                          :
+   gtk-print_operation.adb:0 ??
+
+Allocation Root # 288
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 17 Bytes
+ High Water Mark                    : 17 Bytes
+ Backtrace                          :
+   gtk-notebook.adb:0 ??
+
+Allocation Root # 289
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 17 Bytes
+ High Water Mark                    : 17 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 290
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-combo_box_text.adb:0 ??
+
+Allocation Root # 291
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-notebook.adb:0 ??
+
+Allocation Root # 292
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-cell_renderer_text.adb:0 ??
+
+Allocation Root # 293
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-frame.adb:0 ??
+
+Allocation Root # 294
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-tree_selection.adb:0 ??
+
+Allocation Root # 295
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 296
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-tree_selection.adb:0 ??
+
+Allocation Root # 297
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-tree_selection.adb:0 ??
+
+Allocation Root # 298
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-icon_theme.adb:0 ??
+
+Allocation Root # 299
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 300
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 301
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 302
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-icon_theme.adb:0 ??
+
+Allocation Root # 303
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-icon_theme.adb:0 ??
+
+Allocation Root # 304
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-icon_theme.adb:0 ??
+
+Allocation Root # 305
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 306
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-cell_area.adb:0 ??
+
+Allocation Root # 307
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-cell_area.adb:0 ??
+
+Allocation Root # 308
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-icon_theme.adb:0 ??
+
+Allocation Root # 309
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-scrolled_window.adb:0 ??
+
+Allocation Root # 310
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 311
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-label.adb:0 ??
+
+Allocation Root # 312
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-adjustment.adb:0 ??
+
+Allocation Root # 313
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-button.adb:0 ??
+
+Allocation Root # 314
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-style.adb:0 ??
+
+Allocation Root # 315
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-file_chooser.adb:0 ??
+
+Allocation Root # 316
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-scrollbar.adb:0 ??
+
+Allocation Root # 317
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-gentry.adb:0 ??
+
+Allocation Root # 318
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-drawing_area.adb:0 ??
+
+Allocation Root # 319
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 320
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 321
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 322
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 323
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 16 Bytes
+ High Water Mark                    : 16 Bytes
+ Backtrace                          :
+   gtk-cell_area_context.adb:0 ??
+
+Allocation Root # 324
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-cell_renderer_text.adb:0 ??
+
+Allocation Root # 325
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 326
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-list_store.adb:0 ??
+
+Allocation Root # 327
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-scrollbar.adb:0 ??
+
+Allocation Root # 328
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-cell_area.adb:0 ??
+
+Allocation Root # 329
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   sqlite3.c:0 ??
+
+Allocation Root # 330
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-tree_selection.adb:0 ??
+
+Allocation Root # 331
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-tree_selection.adb:0 ??
+
+Allocation Root # 332
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-tree_selection.adb:0 ??
+
+Allocation Root # 333
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-scale.adb:0 ??
+
+Allocation Root # 334
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-builder.adb:0 ??
+
+Allocation Root # 335
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-tree_view.adb:0 ??
+
+Allocation Root # 336
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-tree_view.adb:0 ??
+
+Allocation Root # 337
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-scale.adb:0 ??
+
+Allocation Root # 338
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   glib-type_conversion_hooks.adb:0 ??
+
+Allocation Root # 339
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-action.adb:0 ??
+
+Allocation Root # 340
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-action.adb:0 ??
+
+Allocation Root # 341
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   glib-properties-creation.adb:0 ??
+
+Allocation Root # 342
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-text_tag.adb:0 ??
+
+Allocation Root # 343
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-drawing_area.adb:0 ??
+
+Allocation Root # 344
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 345
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-cell_area.adb:0 ??
+
+Allocation Root # 346
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-file_chooser.adb:0 ??
+
+Allocation Root # 347
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-file_chooser.adb:0 ??
+
+Allocation Root # 348
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-settings.adb:0 ??
+
+Allocation Root # 349
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-notebook.adb:0 ??
+
+Allocation Root # 350
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-clipboard.adb:0 ??
+
+Allocation Root # 351
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 352
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-editable.adb:0 ??
+
+Allocation Root # 353
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 354
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-css_section.adb:0 ??
+
+Allocation Root # 355
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 356
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-text_tag.adb:0 ??
+
+Allocation Root # 357
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-gentry.adb:0 ??
+
+Allocation Root # 358
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-cell_area.adb:0 ??
+
+Allocation Root # 359
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-builder.adb:0 ??
+
+Allocation Root # 360
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-print_operation.adb:0 ??
+
+Allocation Root # 361
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-print_operation.adb:0 ??
+
+Allocation Root # 362
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-cell_area.adb:0 ??
+
+Allocation Root # 363
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 364
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-adjustment.adb:0 ??
+
+Allocation Root # 365
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   glib-type_conversion_hooks.adb:0 ??
+
+Allocation Root # 366
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 15 Bytes
+ High Water Mark                    : 15 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 367
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 368
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-cell_renderer_text.adb:0 ??
+
+Allocation Root # 369
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 370
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-builder.adb:0 ??
+
+Allocation Root # 371
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 372
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-tree_selection.adb:0 ??
+
+Allocation Root # 373
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-tree_selection.adb:0 ??
+
+Allocation Root # 374
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-scale.adb:0 ??
+
+Allocation Root # 375
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-scale.adb:0 ??
+
+Allocation Root # 376
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 377
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   glib-object.adb:0 ??
+
+Allocation Root # 378
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 379
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-icon_theme.adb:0 ??
+
+Allocation Root # 380
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   glib-properties-creation.adb:0 ??
+
+Allocation Root # 381
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 382
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-text_tag.adb:0 ??
+
+Allocation Root # 383
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-text_tag.adb:0 ??
+
+Allocation Root # 384
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-builder.adb:0 ??
+
+Allocation Root # 385
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-action.adb:0 ??
+
+Allocation Root # 386
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-image.adb:0 ??
+
+Allocation Root # 387
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   glib-properties-creation.adb:0 ??
+
+Allocation Root # 388
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-image.adb:0 ??
+
+Allocation Root # 389
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-style.adb:0 ??
+
+Allocation Root # 390
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 391
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 392
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-cell_area_context.adb:0 ??
+
+Allocation Root # 393
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 394
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-separator_menu_item.adb:0 ??
+
+Allocation Root # 395
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-notebook.adb:0 ??
+
+Allocation Root # 396
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-notebook.adb:0 ??
+
+Allocation Root # 397
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-separator_menu_item.adb:0 ??
+
+Allocation Root # 398
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-notebook.adb:0 ??
+
+Allocation Root # 399
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-label.adb:0 ??
+
+Allocation Root # 400
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-notebook.adb:0 ??
+
+Allocation Root # 401
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 402
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 403
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-cell_area_context.adb:0 ??
+
+Allocation Root # 404
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-image.adb:0 ??
+
+Allocation Root # 405
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 406
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 407
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 14 Bytes
+ High Water Mark                    : 14 Bytes
+ Backtrace                          :
+   gtk-cell_area.adb:0 ??
+
+Allocation Root # 408
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   glib-properties-creation.adb:0 ??
+
+Allocation Root # 409
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-grange.adb:0 ??
+
+Allocation Root # 410
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-grange.adb:0 ??
+
+Allocation Root # 411
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 412
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-list_store.adb:0 ??
+
+Allocation Root # 413
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-list_store.adb:0 ??
+
+Allocation Root # 414
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-frame.adb:0 ??
+
+Allocation Root # 415
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-tree_selection.adb:0 ??
+
+Allocation Root # 416
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 417
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-text_tag.adb:0 ??
+
+Allocation Root # 418
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   sqlite3.c:0 ??
+
+Allocation Root # 419
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-entry_completion.adb:0 ??
+
+Allocation Root # 420
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-entry_completion.adb:0 ??
+
+Allocation Root # 421
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-entry_completion.adb:0 ??
+
+Allocation Root # 422
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gdk-color.adb:0 ??
+
+Allocation Root # 423
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-text_tag.adb:0 ??
+
+Allocation Root # 424
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-calendar.adb:0 ??
+
+Allocation Root # 425
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-calendar.adb:0 ??
+
+Allocation Root # 426
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-adjustment.adb:0 ??
+
+Allocation Root # 427
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-drawing_area.adb:0 ??
+
+Allocation Root # 428
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   glib-properties-creation.adb:0 ??
+
+Allocation Root # 429
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 430
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-text_tag.adb:0 ??
+
+Allocation Root # 431
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 432
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 433
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-adjustment.adb:0 ??
+
+Allocation Root # 434
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-file_chooser.adb:0 ??
+
+Allocation Root # 435
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 436
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-scrollbar.adb:0 ??
+
+Allocation Root # 437
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-cell_area.adb:0 ??
+
+Allocation Root # 438
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-notebook.adb:0 ??
+
+Allocation Root # 439
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 440
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 441
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 442
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-cell_area.adb:0 ??
+
+Allocation Root # 443
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 444
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-gentry.adb:0 ??
+
+Allocation Root # 445
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-menu.adb:0 ??
+
+Allocation Root # 446
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 447
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-cell_renderer_text.adb:0 ??
+
+Allocation Root # 448
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-text_attributes.adb:0 ??
+
+Allocation Root # 449
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 450
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 13 Bytes
+ High Water Mark                    : 13 Bytes
+ Backtrace                          :
+   gtk-cell_renderer_text.adb:0 ??
+
+Allocation Root # 451
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-settings.adb:0 ??
+
+Allocation Root # 452
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-cell_renderer_text.adb:0 ??
+
+Allocation Root # 453
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 454
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-button.adb:0 ??
+
+Allocation Root # 455
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-box.adb:0 ??
+
+Allocation Root # 456
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-tree_selection.adb:0 ??
+
+Allocation Root # 457
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 458
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-tree_view.adb:0 ??
+
+Allocation Root # 459
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-tree_view.adb:0 ??
+
+Allocation Root # 460
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-entry_completion.adb:0 ??
+
+Allocation Root # 461
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-menu_item.adb:0 ??
+
+Allocation Root # 462
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-icon_theme.adb:0 ??
+
+Allocation Root # 463
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-cell_area_context.adb:0 ??
+
+Allocation Root # 464
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-cell_area_context.adb:0 ??
+
+Allocation Root # 465
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-cell_area_context.adb:0 ??
+
+Allocation Root # 466
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 467
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-calendar.adb:0 ??
+
+Allocation Root # 468
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-text_tag.adb:0 ??
+
+Allocation Root # 469
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-text_tag.adb:0 ??
+
+Allocation Root # 470
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   glib-properties-creation.adb:0 ??
+
+Allocation Root # 471
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   glib-properties-creation.adb:0 ??
+
+Allocation Root # 472
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-grid.adb:0 ??
+
+Allocation Root # 473
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-calendar.adb:0 ??
+
+Allocation Root # 474
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 475
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-scrollbar.adb:0 ??
+
+Allocation Root # 476
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-settings.adb:0 ??
+
+Allocation Root # 477
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-drawing_area.adb:0 ??
+
+Allocation Root # 478
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-settings.adb:0 ??
+
+Allocation Root # 479
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 480
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 481
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 482
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-notebook.adb:0 ??
+
+Allocation Root # 483
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 484
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   sqlite3.c:0 ??
+
+Allocation Root # 485
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-text_tag.adb:0 ??
+
+Allocation Root # 486
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 487
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 488
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-css_section.adb:0 ??
+
+Allocation Root # 489
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 490
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 491
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-print_operation.adb:0 ??
+
+Allocation Root # 492
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-image.adb:0 ??
+
+Allocation Root # 493
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 494
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 495
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-print_operation.adb:0 ??
+
+Allocation Root # 496
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-print_operation.adb:0 ??
+
+Allocation Root # 497
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-combo_box_text.adb:0 ??
+
+Allocation Root # 498
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-box.adb:0 ??
+
+Allocation Root # 499
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-menu.adb:0 ??
+
+Allocation Root # 500
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 501
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   glib-variant.adb:0 ??
+
+Allocation Root # 502
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-print_operation.adb:0 ??
+
+Allocation Root # 503
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 504
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-cell_renderer_text.adb:0 ??
+
+Allocation Root # 505
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-gentry.adb:0 ??
+
+Allocation Root # 506
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-scrolled_window.adb:0 ??
+
+Allocation Root # 507
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-print_operation.adb:0 ??
+
+Allocation Root # 508
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-button.adb:0 ??
+
+Allocation Root # 509
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-button.adb:0 ??
+
+Allocation Root # 510
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-cell_area.adb:0 ??
+
+Allocation Root # 511
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 12 Bytes
+ High Water Mark                    : 12 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 512
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 513
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-grange.adb:0 ??
+
+Allocation Root # 514
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-cell_renderer_text.adb:0 ??
+
+Allocation Root # 515
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-scrollbar.adb:0 ??
+
+Allocation Root # 516
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-label.adb:0 ??
+
+Allocation Root # 517
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-icon_theme.adb:0 ??
+
+Allocation Root # 518
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-cell_area.adb:0 ??
+
+Allocation Root # 519
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-tree_selection.adb:0 ??
+
+Allocation Root # 520
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   sqlite3.c:0 ??
+
+Allocation Root # 521
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   sqlite3.c:0 ??
+
+Allocation Root # 522
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-icon_theme.adb:0 ??
+
+Allocation Root # 523
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gdk-cairo.adb:0 ??
+
+Allocation Root # 524
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-tree_view.adb:0 ??
+
+Allocation Root # 525
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-icon_theme.adb:0 ??
+
+Allocation Root # 526
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-cell_area.adb:0 ??
+
+Allocation Root # 527
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-cell_area.adb:0 ??
+
+Allocation Root # 528
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-cell_area.adb:0 ??
+
+Allocation Root # 529
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-image.adb:0 ??
+
+Allocation Root # 530
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-calendar.adb:0 ??
+
+Allocation Root # 531
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-combo_box.adb:0 ??
+
+Allocation Root # 532
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-cell_area.adb:0 ??
+
+Allocation Root # 533
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-cell_area.adb:0 ??
+
+Allocation Root # 534
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-drawing_area.adb:0 ??
+
+Allocation Root # 535
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 536
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-label.adb:0 ??
+
+Allocation Root # 537
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 538
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 539
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-file_chooser.adb:0 ??
+
+Allocation Root # 540
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 541
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-label.adb:0 ??
+
+Allocation Root # 542
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-separator_menu_item.adb:0 ??
+
+Allocation Root # 543
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-separator_menu_item.adb:0 ??
+
+Allocation Root # 544
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 545
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 546
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 547
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-box.adb:0 ??
+
+Allocation Root # 548
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-menu_item.adb:0 ??
+
+Allocation Root # 549
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 550
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-menu_item.adb:0 ??
+
+Allocation Root # 551
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 552
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 553
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-print_context.adb:0 ??
+
+Allocation Root # 554
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-frame.adb:0 ??
+
+Allocation Root # 555
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-print_operation.adb:0 ??
+
+Allocation Root # 556
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 11 Bytes
+ High Water Mark                    : 11 Bytes
+ Backtrace                          :
+   gtk-frame.adb:0 ??
+
+Allocation Root # 557
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 558
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-cell_renderer_text.adb:0 ??
+
+Allocation Root # 559
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-cell_renderer_text.adb:0 ??
+
+Allocation Root # 560
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 561
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-cell_renderer_text.adb:0 ??
+
+Allocation Root # 562
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-cell_renderer_text.adb:0 ??
+
+Allocation Root # 563
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-button.adb:0 ??
+
+Allocation Root # 564
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-settings.adb:0 ??
+
+Allocation Root # 565
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 566
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-icon_theme.adb:0 ??
+
+Allocation Root # 567
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-calendar.adb:0 ??
+
+Allocation Root # 568
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-tree_store.adb:0 ??
+
+Allocation Root # 569
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-tree_view.adb:0 ??
+
+Allocation Root # 570
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-tree_view.adb:0 ??
+
+Allocation Root # 571
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-tree_view.adb:0 ??
+
+Allocation Root # 572
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-cell_area.adb:0 ??
+
+Allocation Root # 573
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-tree_view.adb:0 ??
+
+Allocation Root # 574
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 575
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-tree_view.adb:0 ??
+
+Allocation Root # 576
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-cell_area.adb:0 ??
+
+Allocation Root # 577
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   glib-object.adb:0 ??
+
+Allocation Root # 578
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   glib-type_conversion_hooks.adb:0 ??
+
+Allocation Root # 579
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-icon_theme.adb:0 ??
+
+Allocation Root # 580
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-cell_area_context.adb:0 ??
+
+Allocation Root # 581
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-cell_area.adb:0 ??
+
+Allocation Root # 582
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-cell_area_context.adb:0 ??
+
+Allocation Root # 583
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-cell_area_context.adb:0 ??
+
+Allocation Root # 584
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-cell_area.adb:0 ??
+
+Allocation Root # 585
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-text_tag.adb:0 ??
+
+Allocation Root # 586
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-action.adb:0 ??
+
+Allocation Root # 587
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   glib-properties-creation.adb:0 ??
+
+Allocation Root # 588
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   glib-properties-creation.adb:0 ??
+
+Allocation Root # 589
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-text_tag.adb:0 ??
+
+Allocation Root # 590
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-style.adb:0 ??
+
+Allocation Root # 591
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 592
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 593
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 594
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-grid.adb:0 ??
+
+Allocation Root # 595
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-text_tag.adb:0 ??
+
+Allocation Root # 596
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-settings.adb:0 ??
+
+Allocation Root # 597
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 598
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 599
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 600
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 601
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 602
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 603
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 604
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 605
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 606
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 607
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-combo_box_text.adb:0 ??
+
+Allocation Root # 608
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 609
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-cell_area.adb:0 ??
+
+Allocation Root # 610
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-menu.adb:0 ??
+
+Allocation Root # 611
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-button.adb:0 ??
+
+Allocation Root # 612
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-grange.adb:0 ??
+
+Allocation Root # 613
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-cell_renderer_text.adb:0 ??
+
+Allocation Root # 614
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-grange.adb:0 ??
+
+Allocation Root # 615
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 10 Bytes
+ High Water Mark                    : 10 Bytes
+ Backtrace                          :
+   gtk-print_context.adb:0 ??
+
+Allocation Root # 616
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 9 Bytes
+ High Water Mark                    : 9 Bytes
+ Backtrace                          :
+   gtk-grange.adb:0 ??
+
+Allocation Root # 617
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 9 Bytes
+ High Water Mark                    : 9 Bytes
+ Backtrace                          :
+   gtk-frame.adb:0 ??
+
+Allocation Root # 618
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 9 Bytes
+ High Water Mark                    : 9 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 619
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 9 Bytes
+ High Water Mark                    : 9 Bytes
+ Backtrace                          :
+   gtk-cell_area.adb:0 ??
+
+Allocation Root # 620
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 9 Bytes
+ High Water Mark                    : 9 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 621
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 9 Bytes
+ High Water Mark                    : 9 Bytes
+ Backtrace                          :
+   gtk-tree_store.adb:0 ??
+
+Allocation Root # 622
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 9 Bytes
+ High Water Mark                    : 9 Bytes
+ Backtrace                          :
+   gtk-cell_area_context.adb:0 ??
+
+Allocation Root # 623
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 9 Bytes
+ High Water Mark                    : 9 Bytes
+ Backtrace                          :
+   gtk-calendar.adb:0 ??
+
+Allocation Root # 624
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 9 Bytes
+ High Water Mark                    : 9 Bytes
+ Backtrace                          :
+   gtk-text_tag.adb:0 ??
+
+Allocation Root # 625
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 9 Bytes
+ High Water Mark                    : 9 Bytes
+ Backtrace                          :
+   gtk-calendar.adb:0 ??
+
+Allocation Root # 626
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 9 Bytes
+ High Water Mark                    : 9 Bytes
+ Backtrace                          :
+   glib-properties-creation.adb:0 ??
+
+Allocation Root # 627
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 9 Bytes
+ High Water Mark                    : 9 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 628
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 9 Bytes
+ High Water Mark                    : 9 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 629
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 9 Bytes
+ High Water Mark                    : 9 Bytes
+ Backtrace                          :
+   gtk-notebook.adb:0 ??
+
+Allocation Root # 630
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 9 Bytes
+ High Water Mark                    : 9 Bytes
+ Backtrace                          :
+   gtk-cell_area.adb:0 ??
+
+Allocation Root # 631
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 9 Bytes
+ High Water Mark                    : 9 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 632
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 9 Bytes
+ High Water Mark                    : 9 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 633
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 9 Bytes
+ High Water Mark                    : 9 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 634
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 9 Bytes
+ High Water Mark                    : 9 Bytes
+ Backtrace                          :
+   gtk-cell_area_context.adb:0 ??
+
+Allocation Root # 635
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 9 Bytes
+ High Water Mark                    : 9 Bytes
+ Backtrace                          :
+   gtk-grange.adb:0 ??
+
+Allocation Root # 636
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 8 Bytes
+ High Water Mark                    : 8 Bytes
+ Backtrace                          :
+   gtk-label.adb:0 ??
+
+Allocation Root # 637
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 8 Bytes
+ High Water Mark                    : 8 Bytes
+ Backtrace                          :
+   gtk-grange.adb:0 ??
+
+Allocation Root # 638
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 8 Bytes
+ High Water Mark                    : 8 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 639
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 8 Bytes
+ High Water Mark                    : 8 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 640
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 8 Bytes
+ High Water Mark                    : 8 Bytes
+ Backtrace                          :
+   sqlite3.c:0 ??
+
+Allocation Root # 641
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 8 Bytes
+ High Water Mark                    : 8 Bytes
+ Backtrace                          :
+   gtk-icon_theme.adb:0 ??
+
+Allocation Root # 642
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 8 Bytes
+ High Water Mark                    : 8 Bytes
+ Backtrace                          :
+   gtk-icon_theme.adb:0 ??
+
+Allocation Root # 643
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 8 Bytes
+ High Water Mark                    : 8 Bytes
+ Backtrace                          :
+   gtk-tree_view.adb:0 ??
+
+Allocation Root # 644
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 8 Bytes
+ High Water Mark                    : 8 Bytes
+ Backtrace                          :
+   gtk-tree_view.adb:0 ??
+
+Allocation Root # 645
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 8 Bytes
+ High Water Mark                    : 8 Bytes
+ Backtrace                          :
+   gtk-settings.adb:0 ??
+
+Allocation Root # 646
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 8 Bytes
+ High Water Mark                    : 8 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 647
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 8 Bytes
+ High Water Mark                    : 8 Bytes
+ Backtrace                          :
+   gtk-cell_area_context.adb:0 ??
+
+Allocation Root # 648
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 8 Bytes
+ High Water Mark                    : 8 Bytes
+ Backtrace                          :
+   gtk-cell_area_context.adb:0 ??
+
+Allocation Root # 649
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 8 Bytes
+ High Water Mark                    : 8 Bytes
+ Backtrace                          :
+   gtk-calendar.adb:0 ??
+
+Allocation Root # 650
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 8 Bytes
+ High Water Mark                    : 8 Bytes
+ Backtrace                          :
+   gtk-image.adb:0 ??
+
+Allocation Root # 651
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 8 Bytes
+ High Water Mark                    : 8 Bytes
+ Backtrace                          :
+   glib-properties-creation.adb:0 ??
+
+Allocation Root # 652
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 8 Bytes
+ High Water Mark                    : 8 Bytes
+ Backtrace                          :
+   glib-properties-creation.adb:0 ??
+
+Allocation Root # 653
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 8 Bytes
+ High Water Mark                    : 8 Bytes
+ Backtrace                          :
+   sqlite3.c:0 ??
+
+Allocation Root # 654
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 8 Bytes
+ High Water Mark                    : 8 Bytes
+ Backtrace                          :
+   sqlite3.c:0 ??
+
+Allocation Root # 655
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 8 Bytes
+ High Water Mark                    : 8 Bytes
+ Backtrace                          :
+   gtk-separator_menu_item.adb:0 ??
+
+Allocation Root # 656
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 8 Bytes
+ High Water Mark                    : 8 Bytes
+ Backtrace                          :
+   gtk-label.adb:0 ??
+
+Allocation Root # 657
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 8 Bytes
+ High Water Mark                    : 8 Bytes
+ Backtrace                          :
+   gtk-notebook.adb:0 ??
+
+Allocation Root # 658
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 8 Bytes
+ High Water Mark                    : 8 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 659
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 8 Bytes
+ High Water Mark                    : 8 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 660
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 8 Bytes
+ High Water Mark                    : 8 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 661
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 8 Bytes
+ High Water Mark                    : 8 Bytes
+ Backtrace                          :
+   gtk-menu.adb:0 ??
+
+Allocation Root # 662
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 8 Bytes
+ High Water Mark                    : 8 Bytes
+ Backtrace                          :
+   glib-variant.adb:0 ??
+
+Allocation Root # 663
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 8 Bytes
+ High Water Mark                    : 8 Bytes
+ Backtrace                          :
+   gtk-button.adb:0 ??
+
+Allocation Root # 664
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 8 Bytes
+ High Water Mark                    : 8 Bytes
+ Backtrace                          :
+   gtk-button.adb:0 ??
+
+Allocation Root # 665
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 8 Bytes
+ High Water Mark                    : 8 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 666
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 667
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-settings.adb:0 ??
+
+Allocation Root # 668
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-settings.adb:0 ??
+
+Allocation Root # 669
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gdk-device.adb:0 ??
+
+Allocation Root # 670
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-cell_area.adb:0 ??
+
+Allocation Root # 671
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 672
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   sqlite3.c:0 ??
+
+Allocation Root # 673
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-tree_view.adb:0 ??
+
+Allocation Root # 674
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-tree_view.adb:0 ??
+
+Allocation Root # 675
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-tree_view.adb:0 ??
+
+Allocation Root # 676
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-drawing_area.adb:0 ??
+
+Allocation Root # 677
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-text_tag.adb:0 ??
+
+Allocation Root # 678
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-cell_area_context.adb:0 ??
+
+Allocation Root # 679
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-text_tag.adb:0 ??
+
+Allocation Root # 680
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-image.adb:0 ??
+
+Allocation Root # 681
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-calendar.adb:0 ??
+
+Allocation Root # 682
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-combo_box.adb:0 ??
+
+Allocation Root # 683
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-text_tag.adb:0 ??
+
+Allocation Root # 684
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 685
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-action.adb:0 ??
+
+Allocation Root # 686
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-drawing_area.adb:0 ??
+
+Allocation Root # 687
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-action.adb:0 ??
+
+Allocation Root # 688
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-action.adb:0 ??
+
+Allocation Root # 689
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 690
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-cell_area_context.adb:0 ??
+
+Allocation Root # 691
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-settings.adb:0 ??
+
+Allocation Root # 692
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-list_store.adb:0 ??
+
+Allocation Root # 693
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-list_store.adb:0 ??
+
+Allocation Root # 694
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 695
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-separator_menu_item.adb:0 ??
+
+Allocation Root # 696
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-notebook.adb:0 ??
+
+Allocation Root # 697
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 698
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 699
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 700
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 701
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 702
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 703
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-button.adb:0 ??
+
+Allocation Root # 704
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-button.adb:0 ??
+
+Allocation Root # 705
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-button.adb:0 ??
+
+Allocation Root # 706
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 707
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-cell_renderer_text.adb:0 ??
+
+Allocation Root # 708
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 709
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-print_operation.adb:0 ??
+
+Allocation Root # 710
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 7 Bytes
+ High Water Mark                    : 7 Bytes
+ Backtrace                          :
+   gtk-grange.adb:0 ??
+
+Allocation Root # 711
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 712
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   gtk-grange.adb:0 ??
+
+Allocation Root # 713
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   gtk-list_store.adb:0 ??
+
+Allocation Root # 714
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   gtk-cell_renderer_text.adb:0 ??
+
+Allocation Root # 715
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 716
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   gtk-button.adb:0 ??
+
+Allocation Root # 717
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   gtk-icon_theme.adb:0 ??
+
+Allocation Root # 718
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   gtk-tree_selection.adb:0 ??
+
+Allocation Root # 719
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   gtk-entry_completion.adb:0 ??
+
+Allocation Root # 720
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   gtk-icon_theme.adb:0 ??
+
+Allocation Root # 721
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   gtk-icon_theme.adb:0 ??
+
+Allocation Root # 722
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   gtk-tree_view.adb:0 ??
+
+Allocation Root # 723
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   gtk-tree_view.adb:0 ??
+
+Allocation Root # 724
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   glib-properties-creation.adb:0 ??
+
+Allocation Root # 725
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   gtk-cell_area_context.adb:0 ??
+
+Allocation Root # 726
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   glib-type_conversion_hooks.adb:0 ??
+
+Allocation Root # 727
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   glib-type_conversion_hooks.adb:0 ??
+
+Allocation Root # 728
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   gtk-calendar.adb:0 ??
+
+Allocation Root # 729
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   gtk-calendar.adb:0 ??
+
+Allocation Root # 730
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   gtk-calendar.adb:0 ??
+
+Allocation Root # 731
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   gtk-adjustment.adb:0 ??
+
+Allocation Root # 732
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   gtk-action.adb:0 ??
+
+Allocation Root # 733
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   gtk-action.adb:0 ??
+
+Allocation Root # 734
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   glib-properties-creation.adb:0 ??
+
+Allocation Root # 735
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   glib-properties-creation.adb:0 ??
+
+Allocation Root # 736
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   gtk-cell_area_context.adb:0 ??
+
+Allocation Root # 737
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   gtk-grid.adb:0 ??
+
+Allocation Root # 738
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 739
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   gtk-label.adb:0 ??
+
+Allocation Root # 740
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   gtk-separator_menu_item.adb:0 ??
+
+Allocation Root # 741
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 742
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 743
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   gtk-combo_box_text.adb:0 ??
+
+Allocation Root # 744
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   gtk-cell_renderer_text.adb:0 ??
+
+Allocation Root # 745
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   gtk-button.adb:0 ??
+
+Allocation Root # 746
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 6 Bytes
+ High Water Mark                    : 6 Bytes
+ Backtrace                          :
+   gtk-grange.adb:0 ??
+
+Allocation Root # 747
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-text_attributes.adb:0 ??
+
+Allocation Root # 748
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-label.adb:0 ??
+
+Allocation Root # 749
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 750
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 751
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   sqlite3.c:0 ??
+
+Allocation Root # 752
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-cell_area.adb:0 ??
+
+Allocation Root # 753
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   sqlite3.c:0 ??
+
+Allocation Root # 754
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-text_view.adb:0 ??
+
+Allocation Root # 755
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-icon_theme.adb:0 ??
+
+Allocation Root # 756
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-cell_area_context.adb:0 ??
+
+Allocation Root # 757
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-cell_area_context.adb:0 ??
+
+Allocation Root # 758
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-calendar.adb:0 ??
+
+Allocation Root # 759
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-adjustment.adb:0 ??
+
+Allocation Root # 760
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-combo_box.adb:0 ??
+
+Allocation Root # 761
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   glib-properties-creation.adb:0 ??
+
+Allocation Root # 762
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-text_tag.adb:0 ??
+
+Allocation Root # 763
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-style.adb:0 ??
+
+Allocation Root # 764
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 765
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-list_store.adb:0 ??
+
+Allocation Root # 766
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 767
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-file_chooser_dialog.adb:0 ??
+
+Allocation Root # 768
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-list_store.adb:0 ??
+
+Allocation Root # 769
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-builder.adb:0 ??
+
+Allocation Root # 770
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-notebook.adb:0 ??
+
+Allocation Root # 771
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 772
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-separator_menu_item.adb:0 ??
+
+Allocation Root # 773
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 774
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 775
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 776
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-text_buffer.adb:0 ??
+
+Allocation Root # 777
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-menu_item.adb:0 ??
+
+Allocation Root # 778
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-widget.adb:0 ??
+
+Allocation Root # 779
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-button.adb:0 ??
+
+Allocation Root # 780
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-button.adb:0 ??
+
+Allocation Root # 781
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-cell_area_context.adb:0 ??
+
+Allocation Root # 782
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-button.adb:0 ??
+
+Allocation Root # 783
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 5 Bytes
+ High Water Mark                    : 5 Bytes
+ Backtrace                          :
+   gtk-grange.adb:0 ??
+
+Allocation Root # 784
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 4 Bytes
+ High Water Mark                    : 4 Bytes
+ Backtrace                          :
+   gtk-adjustment.adb:0 ??
+
+Allocation Root # 785
+-------------------
+ Number of non freed allocations    :   1
+ Final Water Mark (non freed mem)   : 3 Bytes
+ High Water Mark                    : 3 Bytes
+ Backtrace                          :
+   max_io.adb:4171 <max_io__workerTK__L_89__B6864b__get_cubeA6>
+

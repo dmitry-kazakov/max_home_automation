@@ -1,0 +1,4 @@
+with "components.gpr";
+project Test_CSV_Parser is
+   for Main use ("test_csv_parser.adb");
+end Test_CSV_Parser;

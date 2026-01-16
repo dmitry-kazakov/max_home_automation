@@ -1,0 +1,19 @@
+with "../components.gpr";
+
+project xpm_parser is
+
+   for Source_Dirs use (".");
+   for Source_Files use
+      (  "parsers-generic_source-xpm.adb",
+         "parsers-generic_source-xpm.ads",
+         "parsers-multiline_source-xpm.ads"
+      );
+   for Object_Dir use Components'Object_Dir;
+
+   package Compiler renames Components.Compiler;
+   package Binder   renames Components.Binder;
+   package Builder  renames Components.Builder;
+   package Linker   renames Components.Linker;
+
+end xpm_parser;
+

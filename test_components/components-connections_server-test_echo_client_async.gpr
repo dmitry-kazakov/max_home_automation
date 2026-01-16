@@ -1,0 +1,20 @@
+with "../components.gpr";
+with "../components-connections_server.gpr";
+
+project Components.Connections_Server.Test_Echo_Client_Async is
+
+   for Source_Files use
+       (  "test_echo_client_async.adb",
+          "test_echo_clients.adb",
+          "test_echo_clients.ads"
+       );
+   for Main use ("test_echo_client_async.adb");
+   for Object_Dir use Components.Object_Dir_Path;
+
+   package Compiler renames Components.Connections_Server.Compiler;
+   package Binder   renames Components.Connections_Server.Binder;
+   package Builder  renames Components.Connections_Server.Builder;
+   package Linker   renames Components.Connections_Server.Linker;
+   
+end Components.Connections_Server.Test_Echo_Client_Async;
+

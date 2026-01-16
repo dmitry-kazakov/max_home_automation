@@ -1,0 +1,20 @@
+with "../components.gpr";
+with "../components-connections_server.gpr";
+
+project Components.Connections_Server.Test_Data_Server is
+
+   for Source_Files use
+       (  "test_data_server.adb",
+          "test_data_servers.adb",
+          "test_data_servers.ads"
+       );
+   for Main use ("test_data_server.adb");
+   for Object_Dir use Components.Object_Dir_Path;
+
+   package Compiler renames Components.Connections_Server.Compiler;
+   package Binder   renames Components.Connections_Server.Binder;
+   package Builder  renames Components.Connections_Server.Builder;
+   package Linker   renames Components.Connections_Server.Linker;
+   
+end Components.Connections_Server.Test_Data_Server;
+

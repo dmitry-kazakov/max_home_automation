@@ -1,0 +1,15 @@
+with "../components.gpr";
+
+project Components.Test_FFT is
+
+   for Source_Files use ("test_fft.adb", "test_float_fft.ads");
+   for Main use ("test_fft.adb");
+   for Object_Dir use Components.Object_Dir_Path;
+
+   package Compiler renames Components.Compiler;
+   package Binder   renames Components.Binder;
+   package Builder  renames Components.Builder;
+   package Linker   renames Components.Linker;
+
+end Components.Test_FFT;
+

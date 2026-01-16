@@ -1,0 +1,24 @@
+with "../components.gpr";
+with "../components-apq.gpr";
+
+project Components.APQ.APQ_Persistence_Tests is
+
+   for Source_Files use
+       (  "test_apq_persistence.adb",
+          "test_apq_session.ads",
+          "test_apq_session.adb",
+          "test_persistent_object.adb",
+          "test_persistent_object.ads",
+          "test_persistent_tree.adb",
+          "test_persistent_tree.ads"
+       );
+   for Main use ("test_apq_persistence.adb");
+   for Object_Dir use Components.Object_Dir_Path;
+
+   package Compiler renames Components.APQ.Compiler;
+   package Binder   renames Components.APQ.Binder;
+   package Builder  renames Components.APQ.Builder;
+   package Linker   renames Components.APQ.Linker;
+
+end Components.APQ.APQ_Persistence_Tests;
+
