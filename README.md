@@ -1,4 +1,4 @@
-<b>MAX! Home Automation</b>
+<H2>MAX! Home Automation</H2>
 
 <p>MAX! home automation is a GTK+ application to manage ELV/eQ-3 MAX! cubes. A cube is a gateway to a network of radiator thermostats, shutter contacts etc. The application provides:</p>
 <ul>
@@ -10,4 +10,4 @@
 <li>E-mail notifications of the low battery status.</li>
 </ul>
 
-<blockquote><P>&nbsp;<img border="0" src="overview-screen-shot.png" alt="overview"></blockquote>
+<img border="0" src="overview-screen-shot.png" alt="overview">
