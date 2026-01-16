@@ -9,5 +9,5 @@
 <li>Set and is temperatures graphs;</li>
 <li>E-mail notifications of the low battery status.</li>
 </ul>
-<H3>Overview pane</H3>
+
 <blockquote><P>&nbsp;<img border="0" src="overview-screen-shot.png" alt="overview"></blockquote>
