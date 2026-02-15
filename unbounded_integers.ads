@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2024       --
 --                                                                    --
---                                Last revision :  17:48 17 Jun 2025  --
+--                                Last revision :  21:44 03 Feb 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -26,6 +26,7 @@
 --____________________________________________________________________--
 
 with Strings_Edit.Lexicographical_Order;
+
 with Unbounded_Unsigneds;  use Unbounded_Unsigneds;
 
 package Unbounded_Integers is

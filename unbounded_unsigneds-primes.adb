@@ -3,7 +3,7 @@
 --     Unbounded_Unsigneds.Primes                  Luebeck            --
 --  Implementation                                 Winter, 2024       --
 --                                                                    --
---                                Last revision :  11:09 18 Jan 2025  --
+--                                Last revision :  21:45 03 Feb 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -969,5 +969,106 @@ package body Unbounded_Unsigneds.Primes is
          return Composite;
       end;
    end Lucas_Probably_Prime;
+
+   procedure Next_Prime
+             (  N            : in out Unbounded_Unsigned;
+                Trials       : Positive;
+                Extended     : Natural := 0;
+                Trial_Primes : Natural := 1_800
+             )  is
+      S : Half_Word;
+   begin
+      if N < 1_000_000 then
+         declare
+            P : Half_Word := To_Half_Word (N);
+         begin
+            case P is
+               when 0..1   => Set (N, 2); return;
+               when 2      => Set (N, 3); return;
+               when 3..4   => Set (N, 5); return;
+               when others => null;
+            end case;
+            S := P mod 6;
+            case S is
+               when 0 =>
+                  P := P + 1;
+                  S := 4;
+               when 1 =>
+                  P := P + 4;
+                  S := 2;
+               when 2 =>
+                  P := P + 3;
+                  S := 2;
+               when 3 =>
+                  P := P + 2;
+                  S := 2;
+               when 4 =>
+                  P := P + 1;
+                  S := 2;
+               when others =>
+                  P := P + 2;
+                  S := 4;
+            end case;
+            loop
+               if Is_Prime (P) = Prime then
+                  Set (N, P);
+                  return;
+               end if;
+               P := P + S;
+               if S = 2 then
+                  S := 4;
+               else
+                  S := 2;
+               end if;
+            end loop;
+         end;
+      else
+         S := N mod 6;
+         case S is
+            when 0 =>
+               Add (N, 1);
+               S := 4;
+            when 1 =>
+               Add (N, 4);
+               S := 2;
+            when 2 =>
+               Add (N, 3);
+               S := 2;
+            when 3 =>
+               Add (N, 2);
+               S := 2;
+            when 4 =>
+               Add (N, 1);
+               S := 2;
+            when others =>
+               Add (N, 2);
+               S := 4;
+         end case;
+         loop
+            if Is_Prime (N, Trials, Extended, Trial_Primes) = Prime then
+               return;
+            end if;
+            Add (N, S);
+            if S = 2 then
+               S := 4;
+            else
+               S := 2;
+            end if;
+         end loop;
+      end if;
+   end Next_Prime;
+
+   function Next_Prime
+            (  N            : Unbounded_Unsigned;
+               Trials       : Positive;
+               Extended     : Natural := 0;
+               Trial_Primes : Natural := 1_800
+            )  return Unbounded_Unsigned is
+      P : Unbounded_Unsigned;
+   begin
+      Copy (P, N);
+      Next_Prime (P, Trials, Extended, Trial_Primes);
+      return P;
+   end Next_Prime;
 
 end Unbounded_Unsigneds.Primes;

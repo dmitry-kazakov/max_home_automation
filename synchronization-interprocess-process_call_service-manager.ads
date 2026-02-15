@@ -3,7 +3,7 @@
 --     Synchronization.Interprocess.               Luebeck            --
 --     Process_Call_Service.Manager                Spring, 2018       --
 --  Interface                                                         --
---                                Last revision :  22:08 06 Jan 2020  --
+--                                Last revision :  21:44 03 Feb 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -30,7 +30,7 @@ with Synchronization.Mutexes;
 
 package Synchronization.Interprocess.Process_Call_Service.Manager is
 --
--- Call_Service_Manager -- A manger of call service instances
+-- Call_Service_Manager -- A manager of call service instances
 --
 --    Size                 - The number of call service instances
 --    Request_Queue_Size   - The number of pending requests - 1

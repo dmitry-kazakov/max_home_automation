@@ -3,7 +3,7 @@
 --     Test_Unbounded_Rationals                    Luebeck            --
 --  Test                                           Spring, 2025       --
 --                                                                    --
---                                Last revision :  08:56 30 Jun 2025  --
+--                                Last revision :  11:49 15 Feb 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -908,8 +908,18 @@ begin
    end;
    Put_Line ("Image (Fraction = 3) test");
    declare
-      X : constant Unbounded_Rational := Unbounded_Rationals.One / 3;
+      X : Unbounded_Rational;
    begin
+      X := 3/1;
+      if Image (X, Fraction => 3) /= "3.000" then
+         Raise_Exception
+         (  Data_Error'Identity,
+            (  "Image 3/1 "
+            &  Quote (Image (X, Fraction => 3))
+            &  " /= ""3.000"" (expected)"
+         )  );
+      end if;
+      X := 1/3;
       if Image (X, Fraction => 3) /= "0.333" then
          Raise_Exception
          (  Data_Error'Identity,
@@ -2454,6 +2464,97 @@ begin
       Check (     1/2,       4, "0.462117");
       Check (     1/1,       5, "0.761594");
       Check (698132/1000000, 5, "0.603181");
+   end;
+   Put_Line ("Value recurring test");
+   declare
+      procedure Check
+                (  S    : String;
+                   E    : Unbounded_Rational;
+                   Base : Positive := 10
+                )  is
+         R : constant Unbounded_Rational := Value_Recurring (S, Base);
+      begin
+         if R /= E then
+            Raise_Exception
+            (  Data_Error'Identity,
+               (  "Value"
+               &  Integer'Image (Base)
+               & " recurring of "
+               &  S
+               &  " = "
+               &  Img (R)
+               &  " /= "
+               &  Img (E)
+               &  " (expected)"
+            )  );
+         end if;
+      end Check;
+   begin
+      Check (" 0.1(4)",     13/90      );
+      Check ("-0.0(45)",    -1/22      );
+      Check ( "0.3",         1/3,     9);
+      Check ( "0.1875",      3/16      );
+      Check ( "1.(01)",    100/99      );
+      Check ( "1.0(10)",   100/99      );
+      Check ( "1.(0)",       1/1       );
+      Check ( "0.(9)",       1/1       );
+      Check ( "0.(3)",       1/3       );
+      Check ( "0.(33)",      1/3       );
+      Check ( "0.(6)",       2/3       );
+      Check ( "0.4(3)",     13/30      );
+      Check ( "10.(3)",     31/3       );
+      Check ( "5.8(144)", 3227/555     );
+      Check ( "0.00(900)",   1/111     );
+      Check ( "0.0(3)",      3/56,    8);
+      Check ( "0.(55)",      5/7,     8);
+      Check ( "0.0(24073)",  1/33,    9);
+      Check ( "3.4(56)",  6673/2040, 16);
+      Check ( "7.77",      511/64,    8);
+      Check ( "0.(F)",       1/1,    16);
+      Check ( "0.F(F)",      1/1,    16);
+      Check ( "F.FF(F)",    16/1,    16);
+   end;
+   Put_Line ("Image recurring test");
+   declare
+      procedure Check
+                (  V    : Unbounded_Rational;
+                   E    : String;
+                   Base : Positive := 10
+                )  is
+         R : constant String := Image_Recurring (V, Base);
+      begin
+         if R /= E then
+            Raise_Exception
+            (  Data_Error'Identity,
+               (  "Image"
+               &  Integer'Image (Base)
+               & " recurring of "
+               &  Image (V, Base)
+               &  " = "
+               &  R
+               &  " /= "
+               &  E
+               &  " (expected)"
+            )  );
+         end if;
+      end Check;
+   begin
+      Check (6673/2040, "3.4(56)",        16);
+      Check (  13/90,   "0.1(4)"            );
+      Check (  -1/22,  "-0.0(45)"           );
+      Check (   1/3,    "0.3",             9);
+      Check ( 593/53,   "11.(1886792452830)");
+      Check (3227/555,  "5.8(144)"          );
+      Check (   1/3,    "0.(3)"             );
+      Check ( 100/99,   "1.(01)"            );
+      Check (   2/3,    "0.(6)"             );
+      Check (   3/56,   "0.0(3)",          8);
+      Check (   1/33,   "0.0(24073)",      9);
+      Check (   1/100,  "0.01"              );
+      Check (   1/101,  "0.(0099)"          );
+      Check (   1/10,   "0.1"               );
+      Check (   1/9,    "0.1",             9);
+      Check ( 511/64,   "7.77",            8);
    end;
 exception
    when Error : others =>

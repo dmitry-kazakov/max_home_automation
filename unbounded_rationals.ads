@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Spring, 2025       --
 --                                                                    --
---                                Last revision :  08:56 30 Jun 2025  --
+--                                Last revision :  21:44 03 Feb 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -248,7 +248,7 @@ package Unbounded_Rationals is
 --    Destination - The number to copy into
 --    Source      - The number to copy from
 --
--- This procedure copies Source into Destination. Unlike assignment or
+-- This procedure  copies Source into Destination.  Unlike assignment or
 -- Set it does not attempt to share Source with Destination.
 --
    procedure Copy

@@ -3,7 +3,7 @@
 --     Strings_Edit.                               Luebeck            --
 --        Unbounded_Rational_Edit                  Spring, 2025       --
 --  Interface                                                         --
---                                Last revision :  17:48 17 Jun 2025  --
+--                                Last revision :  21:44 03 Feb 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -36,7 +36,7 @@ package Strings_Edit.Unbounded_Rational_Edit is
 --    Value   - The result
 --    Base    - The base of the expected number
 --
--- This  procedure  gets  an  integer number from the string Source. The
+-- This  procedure  gets  a  rational number from the string Source. The
 -- process starts from Source (Pointer). The  parameter  Base  indicates
 -- the base of the expected number. The number may have exponent part.
 --
@@ -54,12 +54,42 @@ package Strings_Edit.Unbounded_Rational_Edit is
                 Base    : NumberBase := 10
              );
 --
+-- Get_Recurring -- Get a rational recurring number from the string
+--
+--    Source  - The string to be processed
+--    Pointer - The current position in the string
+--    Value   - The result
+--    Base    - The base of the expected number
+--
+-- This  procedure  gets  a  rational number from the string Source. The
+-- process starts from Source (Pointer). The  parameter  Base  indicates
+-- the base of  the expected number.  The number may have exponent part.
+-- The number can contain a recurring part in round parentheses, e.g.
+--
+--    0.(3) = 1/3
+--    1.(0) = 1
+--    1.(9) = 2
+--
+-- Exceptions:
+--
+--    Constraint_Error - Number is too large
+--    Data_Error       - Syntax error in the number
+--    End_Error        - There is no any number
+--    Layout_Error     - Pointer not in Source'First..Source'Last + 1
+--
+   procedure Get_Recurring
+             (  Source  : String;
+                Pointer : in out Integer;
+                Value   : out Unbounded_Rational;
+                Base    : NumberBase := 10
+             );
+--
 -- Value -- String to rational number conversion
 --
 --    Source - The string to be processed
 --    Base   - The base of the expected number
 --
--- This function gets an integer number  from  the  string  Source.  The
+-- This function gets a rational number  from  the  string  Source.  The
 -- number  can be surrounded by spaces and tabs. The whole string Source
 -- should be matched. Otherwise the exception Data_Error is propagated.
 --
@@ -74,6 +104,30 @@ package Strings_Edit.Unbounded_Rational_Edit is
 --    End_Error        - There is no any number
 --
    function Value
+            (  Source : String;
+               Base   : NumberBase := 10
+            )  return Unbounded_Rational;
+--
+-- Value_Recurring -- String to rational number conversion
+--
+--    Source - The string to be processed
+--    Base   - The base of the expected number
+--
+-- This function gets a rational number  from  the  string  Source.  The
+-- number  can be surrounded by spaces and tabs. The whole string Source
+-- should be matched. Otherwise the exception Data_Error is propagated.
+--
+-- Returns :
+--
+--    The value
+--
+-- Exceptions:
+--
+--    Constraint_Error - Number is too large
+--    Data_Error       - Syntax error in the number
+--    End_Error        - There is no any number
+--
+   function Value_Recurring
             (  Source : String;
                Base   : NumberBase := 10
             )  return Unbounded_Rational;
@@ -94,12 +148,11 @@ package Strings_Edit.Unbounded_Rational_Edit is
 -- into  the  output  string Destination. The string is written starting
 -- from  Destination  (Pointer). The parameter Base indicates the number
 -- base used for the output. Base itself does not appear in the  output.
--- The  exponent  part  (if  used)  is always decimal. PutPlus indicates
--- whether the plus sign should be placed if  the  number  is  positive.
--- The parameter Fraction specifies  the length  of the fractional part.
--- If Fraction is zero, no decimal point is used.  Otherwise,  it is the
--- number of digits after the point.  The output value is rounded.  Zero
--- is alwyas output as "0".
+-- PutPlus  indicates  whether  the  plus  sign  should be placed if the
+-- number  is  positive.  The parameter Fraction specifies the length of
+-- the fractional part. If Fraction is zero, no decimal point  is  used.
+-- Otherwise, it is the number of digits after  the  point.  The  output
+-- value is rounded. Zero is alwyas output as "0".
 --
 -- The parameter  Field  defines  the output  size.  If it has the value
 -- zero, then the output field is equal to the output length.
@@ -122,6 +175,50 @@ package Strings_Edit.Unbounded_Rational_Edit is
                 Base        : NumberBase := 10;
                 PutPlus     : Boolean    := False;
                 Fraction    : Natural    := 6;
+                Field       : Natural    := 0;
+                Justify     : Alignment  := Left;
+                Fill        : Character  := ' '
+             );
+--
+-- Put_Recurring -- Put a rational number into a string
+--
+--    Destination - The string that accepts the output
+--    Pointer     - The current position in the string
+--    Value       - The value to be put
+--    Base        - The base used for the output
+--    PutPlus     - The plus should placed for positive numbers
+--    Field       - The output field
+--    Justify     - Alignment within the field
+--    Fill        - The fill character
+--
+-- This procedure places the number specified  by  the  parameter  Value
+-- into  the  output  string Destination. The string is written starting
+-- from  Destination  (Pointer). The parameter Base indicates the number
+-- base used for the output. Base itself does not appear in the  output.
+-- PutPlus  indicates  whether  the  plus  sign  should be placed if the
+-- number is positive. Recurring notation is used. The output format can
+-- use a recurring part in round parentheses.
+--
+-- The parameter  Field  defines  the output  size.  If it has the value
+-- zero, then the output field is equal to the output length.
+--
+-- When the parameter Field is not zero then Justify specifies alignment
+-- and Fill is the character used for filling.  When  Field  is  greater
+-- than Destination'Last - Pointer + 1,  the  latter  is  used  instead.
+-- After  successful  completion  Pointer  is  advanced  to  the   first
+-- character following the output or to Destination'Last + 1.
+--
+-- Exceptions:
+--
+--    Layout_Error -- Pointer is not in Destination'Range or there is no
+--                    room for the output.
+--
+   procedure Put_Recurring
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Value       : Unbounded_Rational;
+                Base        : NumberBase := 10;
+                PutPlus     : Boolean    := False;
                 Field       : Natural    := 0;
                 Justify     : Alignment  := Left;
                 Fill        : Character  := ' '
@@ -150,6 +247,27 @@ package Strings_Edit.Unbounded_Rational_Edit is
                PutPlus  : Boolean    := False;
                Fraction : Natural    := 6
             )  return String;
-
+--
+-- Image_Recurring -- Rational number to string conversion
+--
+--    Value    - The value to be converted
+--    Base     - The base used for the output
+--    PutPlus  - The plus should placed for positive numbers
+--
+-- This  procedure converts the parameter Value to String. The parameter
+-- Base  indicates the number base used for the output. Base itself does
+-- not appear in the output. The  exponent  part  (if  used)  is  always
+-- decimal. PutPlus indicates whether the plus sign should be placed  if
+-- the number is positive. For precision parameters see Put.
+--
+-- Returns :
+--
+--    The result string
+--
+   function Image_Recurring
+            (  Value   : Unbounded_Rational;
+               Base    : NumberBase := 10;
+               PutPlus : Boolean    := False
+            )  return String;
 
 end Strings_Edit.Unbounded_Rational_Edit;

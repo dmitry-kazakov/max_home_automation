@@ -3,7 +3,7 @@
 --     Parsers.Generic_Source.Patterns             Luebeck            --
 --  Implementation                                 Summer, 2025       --
 --                                                                    --
---                                Last revision :  16:57 04 Jan 2026  --
+--                                Last revision :  11:49 15 Feb 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -38,6 +38,13 @@ with Ada.Unchecked_Deallocation;
 with Strings_Edit.UTF8.Categorization;
 
 package body Parsers.Generic_Source.Patterns is
+
+   function Image (ID : Statement_ID) return String is
+      Result : String := Statement_ID'Image (ID);
+   begin
+      Result (Result'First) := '(';
+      return Result & ')';
+   end Image;
 
    procedure Dump (Stack : Statement_Stack; Prefix : String := "") is
       use Ada.Text_IO;
@@ -78,7 +85,8 @@ package body Parsers.Generic_Source.Patterns is
                when Eager_Statement =>
                   Put_Line
                   (  Prompt
-                  &  "eager"
+                  &  "eager "
+                  &  Image (This.Eager_ID)
                   &  Integer'Image (This.Eager_Count)
                   &  ": "
                   &  Image (This.Eager_Statement.all)
@@ -147,12 +155,21 @@ package body Parsers.Generic_Source.Patterns is
                   &  ": "
                   &  Image (This.Not_Statement.all)
                   );
+               when Proceed_Statement =>
+                  Put_Line
+                  (  Prompt
+                  &  "proceed "
+                  &  Image (This.Proceed_ID)
+                  &  ": "
+                  &  Image (This.Proceed_Statement.all)
+                  );
                when Return_Statement =>
                   null;
                when Repeater_Statement =>
                   Put_Line
                   (  Prompt
-                  &  "repeater"
+                  &  "repeater "
+                  &  Image (This.Repeater_ID)
                   &  Integer'Image (This.Repeater_Count)
                   &  ": "
                   &  Image (This.Repeater_Statement.all)
@@ -160,7 +177,8 @@ package body Parsers.Generic_Source.Patterns is
                when Sequence_Statement =>
                   Put_Line
                   (  Prompt
-                  &  "sequence"
+                  &  "sequence "
+                  &  Image (This.Sequence_ID)
                   &  Integer'Image (This.Sequence_Current)
                   &  ": "
                   &  Image (This.Sequence_Statement.all)
@@ -168,7 +186,8 @@ package body Parsers.Generic_Source.Patterns is
                when Stub_Statement =>
                   Put_Line
                   (  Prompt
-                  &  "stub"
+                  &  "stub "
+                  &  Image (This.Stub_Owner)
                   &  Integer'Image (This.Stub_Data)
                   &  " at"
                   &  Integer'Image (This.Stub_Pointer)
@@ -181,15 +200,66 @@ package body Parsers.Generic_Source.Patterns is
       end loop;
    end Dump;
 
+   function Trace_Image (Statement : Pattern_Object'Class)
+      return String is
+      Kind_Of : constant Statement_Type := Get_Type (Statement);
+   begin
+      case Kind_Of is
+         when No_Statement =>
+            return "atom";
+         when others =>
+            return Statement_Type'Image (Kind_Of);
+      end case;
+   end Trace_Image;
+
+   function Is_Stub (Stack : Statement_Stack; ID : Statement_ID)
+      return Boolean is
+   begin
+      if Stack.Count = 0 then
+         Raise_Exception (Program_Error'Identity, Empty_Stack);
+      end if;
+      declare
+         Data : Statement_Data renames Stack.Stack (Stack.Count);
+      begin
+         return Data.Kind_Of    = Stub_Statement and then
+                Data.Stub_Owner = ID;
+      end;
+   end Is_Stub;
+
    procedure Pop (Stack : in out Statement_Stack) is
    begin
       if Stack.Count = 0 then
-         Raise_Exception
-         (  Program_Error'Identity,
-            "Empty stack"
-         );
+         Raise_Exception (Program_Error'Identity, Empty_Stack);
       end if;
       Stack.Count := Stack.Count - 1;
+   end Pop;
+
+   procedure Pop
+             (  Stack : in out Statement_Stack;
+                ID    : Statement_ID;
+                Data  : in out Statement_Data
+             )  is
+   begin
+      loop
+         if Stack.Count = 0 then
+            Raise_Exception (Program_Error'Identity, Empty_Stack);
+         end if;
+         declare
+            This : Statement_Data renames Stack.Stack (Stack.Count);
+         begin
+            case This.Kind_Of is
+               when Stub_Statement =>
+                  exit when This.Stub_Owner = ID;
+               when Next_Line_Statement | Next_Line_Or_EOF_Statement =>
+                  if Data.Kind_Of = No_Statement then
+                     Data := This;
+                  end if;
+               when others =>
+                  null;
+            end case;
+         end;
+         Stack.Count := Stack.Count - 1;
+      end loop;
    end Pop;
 
    procedure Push
@@ -258,6 +328,7 @@ package body Parsers.Generic_Source.Patterns is
                        Nil_Statement       |
                        Nonempty_Statement  |
                        Not_Statement       |
+                       Proceed_Statement   |
                        Repeater_Statement  |
                        Return_Statement    |
                        Sequence_Statement  |
@@ -293,6 +364,7 @@ package body Parsers.Generic_Source.Patterns is
                     Nil_Statement       |
                     Nonempty_Statement  |
                     Not_Statement       |
+                    Proceed_Statement   |
                     Return_Statement    |
                     Repeater_Statement  |
                     Sequence_Statement  |
@@ -313,7 +385,7 @@ package body Parsers.Generic_Source.Patterns is
          Last    : Integer;
       begin
          Get_Line (Source.all, Line, Pointer, Last);
-         for Index in Col..32 loop
+         for Index in Col..34 loop
             Put (' ');
          end loop;
          Put ('|');
@@ -356,7 +428,7 @@ package body Parsers.Generic_Source.Patterns is
       if State.Trace then
          Ada.Text_IO.Put
          (  "Process "
-         &  Statement_Type'Image (Get_Type (Current.all))
+         &  Trace_Image (Current.all)
          &  " "
          );
          Put_Source (False);
@@ -383,7 +455,7 @@ package body Parsers.Generic_Source.Patterns is
                       Alternate_Pattern (Current.all);
             begin
                Push
-               (  State.MSS,
+               (  State.ASS,
                   (  Kind_Of             => Alternate_Statement,
                      Alternate_Statement => This'Unchecked_Access,
                      Alternate_Current   => 1,
@@ -409,32 +481,95 @@ package body Parsers.Generic_Source.Patterns is
             declare
                This : Eager_Pattern renames Eager_Pattern (Current.all);
             begin
+               State.Sequence := State.Sequence + 1;
                Push
                (  State.ASS,
                   (  Kind_Of         => Eager_Statement,
                      Eager_Statement => This'Unchecked_Access,
-                     Eager_Count     => 0
+                     Eager_Count     => 0,
+                     Eager_ID        => State.Sequence
                )  );
                Push
                (  State.MSS,
                   (  Kind_Of      => Stub_Statement,
                      Stub_Pointer => Get_Pointer (Source.all),
-                     Stub_Data    => 1
+                     Stub_Data    => 1,
+                     Stub_Owner   => State.Sequence
                )  );
                Current := Pattern_Ref (Ptr (This.Pattern));
                goto Process;
             end;
          when Fence_Statement =>
             declare
-               This : Fence_Pattern renames Fence_Pattern (Current.all);
+               NL : Statement_Data := (Kind_Of => No_Statement);
             begin
-               Push
-               (  State.MSS,
-                  (  Kind_Of         => Fence_Statement,
-                     Fence_Statement => This'Unchecked_Access,
-                     Fence_Pointer   => Get_Pointer (Source.all)
-               )  );
-               goto Success;
+               loop
+                  case Top (State.ASS) is
+                     when Eager_Statement =>
+                        declare
+                           Data : Eager_Data renames
+                                  State.ASS.Stack (State.ASS.Count);
+                        begin
+                           loop
+                              Pop (State.MSS, Data.Eager_ID, NL);
+                              exit when Data.Eager_Count = 0;
+                              Data.Eager_Count := Data.Eager_Count - 1;
+                              Pop (State.MSS);
+                           end loop;
+                           declare
+                              Stub : Stub_Data renames
+                                     State.MSS.Stack (State.MSS.Count);
+                           begin
+                              Stub.Stub_Data := 0;
+                           end;
+                        end;
+                        exit;
+                     when Sequence_Statement =>
+                        declare
+                           Data    : Sequence_Data renames
+                                        Top (State.ASS);
+                           Current : constant Natural :=
+                                        Data.Sequence_Current;
+                           Count   : Natural := 0;
+                           This    : Integer;
+                        begin
+                           loop
+                              Pop (State.MSS, Data.Sequence_ID, NL);
+                              This := Top (State.MSS).Stub_Data;
+                              exit when Count + This = Current;
+                              Count := Count + This;
+                              Pop (State.MSS);
+                           end loop;
+                           declare
+                              Stub : Stub_Data renames
+                                     State.MSS.Stack (State.MSS.Count);
+                           begin
+                              Stub.Stub_Data := Stub.Stub_Data + Count;
+                              exit when Data.Sequence_Statement.Length
+                                     /= Current;
+                           end;
+                        end; -- Fence ends this sequence
+                        Pop (State.ASS);
+                        Pop (State.MSS);
+                     when others =>
+                        exit;
+                  end case;
+               end loop;
+               declare
+                  This : Fence_Pattern renames
+                         Fence_Pattern (Current.all);
+               begin
+                  if NL.Kind_Of /= No_Statement then
+                     Push (State.MSS, NL);
+                  end if;
+                  Push
+                  (  State.MSS,
+                     (  Kind_Of         => Fence_Statement,
+                        Fence_Statement => This'Unchecked_Access,
+                        Fence_Pointer   => Get_Pointer (Source.all)
+                  )  );
+                  goto Success;
+               end;
             end;
          when Goto_Statement =>
             declare
@@ -578,6 +713,29 @@ package body Parsers.Generic_Source.Patterns is
                Current := Pattern_Ref (Ptr (This.Pattern));
                goto Process;
             end;
+         when Proceed_Statement =>
+            declare
+               This : Proceed_Pattern renames
+                                      Proceed_Pattern (Current.all);
+            begin
+               State.Sequence := State.Sequence + 1;
+               Push
+               (  State.ASS,
+                  (  Kind_Of           => Proceed_Statement,
+                     Proceed_Statement => This'Unchecked_Access,
+                     Proceed_Pointer   => Get_Pointer (Source.all),
+                     Proceed_ID        => State.Sequence
+               )  );
+               Push
+               (  State.MSS,
+                  (  Kind_Of      => Stub_Statement,
+                     Stub_Pointer => Get_Pointer (Source.all),
+                     Stub_Data    => 1,
+                     Stub_Owner   => State.Sequence
+               )  );
+               Current := Pattern_Ref (Ptr (This.Pattern));
+               goto Process;
+            end;
          when Return_Statement =>
             declare
                This : Return_Pattern renames
@@ -602,17 +760,20 @@ package body Parsers.Generic_Source.Patterns is
                This : Repeater_Pattern renames
                       Repeater_Pattern (Current.all);
             begin
+               State.Sequence := State.Sequence + 1;
                Push
                (  State.ASS,
                   (  Kind_Of            => Repeater_Statement,
                      Repeater_Statement => This'Unchecked_Access,
-                     Repeater_Count     => 1
+                     Repeater_Count     => 1,
+                     Repeater_ID        => State.Sequence
                )  );
                Push
                (  State.MSS,
                   (  Kind_Of      => Stub_Statement,
                      Stub_Pointer => Get_Pointer (Source.all),
-                     Stub_Data    => 0
+                     Stub_Data    => 1,
+                     Stub_Owner   => State.Sequence
                )  );
                Current := Pattern_Ref (Ptr (This.Pattern));
                goto Process;
@@ -622,17 +783,20 @@ package body Parsers.Generic_Source.Patterns is
                This : Sequence_Pattern renames
                       Sequence_Pattern (Current.all);
             begin
+               State.Sequence := State.Sequence + 1;
                Push
                (  State.ASS,
                   (  Kind_Of            => Sequence_Statement,
                      Sequence_Statement => This'Unchecked_Access,
-                     Sequence_Current   => 1
+                     Sequence_Current   => 1,
+                     Sequence_ID        => State.Sequence
                )  );
                Push
                (  State.MSS,
                   (  Kind_Of      => Stub_Statement,
                      Stub_Pointer => Get_Pointer (Source.all),
-                     Stub_Data    => 0
+                     Stub_Data    => 1,
+                     Stub_Owner   => State.Sequence
                )  );
                Current := Pattern_Ref (Ptr (This.Items (1)));
                goto Process;
@@ -652,14 +816,6 @@ package body Parsers.Generic_Source.Patterns is
       case Top (State.ASS) is
          when No_Statement =>
             return Matched;
-         when Alternate_Statement =>
-            Pop (State.ASS);
-            goto Success;
-         when Anything_Statement =>
-            Raise_Exception
-            (  Program_Error'Identity,
-               "Unexpected anything statement success"
-            );
          when Active_Lazy_Statement =>
             declare
                Data : constant Active_Lazy_Data := Top (State.ASS);
@@ -722,6 +878,20 @@ package body Parsers.Generic_Source.Patterns is
                Pop (State.ASS);
                goto Success;
             end;
+         when Alternate_Statement =>
+            declare
+               Data : Alternate_Data renames
+                         State.ASS.Stack (State.ASS.Count);
+            begin
+               Push (State.MSS, Data);
+               Pop  (State.ASS);
+               goto Success;
+            end;
+         when Anything_Statement =>
+            Raise_Exception
+            (  Program_Error'Identity,
+               "Unexpected anything statement success"
+            );
          when Eager_Statement =>
             declare
                Data : Eager_Data renames
@@ -733,7 +903,8 @@ package body Parsers.Generic_Source.Patterns is
                (  State.MSS,
                   (  Kind_Of      => Stub_Statement,
                      Stub_Pointer => Get_Pointer (Source.all),
-                     Stub_Data    => 1
+                     Stub_Data    => 1,
+                     Stub_Owner   => Data.Eager_ID
                )  );
                Current := Pattern_Ref (Ptr (This.Pattern));
                goto Process;
@@ -807,6 +978,20 @@ package body Parsers.Generic_Source.Patterns is
             (  Program_Error'Identity,
                "Lazy statement error"
             );
+         when Proceed_Statement =>
+            declare
+               Data : Proceed_Data renames Top (State.ASS);
+               This : Proceed_Pattern renames
+                         Data.Proceed_Statement.all;
+               NL   : Statement_Data := (Kind_Of => No_Statement);
+            begin
+               Pop (State.MSS, Data.Proceed_ID, NL);
+               if NL.Kind_Of /= No_Statement then
+                  Push (State.MSS, NL);
+               end if;
+               Current := Pattern_Ref (Ptr (This.Pattern));
+               goto Process;
+            end;
          when Repeater_Statement =>
             declare
                Data : Repeater_Data renames
@@ -820,12 +1005,22 @@ package body Parsers.Generic_Source.Patterns is
                   goto Success;
                else
                   Data.Repeater_Count := Data.Repeater_Count + 1;
-                  Push
-                  (  State.MSS,
-                     (  Kind_Of      => Stub_Statement,
-                        Stub_Pointer => Get_Pointer (Source.all),
-                        Stub_Data    => 0
-                  )  );
+                  if Is_Stub (State.MSS, Data.Repeater_ID) then
+                     declare -- Reuse existing stub
+                        Stub : Stub_Data renames
+                               State.MSS.Stack (State.MSS.Count);
+                     begin
+                        Stub.Stub_Data := Stub.Stub_Data + 1;
+                     end;
+                  else
+                     Push
+                     (  State.MSS,
+                        (  Kind_Of      => Stub_Statement,
+                           Stub_Pointer => Get_Pointer (Source.all),
+                           Stub_Data    => 1,
+                           Stub_Owner   => Data.Repeater_ID
+                     )  );
+                  end if;
                   Current := Pattern_Ref (Ptr (This.Pattern));
                   goto Process;
                end if;
@@ -848,12 +1043,22 @@ package body Parsers.Generic_Source.Patterns is
                   goto Success;
                else
                   Data.Sequence_Current := Data.Sequence_Current + 1;
-                  Push
-                  (  State.MSS,
-                     (  Kind_Of      => Stub_Statement,
-                        Stub_Pointer => Get_Pointer (Source.all),
-                        Stub_Data    => 0
-                  )  );
+                  if Is_Stub (State.MSS, Data.Sequence_ID) then
+                     declare -- Reuse existing stub
+                        Stub : Stub_Data renames
+                               State.MSS.Stack (State.MSS.Count);
+                     begin
+                        Stub.Stub_Data := Stub.Stub_Data + 1;
+                     end;
+                  else
+                     Push
+                     (  State.MSS,
+                        (  Kind_Of      => Stub_Statement,
+                           Stub_Pointer => Get_Pointer (Source.all),
+                           Stub_Data    => 1,
+                           Stub_Owner   => Data.Sequence_ID
+                     )  );
+                  end if;
                   Current :=
                      Pattern_Ref
                      (  Ptr (This.Items (Data.Sequence_Current))
@@ -884,90 +1089,6 @@ package body Parsers.Generic_Source.Patterns is
                Pop  (State.MSS);
                goto Failure;
             end if;
-         when Alternate_Statement =>
-            declare
-               Data : Alternate_Data renames
-                         State.ASS.Stack (State.ASS.Count);
-               This : Alternate_Pattern renames
-                         Data.Alternate_Statement.all;
-            begin
-               Set_Pointer (Source.all, Data.Alternate_Pointer, False);
-               if Data.Alternate_Current = This.Length then
-                  Pop (State.ASS);
-                  goto Failure;
-               else
-                  Data.Alternate_Current := Data.Alternate_Current + 1;
-                  Push (State.MSS, Data);
-                  Pop  (State.ASS);
-                  Current :=
-                     Pattern_Ref
-                     (  Ptr (This.Items (Data.Alternate_Current))
-                     );
-                  goto Process;
-               end if;
-            end;
-         when Anything_Statement =>
-            declare
-               use Strings_Edit.UTF8;
-               Data      : constant Anything_Data := Top (State.ASS);
-               Line      : Line_Ptr_Type;
-               Pointer   : aliased Integer;
-               Last      : Integer;
-               Character : UTF8_Code_Point;
-            begin
-               Pop (State.ASS);
-               Get_Line (Source.all, Line, Pointer, Last);
-               if Pointer > Last then
-                  Set_Pointer
-                  (  Source.all,
-                     Data.Anything_Pointer,
-                     False
-                  );
-                  goto Failure;
-               else
-                  Get (Line (Pointer..Last), Pointer, Character);
-                  Set_Pointer (Source.all, Pointer, False);
-                  Push (State.MSS, Data);
-                  goto Success;
-               end if;
-            exception
-               when Ada.Text_IO.Data_Error =>
-                  return
-                  (  Aborted,
-                     Encoding_Error'Length,
-                     Link (Source.all),
-                     Encoding_Error
-                  );
-            end;
-         when Eager_Statement =>
-            if Top (State.MSS) = Stub_Statement then -- Our stub
-               declare
-                  Data : Eager_Data renames
-                            State.ASS.Stack (State.ASS.Count);
-                  Stub : Stub_Data renames
-                            State.MSS.Stack (State.MSS.Count);
-               begin
-                  Set_Pointer (Source.all, Stub.Stub_Pointer, False);
-                  if Stub.Stub_Data = 1 then
-                     Stub.Stub_Data := 0;
-                     Push (State.MSS, Data);
-                     Pop (State.ASS);
-                     goto Success;
-                  elsif Data.Eager_Count > 0 then
-                     Data.Eager_Count := Data.Eager_Count - 1;
-                     State.MSS.Stack (State.MSS.Count) := Data;
-                     Pop (State.ASS);
-                     goto Success;
-                  else
-                     Pop (State.MSS);
-                     Pop (State.ASS);
-                     goto Failure;
-                  end if;
-               end;
-            end if;
-            Push (State.ASS, Top (State.MSS));
-            Pop  (State.MSS);
-            goto Failure;
          when Active_Hook_Statement =>
             declare
                Data : Active_Hook_Data renames
@@ -1010,6 +1131,93 @@ package body Parsers.Generic_Source.Patterns is
                   Pop  (State.MSS);
                   goto Failure;
                end if;
+            end;
+         when Alternate_Statement =>
+            declare
+               Data : Alternate_Data renames
+                         State.ASS.Stack (State.ASS.Count);
+               This : Alternate_Pattern renames
+                         Data.Alternate_Statement.all;
+            begin
+               Set_Pointer (Source.all, Data.Alternate_Pointer, False);
+               if Data.Alternate_Current = This.Length then
+                  Pop (State.ASS);
+                  goto Failure;
+               else
+                  Data.Alternate_Current := Data.Alternate_Current + 1;
+                  Current :=
+                     Pattern_Ref
+                     (  Ptr (This.Items (Data.Alternate_Current))
+                     );
+                  goto Process;
+               end if;
+            end;
+         when Anything_Statement =>
+            declare
+               use Strings_Edit.UTF8;
+               Data      : constant Anything_Data := Top (State.ASS);
+               Line      : Line_Ptr_Type;
+               Pointer   : aliased Integer;
+               Last      : Integer;
+               Character : UTF8_Code_Point;
+            begin
+               Pop (State.ASS);
+               Get_Line (Source.all, Line, Pointer, Last);
+               if Pointer > Last then
+                  Set_Pointer
+                  (  Source.all,
+                     Data.Anything_Pointer,
+                     False
+                  );
+                  goto Failure;
+               else
+                  Get (Line (Pointer..Last), Pointer, Character);
+                  Set_Pointer (Source.all, Pointer, False);
+                  Push (State.MSS, Data);
+                  goto Success;
+               end if;
+            exception
+               when Ada.Text_IO.Data_Error =>
+                  return
+                  (  Aborted,
+                     Encoding_Error'Length,
+                     Link (Source.all),
+                     Encoding_Error
+                  );
+            end;
+         when Eager_Statement =>
+            declare
+               Data : Eager_Data renames
+                      State.ASS.Stack (State.ASS.Count);
+            begin
+               if Is_Stub (State.MSS, Data.Eager_ID) then -- Our stub
+                  declare
+                     Data : Eager_Data renames
+                               State.ASS.Stack (State.ASS.Count);
+                     Stub : Stub_Data renames
+                               State.MSS.Stack (State.MSS.Count);
+                  begin
+                     Set_Pointer (Source.all, Stub.Stub_Pointer, False);
+                     if Stub.Stub_Data = 1 then
+                        Stub.Stub_Data := 0;
+                        Push (State.MSS, Data);
+                        Pop (State.ASS);
+                        goto Success;
+                     elsif Data.Eager_Count > 0 then
+                        Data.Eager_Count := Data.Eager_Count - 1;
+                        State.MSS.Stack (State.MSS.Count) := Data;
+                        Pop (State.ASS);
+                        goto Success;
+                     else
+                        Pop (State.MSS);
+                        Pop (State.ASS);
+                        goto Failure;
+                     end if;
+                  end;
+               end if;
+               Push (State.ASS, Top (State.MSS));
+               Pop  (State.MSS);
+               goto Failure;
             end;
          when Fence_Statement =>
             declare
@@ -1097,25 +1305,44 @@ package body Parsers.Generic_Source.Patterns is
                   Pattern_Ref (Ptr (Data.Lazy_Statement.Pattern));
                goto Process;
             end;
-         when Repeater_Statement =>
-            while Top (State.MSS) = Stub_Statement loop
-               Set_Pointer
-               (  Source.all,
-                  Top (State.MSS).Stub_Pointer,
-                  False
-               );
+         when Proceed_Statement =>
+            declare
+               Data : constant Proceed_Data :=
+                               State.ASS.Stack (State.ASS.Count);
+               NL   : Statement_Data := (Kind_Of => No_Statement);
+            begin
+               Pop (State.MSS, Data.Proceed_ID, NL);
                Pop (State.MSS);
-               declare
-                  Data : Repeater_Data renames
-                            State.ASS.Stack (State.ASS.Count);
-               begin
-                  if Data.Repeater_Count = 1 then
-                     Pop (State.ASS);
-                     goto Failure;
-                  end if;
-                  Data.Repeater_Count := Data.Repeater_Count - 1;
-               end;
-            end loop;
+               Pop (State.ASS);
+               if NL.Kind_Of /= No_Statement then
+                  Push (State.MSS, NL);
+               end if;
+               goto Success;
+            end;
+         when Repeater_Statement =>
+            declare
+               Data : Repeater_Data renames
+                         State.ASS.Stack (State.ASS.Count);
+            begin
+               while Is_Stub (State.MSS, Data.Repeater_ID) loop
+                  declare
+                     Stub : constant Stub_Data := Top (State.MSS);
+                  begin
+                     Set_Pointer
+                     (  Source.all,
+                        Top (State.MSS).Stub_Pointer,
+                        False
+                     );
+                     Pop (State.MSS);
+                     Data.Repeater_Count :=
+                        Data.Repeater_Count - Stub.Stub_Data;
+                     if Data.Repeater_Count = 0 then
+                        Pop (State.ASS);
+                        goto Failure;
+                     end if;
+                  end;
+               end loop;
+            end;
             Push (State.ASS, Top (State.MSS));
             Pop  (State.MSS);
             goto Failure;
@@ -1125,24 +1352,25 @@ package body Parsers.Generic_Source.Patterns is
                "Unexpected return statement failure"
             );
          when Sequence_Statement =>
-            while Top (State.MSS) = Stub_Statement loop
-               Set_Pointer
-               (  Source.all,
-                  Top (State.MSS).Stub_Pointer,
-                  False
-               );
-               Pop (State.MSS);
-               declare
-                  Data : Sequence_Data renames
-                            State.ASS.Stack (State.ASS.Count);
-               begin
-                  if Data.Sequence_Current = 1 then
-                     Pop (State.ASS);
-                     goto Failure;
-                  end if;
-                  Data.Sequence_Current := Data.Sequence_Current - 1;
-               end;
-            end loop;
+            declare
+               Data : Sequence_Data renames
+                         State.ASS.Stack (State.ASS.Count);
+            begin
+               while Is_Stub (State.MSS, Data.Sequence_ID) loop
+                  declare
+                     Stub : constant Stub_Data := Top (State.MSS);
+                  begin
+                     Set_Pointer (Source.all, Stub.Stub_Pointer, False);
+                     Pop (State.MSS);
+                     Data.Sequence_Current :=
+                        Data.Sequence_Current - Stub.Stub_Data;
+                     if Data.Sequence_Current = 0 then
+                        Pop (State.ASS);
+                        goto Failure;
+                     end if;
+                  end;
+               end loop;
+            end;
             Push (State.ASS, Top (State.MSS));
             Pop (State.MSS);
             goto Failure;
@@ -1724,6 +1952,12 @@ package body Parsers.Generic_Source.Patterns is
       return Not_Statement;
    end Get_Type;
 
+   function Get_Type (Repeater : Proceed_Pattern)
+      return Statement_Type is
+   begin
+      return Proceed_Statement;
+   end Get_Type;
+
    function Get_Type (Repeater : Repeater_Pattern)
       return Statement_Type is
    begin
@@ -1940,6 +2174,12 @@ package body Parsers.Generic_Source.Patterns is
          when Trace_Mode =>
             return "Trace";
       end case;
+   end Image;
+
+   function Image (Repeater : Proceed_Pattern) return String is
+      Object_Ptr : constant Pattern_Ptr := Ptr (Repeater.Pattern);
+   begin
+      return "Proceed (" & Image (Object_Ptr.all) & ')';
    end Image;
 
    function Image (Repeater : Repeater_Pattern) return String is
@@ -2739,6 +2979,29 @@ package body Parsers.Generic_Source.Patterns is
       end case;
    end On_Success;
 
+   function Proceed (Pattern : Pattern_Type) return Pattern_Type is
+   begin
+      if Voidable (Pattern) then
+         Raise_Exception
+         (  Constraint_Error'Identity,
+            Voidable_Error
+         );
+      end if;
+      declare
+         Result_Ptr : constant Pattern_Ptr := new Proceed_Pattern;
+         This       : Proceed_Pattern renames
+                         Proceed_Pattern (Result_Ptr.all);
+      begin
+         This.Pattern := Pattern;
+         return Ref (Result_Ptr);
+      end;
+   end Proceed;
+
+   function Proceed (Pattern : String) return Pattern_Type is
+   begin
+      return Proceed (Text (Pattern));
+   end Proceed;
+
    function Print
             (  File    : Ada.Text_IO.File_Access;
                Pattern : Pattern_Type;
@@ -2954,6 +3217,14 @@ package body Parsers.Generic_Source.Patterns is
             )  return Boolean is
    begin
       return False;
+   end Resolve;
+
+   function Resolve
+            (  Pattern   : access Proceed_Pattern;
+               Reference : Pattern_Ref
+            )  return Boolean is
+   begin
+      return Resolve (Ptr (Pattern.Pattern), Reference);
    end Resolve;
 
    function Resolve
@@ -3317,6 +3588,14 @@ package body Parsers.Generic_Source.Patterns is
       Object_Ptr : constant Pattern_Ptr := Ptr (Pattern);
    begin
       return Object_Ptr = null or else Voidable (Object_Ptr.all, False);
+   end Voidable;
+
+   function Voidable
+            (  Repeater  : Proceed_Pattern;
+               Recursive : Boolean
+            )  return Boolean is
+   begin
+      return True;
    end Voidable;
 
    function Voidable

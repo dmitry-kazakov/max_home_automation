@@ -3,7 +3,7 @@
 --     Strings_Edit.                               Luebeck            --
 --        Unbounded_Unsigned_Edit                  Winter, 2024       --
 --  Interface                                                         --
---                                Last revision :  17:48 17 Jun 2025  --
+--                                Last revision :  21:44 03 Feb 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -202,7 +202,7 @@ package body Strings_Edit.Unbounded_Unsigned_Edit is
          Count  : Natural;
       begin
  Outer : loop
-            if Base = 2 then
+            if Base = 2 or else Half_Word_Next (Base) = 0 then
                Figure := Get_Digit (Accum, Get_Length (Accum));
                Shift_Right (Accum, 1);
             else

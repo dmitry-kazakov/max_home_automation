@@ -3,7 +3,7 @@
 --  Test                                           Luebeck            --
 --                                                 Summer, 2025       --
 --                                                                    --
---                                Last revision :  21:31 04 Jan 2026  --
+--                                Last revision :  11:49 15 Feb 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -195,6 +195,61 @@ begin
          end;
       end;
    end;
+   Put_Line ("Sequence test 3");
+   declare
+      use Parsers.String_Patterns;
+      use Parsers.String_Source;
+      Line    : aliased String := "abcdef";
+      Code    : aliased Source (Line'Access);
+      State   : aliased Match_State (Stack_Size);
+      Pattern : constant Pattern_Type := Text ("a") & "b" & "c";
+   begin
+      Set_Tracing (State, Tracing);
+      declare
+         Result : constant Result_Type :=
+                  Match (Pattern, Code'Access, State'Access);
+      begin
+         if Result.Outcome /= Successful then
+            Raise_Exception
+            (  Data_Error'Identity,
+              "Sequence test 3 ""abc"" not matched"
+            );
+         elsif Get_Pointer (Code) /= 4 then
+            Raise_Exception
+            (  Data_Error'Identity,
+              "Sequence test 3 ""abcf"" not matched"
+            );
+         end if;
+      end;
+   end;
+   Put_Line ("Sequence test 4");
+   declare
+      use Parsers.String_Patterns;
+      use Parsers.String_Source;
+      Line    : aliased String := "abcdef";
+      Code    : aliased Source (Line'Access);
+      State   : aliased Match_State (Stack_Size);
+      Pattern : constant Pattern_Type :=
+                         Text ("a") & "b" & "c" & "x" or "abc";
+   begin
+      Set_Tracing (State, Tracing);
+      declare
+         Result : constant Result_Type :=
+                  Match (Pattern, Code'Access, State'Access);
+      begin
+         if Result.Outcome /= Successful then
+            Raise_Exception
+            (  Data_Error'Identity,
+              "Sequence test 4 ""abc"" not matched"
+            );
+         elsif Get_Pointer (Code) /= 4 then
+            Raise_Exception
+            (  Data_Error'Identity,
+              "Sequence test 4 ""abcf"" not matched"
+            );
+         end if;
+      end;
+   end;
    Put_Line ("Any_Of test");
    declare
       use Parsers.String_Patterns;
@@ -339,7 +394,7 @@ begin
          end;
       end;
    end;
-   Put_Line ("Repeater test");
+   Put_Line ("Repeater test 1");
    declare
       use Parsers.String_Patterns;
       use Parsers.String_Source;
@@ -358,14 +413,112 @@ begin
             if Result.Outcome /= Successful then
                Raise_Exception
                (  Data_Error'Identity,
-                  "Repeater test ""ababababab"" not matched"
+                  "Repeater test 1 ""ababababab"" not matched"
                );
             elsif Get_Pointer (Code) /= 11 then
                Raise_Exception
                (  Data_Error'Identity,
-                  (  "Repeater test ""ababababab"" Pointer"
+                  (  "Repeater test 1 ""ababababab"" Pointer"
                   &  Integer'Image (Get_Pointer (Code))
                   &  " /= 11 (expected)"
+               )  );
+            end if;
+         end;
+      end;
+   end;
+   Put_Line ("Repeater test 2");
+   declare
+      use Parsers.String_Patterns;
+      use Parsers.String_Source;
+      State : aliased Match_State (Stack_Size);
+   begin
+      Set_Tracing (State, Tracing);
+      declare
+         Pattern : constant Pattern_Type := ("a" or "b") * 5;
+         Line    : aliased String := "abbab";
+         Code    : aliased Source (Line'Access);
+      begin
+         declare
+            Result : constant Result_Type :=
+                     Match (Pattern, Code'Access, State'Access);
+         begin
+            if Result.Outcome /= Successful then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Repeater test 2 ""abbab"" not matched"
+               );
+            elsif Get_Pointer (Code) /= 6 then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  (  "Repeater test 2 ""abbab"" Pointer"
+                  &  Integer'Image (Get_Pointer (Code))
+                  &  " /= 6 (expected)"
+               )  );
+            end if;
+         end;
+      end;
+   end;
+   Put_Line ("Repeater test 3");
+   declare
+      use Parsers.String_Patterns;
+      use Parsers.String_Source;
+      State : aliased Match_State (Stack_Size);
+   begin
+      Set_Tracing (State, Tracing);
+      declare
+         Pattern : constant Pattern_Type :=
+                     (("a" or "b") & Fence) * 3 & "c";
+         Line    : aliased String := "abbc";
+         Code    : aliased Source (Line'Access);
+      begin
+         declare
+            Result : constant Result_Type :=
+                     Match (Pattern, Code'Access, State'Access);
+         begin
+            if Result.Outcome /= Successful then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Repeater test 3 ""abbc"" not matched"
+               );
+            elsif Get_Pointer (Code) /= 5 then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  (  "Repeater test 3 ""abbc"" Pointer"
+                  &  Integer'Image (Get_Pointer (Code))
+                  &  " /= 5 (expected)"
+               )  );
+            end if;
+         end;
+      end;
+   end;
+   Put_Line ("Repeater test 4");
+   declare
+      use Parsers.String_Patterns;
+      use Parsers.String_Source;
+      State : aliased Match_State (Stack_Size);
+   begin
+      Set_Tracing (State, Tracing);
+      declare
+         Pattern : constant Pattern_Type :=
+                     (("a" or "b") & Fence) * 5 & "c";
+         Line    : aliased String := "abbc";
+         Code    : aliased Source (Line'Access);
+      begin
+         declare
+            Result : constant Result_Type :=
+                     Match (Pattern, Code'Access, State'Access);
+         begin
+            if Result.Outcome = Successful then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Repeater test 4 ""abbc"" matched"
+               );
+            elsif Get_Pointer (Code) /= 1 then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  (  "Repeater test 4 ""abbc"" Pointer"
+                  &  Integer'Image (Get_Pointer (Code))
+                  &  " /= 1 (expected)"
                )  );
             end if;
          end;
@@ -444,7 +597,7 @@ begin
    begin
       Set_Tracing (State, Tracing);
       declare
-         Pattern : constant Pattern_Type := +Any or Text ("c");
+         Pattern : constant Pattern_Type := +Any & Text ("c");
       begin
          declare
             Line   : aliased String := "ac";
@@ -463,6 +616,104 @@ begin
                   (  "Eager test 3 ""ac"" Pointer"
                   &  Integer'Image (Get_Pointer (Code))
                   &  " /= 3 (expected)"
+               )  );
+            end if;
+         end;
+      end;
+   end;
+   Put_Line ("Eager repeater test 4");
+   declare
+      use Parsers.String_Patterns;
+      use Parsers.String_Source;
+      State : aliased Match_State (Stack_Size);
+   begin
+      Set_Tracing (State, Tracing);
+      declare
+         Pattern : constant Pattern_Type := +"a" & "c";
+      begin
+         declare
+            Line   : aliased String := "aaac";
+            Code   : aliased Source (Line'Access);
+            Result : constant Result_Type :=
+                     Match (Pattern, Code'Access, State'Access);
+         begin
+            if Result.Outcome /= Successful then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Eager repeater test 4 ""aaac"" not matched"
+               );
+            elsif Get_Pointer (Code) /= 5 then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  (  "Eager test 4 ""aaac"" Pointer"
+                  &  Integer'Image (Get_Pointer (Code))
+                  &  " /= 5 (expected)"
+               )  );
+            end if;
+         end;
+      end;
+   end;
+   Put_Line ("Eager repeater test 5");
+   declare
+      use Parsers.String_Patterns;
+      use Parsers.String_Source;
+      State : aliased Match_State (Stack_Size);
+   begin
+      Set_Tracing (State, Tracing);
+      declare
+         Pattern : constant Pattern_Type :=
+                      +(("a" or "b") & Fence) & "c";
+      begin
+         declare
+            Line   : aliased String := "abac";
+            Code   : aliased Source (Line'Access);
+            Result : constant Result_Type :=
+                     Match (Pattern, Code'Access, State'Access);
+         begin
+            if Result.Outcome /= Successful then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Eager repeater test 5 ""abac"" not matched"
+               );
+            elsif Get_Pointer (Code) /= 5 then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  (  "Eager test 4 ""abac"" Pointer"
+                  &  Integer'Image (Get_Pointer (Code))
+                  &  " /= 5 (expected)"
+               )  );
+            end if;
+         end;
+      end;
+   end;
+   Put_Line ("Eager repeater test 6");
+   declare
+      use Parsers.String_Patterns;
+      use Parsers.String_Source;
+      State : aliased Match_State (Stack_Size);
+   begin
+      Set_Tracing (State, Tracing);
+      declare
+         Pattern : constant Pattern_Type :=
+                      +(("a" or "b") & Fence) & "c";
+      begin
+         declare
+            Line   : aliased String := "abad";
+            Code   : aliased Source (Line'Access);
+            Result : constant Result_Type :=
+                     Match (Pattern, Code'Access, State'Access);
+         begin
+            if Result.Outcome = Successful then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Eager repeater test 5 ""abad"" matched"
+               );
+            elsif Get_Pointer (Code) /= 1 then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  (  "Eager test 5 ""abad"" Pointer"
+                  &  Integer'Image (Get_Pointer (Code))
+                  &  " /= 1 (expected)"
                )  );
             end if;
          end;
@@ -612,7 +863,6 @@ begin
          end;
       end;
    end;
-
    Put_Line ("Letter test");
    declare
       use Parsers.String_Patterns;
@@ -1151,7 +1401,7 @@ begin
       Set_Tracing (State, Tracing);
       declare
          Pattern : constant Pattern_Type :=
-                      Text ("a") & (-Any) & Fence & Text ("b");
+                      Text ("a") & Fence & (-Any) & Text ("b");
       begin
          declare
             Line   : aliased String := "aaab";
@@ -1184,7 +1434,7 @@ begin
       Set_Tracing (State, Tracing);
       declare
          Pattern : constant Pattern_Type :=
-                      Text ("a") & (-Any) & Fence & Text ("b");
+                      Text ("a") & Fence & (-Any) & Text ("b");
       begin
          declare
             Line   : aliased String := "aaac";
@@ -1203,6 +1453,235 @@ begin
                   (  "Fence test 2 ""aaac"" Pointer"
                   &  Integer'Image (Get_Pointer (Code))
                   &  " /= 1 (expected)"
+               )  );
+            end if;
+         end;
+      end;
+   end;
+   Put_Line ("Fence test 3");
+   declare
+      use Parsers.String_Patterns;
+      use Parsers.String_Source;
+      State : aliased Match_State (Stack_Size);
+   begin
+      Set_Tracing (State, Tracing);
+      declare
+         Pattern : constant Pattern_Type :=
+            (-Any) & Text ("a") & Fence & (-Any) & Text ("b");
+      begin
+         declare
+            Line   : aliased String := "aaaca";
+            Code   : aliased Source (Line'Access);
+            Result : constant Result_Type :=
+                     Match (Pattern, Code'Access, State'Access);
+         begin
+            if Result.Outcome = Successful then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Fence test 3 ""aaaca"" matched"
+               );
+            elsif Get_Pointer (Code) /= 1 then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  (  "Fence test 3 ""aaaca"" Pointer"
+                  &  Integer'Image (Get_Pointer (Code))
+                  &  " /= 1 (expected)"
+               )  );
+            end if;
+         end;
+      end;
+   end;
+   Put_Line ("Fence test 4");
+   declare
+      use Parsers.String_Patterns;
+      use Parsers.String_Source;
+      State : aliased Match_State (Stack_Size);
+   begin
+      Set_Tracing (State, Tracing);
+      declare
+         Pattern : constant Pattern_Type :=
+                      ("a" or "b") & ("c" or "d") & Fence & "e";
+      begin
+         declare
+            Line   : aliased String := "ade";
+            Code   : aliased Source (Line'Access);
+            Result : constant Result_Type :=
+                     Match (Pattern, Code'Access, State'Access);
+         begin
+            if Result.Outcome /= Successful then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Fence test 4 ""ade"" not matched"
+               );
+            elsif Get_Pointer (Code) /= 4 then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  (  "Fence test 4 ""ade"" Pointer"
+                  &  Integer'Image (Get_Pointer (Code))
+                  &  " /= 4 (expected)"
+               )  );
+            end if;
+         end;
+      end;
+   end;
+   Put_Line ("Fence test 5");
+   declare
+      use Parsers.String_Patterns;
+      use Parsers.String_Source;
+      State : aliased Match_State (Stack_Size);
+   begin
+      Set_Tracing (State, Tracing);
+      declare
+         Pattern : constant Pattern_Type :=
+                      +("a" & Fence) & "c";
+      begin
+         declare
+            Line   : aliased String := "aaac";
+            Code   : aliased Source (Line'Access);
+            Result : constant Result_Type :=
+                     Match (Pattern, Code'Access, State'Access);
+         begin
+            if Result.Outcome /= Successful then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Fence test 5 ""aaac"" not matched"
+               );
+            elsif Get_Pointer (Code) /= 5 then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  (  "Fence test 5 ""aaac"" Pointer"
+                  &  Integer'Image (Get_Pointer (Code))
+                  &  " /= 5 (expected)"
+               )  );
+            end if;
+         end;
+      end;
+   end;
+   Put_Line ("Fence test 6");
+   declare
+      use Parsers.String_Patterns;
+      use Parsers.String_Source;
+      State : aliased Match_State (Stack_Size);
+   begin
+      Set_Tracing (State, Tracing);
+      declare
+         Pattern : constant Pattern_Type :=
+                      +("a" & Fence) & "c" or "aaab";
+      begin
+         declare
+            Line   : aliased String := "aaab";
+            Code   : aliased Source (Line'Access);
+            Result : constant Result_Type :=
+                     Match (Pattern, Code'Access, State'Access);
+         begin
+            if Result.Outcome /= Successful then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Fence test 6 ""aaab"" not matched"
+               );
+            elsif Get_Pointer (Code) /= 5 then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  (  "Fence test 6 ""aaab"" Pointer"
+                  &  Integer'Image (Get_Pointer (Code))
+                  &  " /= 5 (expected)"
+               )  );
+            end if;
+         end;
+      end;
+   end;
+   Put_Line ("Proceed test 1");
+   declare
+      use Parsers.String_Patterns;
+      use Parsers.String_Source;
+      State : aliased Match_State (Stack_Size);
+   begin
+      Set_Tracing (State, Tracing);
+      declare
+         Pattern : constant Pattern_Type := Proceed ("a") & "b";
+      begin
+         declare
+            Line   : aliased String := "aaab";
+            Code   : aliased Source (Line'Access);
+            Result : constant Result_Type :=
+                     Match (Pattern, Code'Access, State'Access);
+         begin
+            if Result.Outcome /= Successful then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Proceed test 1 ""aaab"" not matched"
+               );
+            elsif Get_Pointer (Code) /= 5 then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  (  "Proceed test 1 ""aaab"" Pointer"
+                  &  Integer'Image (Get_Pointer (Code))
+                  &  " /= 5 (expected)"
+               )  );
+            end if;
+         end;
+      end;
+   end;
+   Put_Line ("Proceed test 2");
+   declare
+      use Parsers.String_Patterns;
+      use Parsers.String_Source;
+      State : aliased Match_State (Stack_Size);
+   begin
+      Set_Tracing (State, Tracing);
+      declare
+         Pattern : constant Pattern_Type := Proceed ("a" or "b") & "c";
+      begin
+         declare
+            Line   : aliased String := "abbc";
+            Code   : aliased Source (Line'Access);
+            Result : constant Result_Type :=
+                     Match (Pattern, Code'Access, State'Access);
+         begin
+            if Result.Outcome /= Successful then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Proceed test 2 ""abbc"" not matched"
+               );
+            elsif Get_Pointer (Code) /= 5 then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  (  "Proceed test 2 ""abbc"" Pointer"
+                  &  Integer'Image (Get_Pointer (Code))
+                  &  " /= 5 (expected)"
+               )  );
+            end if;
+         end;
+      end;
+   end;
+   Put_Line ("Proceed test 3");
+   declare
+      use Parsers.String_Patterns;
+      use Parsers.String_Source;
+      State : aliased Match_State (Stack_Size);
+   begin
+      Set_Tracing (State, Tracing);
+      declare
+         Pattern : constant Pattern_Type :=
+                      Proceed ("a" or "b") & "c" or "aaad";
+      begin
+         declare
+            Line   : aliased String := "aaad";
+            Code   : aliased Source (Line'Access);
+            Result : constant Result_Type :=
+                     Match (Pattern, Code'Access, State'Access);
+         begin
+            if Result.Outcome /= Successful then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Proceed test 3 ""aaad"" not matched"
+               );
+            elsif Get_Pointer (Code) /= 5 then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  (  "Proceed test 3 ""aaad"" Pointer"
+                  &  Integer'Image (Get_Pointer (Code))
+                  &  " /= 5 (expected)"
                )  );
             end if;
          end;
@@ -2251,12 +2730,85 @@ begin
             if Result.Outcome /= Aborted then
                Raise_Exception
                (  Data_Error'Identity,
-                  "NL test 2 ""ab"" not aborted"
+                  "NL test 3 ""ab"" not aborted"
                );
             elsif Get_Pointer (Code) /= 1 then
                Raise_Exception
                (  Data_Error'Identity,
-                  (  "NL test 2 ""ac"" Pointer"
+                  (  "NL test 3 ""ac"" Pointer"
+                  &  Integer'Image (Get_Pointer (Code))
+                  &  " /= 1 (expected)"
+               )  );
+            end if;
+            Put_Line (Result.Message & " at " & Image (Result.Where));
+         end;
+      end;
+   end;
+   Put_Line ("NL test 4");
+   declare
+      use Parsers.Multiline_Source;
+      use Parsers.Multiline_Patterns;
+      use Strings_Edit.Streams;
+      LF    : constant Character := Character'Val (10);
+      State : aliased Match_State (Stack_Size);
+      Data  : aliased String_Stream (80);
+   begin
+      Set_Tracing (State, Tracing);
+      Set (Data, "a" & LF & "a" & LF & "b");
+      declare
+         Code    : aliased Stream_IO.Source (Data'Access);
+         Pattern : constant Pattern_Type :=
+                      Proceed ("a" & End_of_Line & NL) & "b";
+      begin
+         declare
+            Result : constant Result_Type :=
+                     Match (Pattern, Code'Access, State'Access);
+         begin
+            if Result.Outcome /= Successful then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "NL test 4 ""aab"" not matched"
+               );
+            elsif Get_Pointer (Code) /= 2 then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  (  "NL test 4 ""aab"" Pointer"
+                  &  Integer'Image (Get_Pointer (Code))
+                  &  " /= 1 (expected)"
+               )  );
+            end if;
+         end;
+      end;
+   end;
+   Put_Line ("NL test 5");
+   declare
+      use Parsers.Multiline_Source;
+      use Parsers.Multiline_Patterns;
+      use Strings_Edit.Streams;
+      LF    : constant Character := Character'Val (10);
+      State : aliased Match_State (Stack_Size);
+      Data  : aliased String_Stream (80);
+   begin
+      Set_Tracing (State, Tracing);
+      Set (Data, "a" & LF & "a" & LF & "c");
+      declare
+         Code    : aliased Stream_IO.Source (Data'Access);
+         Pattern : constant Pattern_Type :=
+                      Proceed ("a" & End_of_Line & NL) & "b";
+      begin
+         declare
+            Result : constant Result_Type :=
+                     Match (Pattern, Code'Access, State'Access);
+         begin
+            if Result.Outcome /= Aborted then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "NL test 5 ""aac"" not aborted"
+               );
+            elsif Get_Pointer (Code) /= 1 then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  (  "NL test 5 ""aac"" Pointer"
                   &  Integer'Image (Get_Pointer (Code))
                   &  " /= 1 (expected)"
                )  );

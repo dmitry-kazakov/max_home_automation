@@ -3,7 +3,7 @@
 --     Test_CSV_Parser                             Luebeck            --
 --  Example                                        Winter, 2025       --
 --                                                                    --
---                                Last revision :  12:17 04 Jan 2026  --
+--                                Last revision :  21:45 03 Feb 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -100,7 +100,7 @@ procedure Test_CSV_Parser is
    package Col_3 is
       new Parsers.Multiline_Patterns.Generic_Variable (Add_3, Del_3);
    File    : aliased Ada.Text_IO.File_Type;
-   SP      : constant Pattern_TYpe := Blank_Or_Empty;
+   SP      : constant Pattern_Type := Blank_Or_Empty;
    Pattern : constant Pattern_Type :=
            + (                                             SP &
                 Col_1.Append (Field (","))    & SP & "," & SP &
@@ -124,7 +124,7 @@ begin
             New_Line;
          end loop;
       else
-         Put_Line ("Not amtched");
+         Put_Line ("Not matched");
       end if;
    end;
    Close (File);

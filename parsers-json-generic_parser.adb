@@ -3,7 +3,7 @@
 --     Parsers.JSON.Generic_Parser                 Luebeck            --
 --  Implementation                                 Autumn, 2019       --
 --                                                                    --
---                                Last revision :  18:40 23 Oct 2021  --
+--                                Last revision :  21:44 03 Feb 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --

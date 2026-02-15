@@ -3,7 +3,7 @@
 --     Parsers.Generic_Source.Patterns             Luebeck            --
 --  Interface                                      Summer, 2025       --
 --                                                                    --
---                                Last revision :  12:17 04 Jan 2026  --
+--                                Last revision :  11:49 15 Feb 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -349,7 +349,7 @@ package Parsers.Generic_Source.Patterns is
 --
    function NL_Or_EOF return Pattern_Type;
 --
--- Nonempty -- Create a pattern that matched non-empty substrings
+-- Nonempty -- Create a pattern that matches non-empty substrings
 --
 --    Pattern - The pattern to match
 --
@@ -358,6 +358,17 @@ package Parsers.Generic_Source.Patterns is
 --    A pattern that matches Pattern but only if the result is non empty
 --
    function Nonempty (Pattern : Pattern_Type) return Pattern_Type;
+--
+-- Proceeed -- A eager repeater with not returns
+--
+--    Pattern - The pattern to match
+--
+-- Returns :
+--
+--    Pattern matched as many times as possible with no retries
+--
+   function Proceed (Pattern : Pattern_Type) return Pattern_Type;
+   function Proceed (Pattern : String) return Pattern_Type;
 --
 -- Put[_Line] -- Print pattern when matched
 --
@@ -893,6 +904,7 @@ private
            Passive_Hook_Statement,
            Active_Lazy_Statement,
            Passive_Lazy_Statement,
+           Proceed_Statement,
            Return_Statement,
            Next_Line_Statement,
            Next_Line_Or_EOF_Statement,
@@ -1414,6 +1426,23 @@ private
             )  return Boolean;
 ------------------------------------------------------------------------
 --
+-- Proceed_Pattern -- Eager pattern repeater with no returns
+--
+   type Proceed_Pattern is new Pattern_Object with record
+      Pattern : Pattern_Type;
+   end record;
+   function Get_Type (Repeater : Proceed_Pattern) return Statement_Type;
+   function Image    (Repeater : Proceed_Pattern) return String;
+   function Resolve
+            (  Pattern   : access Proceed_Pattern;
+               Reference : Pattern_Ref
+            )  return Boolean;
+   function Voidable
+            (  Repeater  : Proceed_Pattern;
+               Recursive : Boolean
+            )  return Boolean;
+------------------------------------------------------------------------
+--
 -- Repeater_Pattern -- Pattern repeater
 --
    type Repeater_Pattern is new Pattern_Object with record
@@ -1582,6 +1611,10 @@ private
                 To     : Integer
              );
 ------------------------------------------------------------------------
+   type Statement_ID is mod 2 ** Integer'Size;
+   ID_High : constant := Statement_ID'Modulus / 2;
+   ID_Mask : constant := ID_High - 1;
+
    type Alternation_Ptr is access constant Alternate_Pattern;
    type Anything_Ptr    is access constant Anything_Pattern;
    type Eager_Ptr       is access constant Eager_Pattern;
@@ -1593,6 +1626,7 @@ private
    type Nil_Ptr         is access constant Nil_Pattern;
    type Nonempty_Ptr    is access constant Nonempty_Pattern;
    type Not_Ptr         is access constant Not_Pattern;
+   type Proceed_Ptr     is access constant Proceed_Pattern;
    type Repeater_Ptr    is access constant Repeater_Pattern;
    type Return_Ptr      is access constant Return_Pattern;
    type Sequence_Ptr    is access constant Sequence_Pattern;
@@ -1616,6 +1650,7 @@ private
          when Eager_Statement =>
             Eager_Statement     : Eager_Ptr;
             Eager_Count         : Natural;
+            Eager_ID            : Statement_ID;
          when Fence_Statement =>
             Fence_Statement     : Fence_Ptr;
             Fence_Pointer       : Integer;
@@ -1640,17 +1675,24 @@ private
             Not_Statement       : Not_Ptr;
             Not_Pointer         : Integer;
             Not_Stub            : Integer;
+         when Proceed_Statement =>
+            Proceed_Statement   : Proceed_Ptr;
+            Proceed_Pointer     : Integer;
+            Proceed_ID          : Statement_ID;
          when Repeater_Statement =>
             Repeater_Statement  : Repeater_Ptr;
             Repeater_Count      : Natural;
+            Repeater_ID         : Statement_ID;
          when Return_Statement =>
             Return_Statement    : Return_Ptr;
          when Sequence_Statement =>
             Sequence_Statement  : Sequence_Ptr;
             Sequence_Current    : Natural;
+            Sequence_ID         : Statement_ID;
          when Stub_Statement =>
             Stub_Pointer        : Integer;
-            Stub_Data           : Integer := 0;
+            Stub_Data           : Integer;
+            Stub_Owner          : Statement_ID;
       end case;
    end record;
    subtype Active_Hook_Data  is Statement_Data (Active_Hook_Statement);
@@ -1666,6 +1708,7 @@ private
    subtype Not_Data          is Statement_Data (Not_Statement);
    subtype Passive_Hook_Data is Statement_Data (Passive_Hook_Statement);
    subtype Passive_Lazy_Data is Statement_Data (Passive_Lazy_Statement);
+   subtype Proceed_Data      is Statement_Data (Proceed_Statement);
    subtype Repeater_Data     is Statement_Data (Repeater_Statement);
    subtype Sequence_Data     is Statement_Data (Sequence_Statement);
    subtype Stub_Data         is Statement_Data (Stub_Statement);
@@ -1678,22 +1721,31 @@ private
       Stack : Statement_Data_Array (1..Size);
    end record;
    procedure Dump (Stack : Statement_Stack; Prefix : String := "");
+   function Is_Stub (Stack : Statement_Stack; ID : Statement_ID)
+      return Boolean;
    procedure Pop (Stack : in out Statement_Stack);
+   procedure Pop
+             (  Stack : in out Statement_Stack;
+                ID    : Statement_ID;
+                Data  : in out Statement_Data
+             );
    procedure Push
              (  Stack : in out Statement_Stack;
                 Data  : Statement_Data
              );
    function Top (Stack : Statement_Stack) return Statement_Data;
    function Top (Stack : Statement_Stack) return Statement_Type;
-   pragma Inline (Pop, Push, Top);
+   pragma Inline (Is_Stub, Pop, Push, Top);
 
    type Match_State (Size : Positive) is limited record
-      Trace   : Boolean := False;
-      ASS     : Statement_Stack (Size);
-      MSS     : Statement_Stack (Size);
-      Pattern : Pattern_Type;
+      Trace    : Boolean := False;
+      Sequence : Statement_ID := 0;
+      ASS      : Statement_Stack (Size);
+      MSS      : Statement_Stack (Size);
+      Pattern  : Pattern_Type;
    end record;
 
+   Empty_Stack       : constant String := "Empty stack";
    Empty_Error       : constant String := "Empty string matched";
    Encoding_Error    : constant String := "UTF-8 encoding error";
    Multiline_Error   : constant String := "Several lines matched";

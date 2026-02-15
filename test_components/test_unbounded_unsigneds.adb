@@ -3,7 +3,7 @@
 --     Test_Unbounded_Unsigneds                    Luebeck            --
 --  Test                                           Winter, 2024       --
 --                                                                    --
---                                Last revision :  21:31 04 Jan 2026  --
+--                                Last revision :  11:49 15 Feb 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -3493,6 +3493,54 @@ begin
          To   => 24,
          Base => 16
       );
+   end;
+   declare
+      procedure Check (P : String;  E : String) is
+         X : constant Unbounded_Unsigned := Value (P);
+         Y : constant Unbounded_Unsigned := Next_Prime (X, 10);
+      begin
+         if Y /= Value (E) then
+            Raise_Exception
+            (  Data_Error'Identity,
+               (  "Next_Prime of "
+               &  P
+               &  " is "
+               &  Image (Y)
+               &  " /= "
+               &  E
+               &  " (expected)"
+            )  );
+         end if;
+      end Check;
+   begin
+      Put_Line ("Next_Prime test");
+      Check ( "0",  "2");
+      Check ( "1",  "2");
+      Check ( "2",  "3");
+      Check ( "3",  "5");
+      Check ( "4",  "5");
+      Check ( "5",  "7");
+      Check ( "6",  "7");
+      Check ( "7", "11");
+      Check ( "8", "11");
+      Check ( "9", "11");
+      Check ("10", "11");
+      Check ("11", "13");
+      Check ("12", "13");
+      Check ("13", "17");
+      Check ("14", "17");
+      Check ("15", "17");
+      Check ("16", "17");
+      Check ("82793", "82799");
+      Check ("82794", "82799");
+      Check ("82795", "82799");
+      Check ("82796", "82799");
+      Check ("82797", "82799");
+      Check ("82798", "82799");
+      Check ("1002527", "1002553");
+      Check ("1002528", "1002553");
+      Check ("1002529", "1002553");
+      Check ("1002530", "1002553");
    end;
    declare
       procedure Check

@@ -3,7 +3,7 @@
 --     Unbounded_Unsigneds.Primes                  Luebeck            --
 --  Interface                                      Winter, 2024       --
 --                                                                    --
---                                Last revision :  17:48 17 Jun 2025  --
+--                                Last revision :  21:44 03 Feb 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -224,6 +224,33 @@ package Unbounded_Unsigneds.Primes is
 --
    function Lucas_Probably_Prime (Domain : Montgomery_Domain)
       return Primality_Test_Outcome;
+--
+-- Next_Prime -- Search for the next prime
+--
+--    N            - The number
+--    Trials       - The number of trials
+--    Extended     - Bases other than 2 for Strong pseudoprime (SPRP)
+--    Trial_Primes - Trial primes to test
+--
+-- The parameter Trials  controls  the number  of trials in  the Miller-
+-- Rabin test.
+--
+-- Returns :
+--
+--    The prime next to N
+--
+   function Next_Prime
+            (  N            : Unbounded_Unsigned;
+               Trials       : Positive;
+               Extended     : Natural := 0;
+               Trial_Primes : Natural := 1_800
+            )  return Unbounded_Unsigned;
+   procedure Next_Prime
+             (  N            : in out Unbounded_Unsigned;
+                Trials       : Positive;
+                Extended     : Natural := 0;
+                Trial_Primes : Natural := 1_800
+             );
 
    SPRP_Base  : constant array (1..4) of Half_Word :=
                          (3, 1215, 34862, 574237825);
