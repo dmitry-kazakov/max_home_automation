@@ -393,3 +393,4 @@ Addition'(Binop with null record);                               -- @+12
 (for I of Vector => X);                                          -- @-23
 ((Yesterday with delta Day => 12)
                   with delta Month => April);                    -- @-24
+a.b(23).c.d := e.f;

@@ -3,7 +3,7 @@
 --     Strings_Edit.                               Luebeck            --
 --        Unbounded_Rational_Edit                  Spring, 2025       --
 --  Interface                                                         --
---                                Last revision :  21:44 03 Feb 2026  --
+--                                Last revision :  12:14 29 Mar 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -84,6 +84,30 @@ package Strings_Edit.Unbounded_Rational_Edit is
                 Base    : NumberBase := 10
              );
 --
+-- Get_Vulgar -- Get a rational number from the string
+--
+--    Source  - The string to be processed
+--    Pointer - The current position in the string
+--    Value   - The result
+--
+-- This procedure gets a rational number  from  the  string  Source.  It
+-- supports Unicode vulgar fractions symbols. The  process  starts  from
+-- Source  (Pointer).  The  parameter  Base  indicates  the  base of the
+-- expected number. The number may have exponent part.
+--
+-- Exceptions:
+--
+--    Constraint_Error - Number is too large
+--    Data_Error       - Syntax error in the number
+--    End_Error        - There is no any number
+--    Layout_Error     - Pointer not in Source'First..Source'Last + 1
+--
+   procedure Get_Vulgar
+             (  Source  : String;
+                Pointer : in out Integer;
+                Value   : out Unbounded_Rational
+             );
+--
 -- Value -- String to rational number conversion
 --
 --    Source - The string to be processed
@@ -130,6 +154,30 @@ package Strings_Edit.Unbounded_Rational_Edit is
    function Value_Recurring
             (  Source : String;
                Base   : NumberBase := 10
+            )  return Unbounded_Rational;
+--
+-- Value_Vulgar -- String to rational number conversion
+--
+--    Source - The string to be processed
+--    Base   - The base of the expected number
+--
+-- This  function  gets  a  rational  number  from the string Source. It
+-- supports  Unicode  vulgar  symbols.  The  number can be surrounded by
+-- spaces and tabs. The whole string Source should be matched. Otherwise
+-- the exception Data_Error is propagated.
+--
+-- Returns :
+--
+--    The value
+--
+-- Exceptions:
+--
+--    Constraint_Error - Number is too large
+--    Data_Error       - Syntax error in the number
+--    End_Error        - There is no any number
+--
+   function Value_Vulgar
+            (  Source : String
             )  return Unbounded_Rational;
 --
 -- Put -- Put a rational number into a string
@@ -224,6 +272,53 @@ package Strings_Edit.Unbounded_Rational_Edit is
                 Fill        : Character  := ' '
              );
 --
+-- Put_Vulgar -- Put a rational number into a string
+--
+--    Destination - The string that accepts the output
+--    Pointer     - The current position in the string
+--    Value       - The value to be put
+--    PutPlus     - The plus should placed for positive numbers
+--    Fraction    - Number of digits after the decimal point
+--    Field       - The output field
+--    Justify     - Alignment within the field
+--    Fill        - The fill character
+--
+-- This procedure places the number specified  by  the  parameter  Value
+-- into  the  output  string Destination. The string is written starting
+-- from  Destination  (Pointer). The parameter Base indicates the number
+-- base  used  for  the  output. PutPlus indicates whether the plus sign
+-- should be placed if the number is positive.  Unicode  vulgar  symbols
+-- are used when possible. The parameter Fraction specifies  the  length
+-- of the fractional part if vulgar fraction cannot be used. If Fraction
+-- is  zero,  no  decimal  point is used. Otherwise, it is the number of
+-- digits after the point. The output value is rounded. Zero  is  alwyas
+-- output as "0".
+--
+-- The parameter  Field  defines  the output  size.  If it has the value
+-- zero, then the output field is equal to the output length.
+--
+-- When the parameter Field is not zero then Justify specifies alignment
+-- and Fill is the character used for filling.  When  Field  is  greater
+-- than Destination'Last - Pointer + 1,  the  latter  is  used  instead.
+-- After  successful  completion  Pointer  is  advanced  to  the   first
+-- character following the output or to Destination'Last + 1.
+--
+-- Exceptions:
+--
+--    Layout_Error -- Pointer is not in Destination'Range or there is no
+--                    room for the output.
+--
+   procedure Put_Vulgar
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Value       : Unbounded_Rational;
+                PutPlus     : Boolean   := False;
+                Fraction    : Natural   := 6;
+                Field       : Natural   := 0;
+                Justify     : Alignment := Left;
+                Fill        : Character := ' '
+             );
+--
 -- Image -- Rational number to string conversion
 --
 --    Value    - The value to be converted
@@ -268,6 +363,29 @@ package Strings_Edit.Unbounded_Rational_Edit is
             (  Value   : Unbounded_Rational;
                Base    : NumberBase := 10;
                PutPlus : Boolean    := False
+            )  return String;
+--
+-- Image_Vulgar -- Rational number to string conversion
+--
+--    Value    - The value to be converted
+--    Base     - The base used for the output
+--    PutPlus  - The plus should placed for positive numbers
+--    Fraction - Number of digits after the decimal point
+--
+-- This  procedure converts the parameter Value to String. The parameter
+-- Base indicates the number base used for the output. The exponent part
+-- (if used) is always decimal. PutPlus indicates whether the plus  sign
+-- should be placed if the number is positive. For precision  parameters
+-- see Put.
+--
+-- Returns :
+--
+--    The result string
+--
+   function Image_Vulgar
+            (  Value    : Unbounded_Rational;
+               PutPlus  : Boolean := False;
+               Fraction : Natural := 6
             )  return String;
 
 end Strings_Edit.Unbounded_Rational_Edit;

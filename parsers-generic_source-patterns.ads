@@ -3,7 +3,7 @@
 --     Parsers.Generic_Source.Patterns             Luebeck            --
 --  Interface                                      Summer, 2025       --
 --                                                                    --
---                                Last revision :  11:49 15 Feb 2026  --
+--                                Last revision :  12:14 29 Mar 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -28,6 +28,7 @@
 with Strings_Edit.UTF8.Maps;  use Strings_Edit.UTF8.Maps;
 
 with Ada.Text_IO;
+with Discrete_Integer_Set;
 with Object.Handle;
 
 generic
@@ -318,6 +319,48 @@ package Parsers.Generic_Source.Patterns is
    function Natural_Number (Base : Strings_Edit.NumberBase := 10)
       return Pattern_Type;
 --
+-- Natural_Number_Range -- A pattern that matches a natural number
+--
+--    Low  - The lower bound
+--    High - The upper bound
+--    Base - The number base 2..16
+--
+-- If Low <= High the pattern matches number in the range Low..High.
+--
+-- Returns :
+--
+--    A pattern that matches a natural number in the specified base
+--
+-- Exceptions :
+--
+--    Constraint_Error - Low > High
+--
+   function Natural_Number_Range
+            (  Low  : Natural;
+               High : Natural;
+               Base : Strings_Edit.NumberBase := 10
+            )  return Pattern_Type;
+--
+-- Natural_Number_Set -- A pattern that matches a natural number
+--
+--    Set  - The number set
+--    Base - The number base 2..16
+--
+-- The pattern matches a number from the set.
+--
+-- Returns :
+--
+--    A pattern that matches a natural number in the specified base
+--
+-- Exceptions :
+--
+--    Constraint_Error - Low > High
+--
+   function Natural_Number_Set
+            (  Set  : Discrete_Integer_Set.Set;
+               Base : Strings_Edit.NumberBase := 10
+            )  return Pattern_Type;
+--
 -- Nil -- A pattern that always fails
 --
 -- Returns :
@@ -362,13 +405,20 @@ package Parsers.Generic_Source.Patterns is
 -- Proceeed -- A eager repeater with not returns
 --
 --    Pattern - The pattern to match
+--    Maximum - The maximal number of matches
 --
 -- Returns :
 --
 --    Pattern matched as many times as possible with no retries
 --
-   function Proceed (Pattern : Pattern_Type) return Pattern_Type;
-   function Proceed (Pattern : String) return Pattern_Type;
+   function Proceed
+            (  Pattern : Pattern_Type;
+               Maximum : Positive := Positive'Last
+            )  return Pattern_Type;
+   function Proceed
+            (  Pattern : String;
+               Maximum : Positive := Positive'Last
+            )  return Pattern_Type;
 --
 -- Put[_Line] -- Print pattern when matched
 --
@@ -852,6 +902,13 @@ package Parsers.Generic_Source.Patterns is
           (  Abstract_User_Variable,
              User_Variable_Ptr
           );
+--
+-- or null -- Equivalent to or Emptry
+--
+   function "or" (Left : String; Right : User_Variable_Ptr)
+      return Pattern_Type;
+   function "or" (Left : Pattern_Type; Right : User_Variable_Ptr)
+      return Pattern_Type;
 --
 -- <= -- Create an assignment pattern
 --
@@ -1358,6 +1415,49 @@ private
             )  return Boolean;
 ------------------------------------------------------------------------
 --
+-- Natural_Number_Ranged_Pattern -- Pattern matching a natural number
+--
+   type Natural_Number_Ranged_Pattern
+        (  Base : Strings_Edit.NumberBase;
+           Low  : Natural;
+           High : Natural
+        )  is new Pattern_Object with null record;
+   function Image
+            (  Pattern : Natural_Number_Ranged_Pattern
+            )  return String;
+   function Match
+            (  Pattern : Natural_Number_Ranged_Pattern;
+               Source  : access Source_Type;
+               State   : access Match_State
+            )  return Result_Type;
+   function Voidable
+            (  Pattern   : Natural_Number_Ranged_Pattern;
+               Recursive : Boolean
+            )  return Boolean;
+------------------------------------------------------------------------
+--
+-- Natural_Number_Set_Pattern -- Pattern matching a natural number
+--
+   type Natural_Number_Set_Pattern
+        (  Base : Strings_Edit.NumberBase
+        )  is new Pattern_Object with
+   record
+      Set : Discrete_Integer_Set.Set;
+   end record;
+   function Image
+            (  Pattern : Natural_Number_Set_Pattern
+            )  return String;
+   function Match
+            (  Pattern : Natural_Number_Set_Pattern;
+               Source  : access Source_Type;
+               State   : access Match_State
+            )  return Result_Type;
+   function Voidable
+            (  Pattern   : Natural_Number_Set_Pattern;
+               Recursive : Boolean
+            )  return Boolean;
+------------------------------------------------------------------------
+--
 -- Next_Line_Pattern -- Pattern matching end of line and skipping it
 --
    type Next_Line_Pattern is new Pattern_Object with null record;
@@ -1429,6 +1529,7 @@ private
 -- Proceed_Pattern -- Eager pattern repeater with no returns
 --
    type Proceed_Pattern is new Pattern_Object with record
+      Maximum : Positive;
       Pattern : Pattern_Type;
    end record;
    function Get_Type (Repeater : Proceed_Pattern) return Statement_Type;
@@ -1677,7 +1778,7 @@ private
             Not_Stub            : Integer;
          when Proceed_Statement =>
             Proceed_Statement   : Proceed_Ptr;
-            Proceed_Pointer     : Integer;
+            Proceed_Count       : Natural;
             Proceed_ID          : Statement_ID;
          when Repeater_Statement =>
             Repeater_Statement  : Repeater_Ptr;

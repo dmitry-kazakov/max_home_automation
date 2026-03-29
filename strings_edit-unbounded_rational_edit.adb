@@ -3,7 +3,7 @@
 --     Strings_Edit.                               Luebeck            --
 --        Unbounded_Rational_Edit                  Spring, 2025       --
 --  Interface                                                         --
---                                Last revision :  21:44 03 Feb 2026  --
+--                                Last revision :  12:14 29 Mar 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -36,6 +36,58 @@ use  Strings_Edit.Unbounded_Unsigned_Edit;
 
 package body Strings_Edit.Unbounded_Rational_Edit is
 
+   F_1_4  : constant String := Character'Val (16#C2#) &
+                               Character'Val (16#BC#);
+   F_1_2  : constant String := Character'Val (16#C2#) &
+                               Character'Val (16#BD#);
+   F_3_4  : constant String := Character'Val (16#C2#) &
+                               Character'Val (16#BE#);
+   F_1_7  : constant String := Character'Val (16#E2#) &
+                               Character'Val (16#85#) &
+                               Character'Val (16#90#);
+   F_1_9  : constant String := Character'Val (16#E2#) &
+                               Character'Val (16#85#) &
+                               Character'Val (16#91#);
+   F_1_10 : constant String := Character'Val (16#E2#) &
+                               Character'Val (16#85#) &
+                               Character'Val (16#92#);
+   F_1_3  : constant String := Character'Val (16#E2#) &
+                               Character'Val (16#85#) &
+                               Character'Val (16#93#);
+   F_2_3  : constant String := Character'Val (16#E2#) &
+                               Character'Val (16#85#) &
+                               Character'Val (16#94#);
+   F_1_5  : constant String := Character'Val (16#E2#) &
+                               Character'Val (16#85#) &
+                               Character'Val (16#95#);
+   F_2_5  : constant String := Character'Val (16#E2#) &
+                               Character'Val (16#85#) &
+                               Character'Val (16#96#);
+   F_3_5  : constant String := Character'Val (16#E2#) &
+                               Character'Val (16#85#) &
+                               Character'Val (16#97#);
+   F_4_5  : constant String := Character'Val (16#E2#) &
+                               Character'Val (16#85#) &
+                               Character'Val (16#98#);
+   F_1_6  : constant String := Character'Val (16#E2#) &
+                               Character'Val (16#85#) &
+                               Character'Val (16#99#);
+   F_5_6  : constant String := Character'Val (16#E2#) &
+                               Character'Val (16#85#) &
+                               Character'Val (16#9A#);
+   F_1_8  : constant String := Character'Val (16#E2#) &
+                               Character'Val (16#85#) &
+                               Character'Val (16#9B#);
+   F_3_8  : constant String := Character'Val (16#E2#) &
+                               Character'Val (16#85#) &
+                               Character'Val (16#9C#);
+   F_5_8  : constant String := Character'Val (16#E2#) &
+                               Character'Val (16#85#) &
+                               Character'Val (16#9D#);
+   F_7_8  : constant String := Character'Val (16#E2#) &
+                               Character'Val (16#85#) &
+                               Character'Val (16#9E#);
+
    procedure Get_Exponent
              (  Source   : in String;
                 Pointer  : in out Integer;
@@ -63,12 +115,65 @@ package body Strings_Edit.Unbounded_Rational_Edit is
          Value := 0;
    end Get_Exponent;
 
+   procedure Get_Vulgar_Fraction
+             (  Source   : in String;
+                Pointer  : in out Integer;
+                Value    : out Unbounded_Rational;
+                Got_It   : out Boolean
+             )  is
+      function "/" (Left, Right : Half_Word)
+         return Unbounded_Rational is
+      begin
+         return Compose (From_Half_Word (Left), From_Half_Word (Right));
+      end "/";
+   begin
+      Got_It := False;
+      if Source'Last <= Pointer then
+         return;
+      end if;
+      if Source (Pointer) = Character'Val (16#C2#) then
+         case Source (Pointer + 1) is
+            when Character'Val (16#BC#) => Value := 1/4;
+            when Character'Val (16#BD#) => Value := 1/2;
+            when Character'Val (16#BE#) => Value := 3/4;
+            when others                 => return;
+         end case;
+         Pointer := Pointer + 2;
+      elsif Source'Last - 1 > Pointer                     and then
+            Source (Pointer    ) = Character'Val (16#E2#) and then
+            Source (Pointer + 1) = Character'Val (16#85#) then
+         case Source (Pointer + 2) is
+            when Character'Val (16#90#) => Value := 1/7;
+            when Character'Val (16#91#) => Value := 1/9;
+            when Character'Val (16#92#) => Value := 1/10;
+            when Character'Val (16#93#) => Value := 1/3;
+            when Character'Val (16#94#) => Value := 2/3;
+            when Character'Val (16#95#) => Value := 1/5;
+            when Character'Val (16#96#) => Value := 2/5;
+            when Character'Val (16#97#) => Value := 3/5;
+            when Character'Val (16#98#) => Value := 4/5;
+            when Character'Val (16#99#) => Value := 1/6;
+            when Character'Val (16#9A#) => Value := 5/6;
+            when Character'Val (16#9B#) => Value := 1/8;
+            when Character'Val (16#9C#) => Value := 3/8;
+            when Character'Val (16#9D#) => Value := 5/8;
+            when Character'Val (16#9E#) => Value := 7/8;
+            when others                 => return;
+         end case;
+         Pointer := Pointer + 3;
+      else
+         return;
+      end if;
+      Got_It := True;
+   end Get_Vulgar_Fraction;
+
    procedure Get_Internal
-             (  Source        : String;
-                Pointer       : in out Integer;
-                Value         : out Unbounded_Rational;
-                Base          : NumberBase;
-                Have_Exponent : Boolean
+             (  Source           : String;
+                Pointer          : in out Integer;
+                Value            : out Unbounded_Rational;
+                Base             : NumberBase;
+                Have_Exponent    : Boolean;
+                Vulgar_Fractions : Boolean
              )  is
       Radix        : constant Unbounded_Unsigned :=
                               From_Half_Word (Half_Word (Base));
@@ -120,6 +225,20 @@ package body Strings_Edit.Unbounded_Rational_Edit is
                   raise Data_Error; -- Only decimal point is present
                end if;
          end;
+      elsif Base = 10 and Vulgar_Fractions then
+         declare
+            Got_It : Boolean;
+         begin
+            Get_Vulgar_Fraction (Source, Index, Result, Got_It);
+            if Got_It then
+               Value := Result + Before;
+               if Sign = -1 then
+                  Value := -Value;
+               end if;
+               Pointer := Index;
+               return;
+            end if;
+         end;
       end if;
       After_Length := Index - After_Length;
       if Have_Exponent then
@@ -164,7 +283,14 @@ package body Strings_Edit.Unbounded_Rational_Edit is
                 Base    : NumberBase := 10
              )  is
    begin
-      Get_Internal (Source, Pointer, Value, Base, True);
+      Get_Internal
+      (  Source           => Source,
+         Pointer          => Pointer,
+         Value            => Value,
+         Base             => Base,
+         Have_Exponent    => True,
+         Vulgar_Fractions => False
+      );
    end Get;
 
    procedure Get_Recurring
@@ -198,7 +324,7 @@ package body Strings_Edit.Unbounded_Rational_Edit is
          end case;
       end if;
       begin
-         Get_Internal (Source, Index, Result, Base, False);
+         Get_Internal (Source, Index, Result, Base, False, False);
       exception
           when End_Error =>
             if Have_Sign then
@@ -248,6 +374,22 @@ package body Strings_Edit.Unbounded_Rational_Edit is
       Pointer := Index;
    end Get_Recurring;
 
+   procedure Get_Vulgar
+             (  Source  : String;
+                Pointer : in out Integer;
+                Value   : out Unbounded_Rational
+             )  is
+   begin
+      Get_Internal
+      (  Source           => Source,
+         Pointer          => Pointer,
+         Value            => Value,
+         Base             => 10,
+         Have_Exponent    => True,
+         Vulgar_Fractions => True
+      );
+   end Get_Vulgar;
+
    function Value
             (  Source : String;
                Base   : NumberBase := 10
@@ -280,16 +422,85 @@ package body Strings_Edit.Unbounded_Rational_Edit is
       return Result;
    end Value_Recurring;
 
-   procedure Put
-             (  Destination : in out String;
-                Pointer     : in out Integer;
-                Value       : Unbounded_Rational;
-                Base        : NumberBase := 10;
-                PutPlus     : Boolean    := False;
-                Fraction    : Natural    := 6;
-                Field       : Natural    := 0;
-                Justify     : Alignment  := Left;
-                Fill        : Character  := ' '
+   function Value_Vulgar (Source : String)  return Unbounded_Rational is
+      Result  : Unbounded_Rational;
+      Pointer : Integer := Source'First;
+   begin
+      Get (Source, Pointer, SpaceAndTab);
+      Get_Vulgar (Source, Pointer, Result);
+      Get (Source, Pointer, SpaceAndTab);
+      if Pointer /= Source'Last + 1 then
+         raise Data_Error;
+      end if;
+      return Result;
+   end Value_Vulgar;
+
+   function To_Vulgar_Fraction (Value : Unbounded_Rational)
+      return String is
+   begin
+      if Get_Numerator   (Value) > 7  or else
+         Get_Denominator (Value) > 10 then
+         return "";
+      end if;
+      case To_Half_Word (Get_Numerator (Value)) is
+         when 1 =>
+            case To_Half_Word (Get_Denominator (Value)) is
+               when 2 => return F_1_2;
+               when 3 => return F_1_3;
+               when 4 => return F_1_4;
+               when 5 => return F_1_5;
+               when 6 => return F_1_6;
+               when 7 => return F_1_7;
+               when 8 => return F_1_8;
+               when 9 => return F_1_9;
+               when 10 => return F_1_10;
+               when others => return "";
+            end case;
+         when 2 =>
+            case To_Half_Word (Get_Denominator (Value)) is
+               when 3 => return F_2_3;
+               when 5 => return F_2_5;
+               when others => return "";
+            end case;
+         when 3 =>
+            case To_Half_Word (Get_Denominator (Value)) is
+               when 4 => return F_3_4;
+               when 5 => return F_3_5;
+               when 8 => return F_3_8;
+               when others => return "";
+            end case;
+         when 4 =>
+            case To_Half_Word (Get_Denominator (Value)) is
+               when 5 => return F_4_5;
+               when others => return "";
+            end case;
+         when 5 =>
+            case To_Half_Word (Get_Denominator (Value)) is
+               when 6 => return F_5_6;
+               when 8 => return F_5_8;
+               when others => return "";
+            end case;
+         when 7 =>
+            case To_Half_Word (Get_Denominator (Value)) is
+               when 7 => return F_7_8;
+               when others => return "";
+            end case;
+         when others =>
+            return "";
+      end case;
+   end To_Vulgar_Fraction;
+
+   procedure Put_Internal
+             (  Destination      : in out String;
+                Pointer          : in out Integer;
+                Value            : Unbounded_Rational;
+                Base             : NumberBase;
+                Vulgar_Fractions : Boolean;
+                PutPlus          : Boolean;
+                Fraction         : Natural;
+                Field            : Natural;
+                Justify          : Alignment;
+                Fill             : Character
              )  is
      Out_Field : constant Natural :=
                     Get_Output_Field (Destination, Pointer, Field);
@@ -297,6 +508,32 @@ package body Strings_Edit.Unbounded_Rational_Edit is
      Text  : Output renames
                 Destination (Pointer..Pointer + Out_Field - 1);
      Index : Integer := Pointer;
+
+     function Not_Vulgar_Fraction return Boolean is
+     begin
+        if Base /= 10 or else not Vulgar_Fractions then
+           return True;
+        end if;
+        declare
+           Integral : Unbounded_Integer;
+           Fraction : Unbounded_Rational;
+        begin
+           Split (abs Value, Integral, Fraction);
+           declare
+              Suffix : constant String := To_Vulgar_Fraction (Fraction);
+           begin
+              if Suffix'Length = 0 then
+                 return True;
+              end if;
+              if not Is_Zero (Integral) then
+                 Put (Text, Index, Get_Mantissa (Integral));
+              end if;
+              Put (Text, Index, Suffix);
+              return False;
+           end;
+        end;
+     end Not_Vulgar_Fraction;
+
   begin
      if Is_Zero (Value) then
         Put (Text, Index, "0");
@@ -313,7 +550,7 @@ package body Strings_Edit.Unbounded_Rational_Edit is
               Get_Mantissa (Round (abs Value)),
               Base
            );
-        else
+        elsif Not_Vulgar_Fraction then
            declare
               Radix   : constant Unbounded_Unsigned :=
                            From_Half_Word (Half_Word (Base));
@@ -364,6 +601,32 @@ package body Strings_Edit.Unbounded_Rational_Edit is
         Justify,
         Fill
      );
+   end Put_Internal;
+
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Value       : Unbounded_Rational;
+                Base        : NumberBase := 10;
+                PutPlus     : Boolean    := False;
+                Fraction    : Natural    := 6;
+                Field       : Natural    := 0;
+                Justify     : Alignment  := Left;
+                Fill        : Character  := ' '
+             )  is
+   begin
+      Put_Internal
+      (  Destination      => Destination,
+         Pointer          => Pointer,
+         Value            => Value,
+         Base             => Base,
+         Vulgar_Fractions => False,
+         PutPlus          => PutPlus,
+         Fraction         => Fraction,
+         Field            => Field,
+         Justify          => Justify,
+         Fill             => Fill
+      );
    end Put;
 
    procedure Put_Recurring
@@ -523,6 +786,31 @@ package body Strings_Edit.Unbounded_Rational_Edit is
      );
    end Put_Recurring;
 
+   procedure Put_Vulgar
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Value       : Unbounded_Rational;
+                PutPlus     : Boolean    := False;
+                Fraction    : Natural    := 6;
+                Field       : Natural    := 0;
+                Justify     : Alignment  := Left;
+                Fill        : Character  := ' '
+             )  is
+   begin
+      Put_Internal
+      (  Destination      => Destination,
+         Pointer          => Pointer,
+         Value            => Value,
+         Base             => 10,
+         Vulgar_Fractions => True,
+         PutPlus          => PutPlus,
+         Fraction         => Fraction,
+         Field            => Field,
+         Justify          => Justify,
+         Fill             => Fill
+      );
+   end Put_Vulgar;
+
    function Image
             (  Value    : Unbounded_Rational;
                Base     : NumberBase := 10;
@@ -536,7 +824,18 @@ package body Strings_Edit.Unbounded_Rational_Edit is
             Text    : String (1..Length);
             Pointer : Integer := Text'First;
          begin
-            Put (Text, Pointer, Value, Base, PutPlus, Fraction);
+            Put_Internal
+            (  Destination      => Text,
+               Pointer          => Pointer,
+               Value            => Value,
+               Base             => Base,
+               PutPlus          => PutPlus,
+               Fraction         => Fraction,
+               Vulgar_Fractions => False,
+               Field            => 0,
+               Justify          => Left,
+               Fill             => ' '
+            );
             return Text (Text'First..Pointer - 1);
          exception
             when Layout_Error =>
@@ -565,5 +864,37 @@ package body Strings_Edit.Unbounded_Rational_Edit is
          end;
       end loop;
    end Image_Recurring;
+
+   function Image_Vulgar
+            (  Value    : Unbounded_Rational;
+               PutPlus  : Boolean    := False;
+               Fraction : Natural    := 6
+            )  return String is
+      Length : Positive := 120;
+   begin
+      loop
+         declare
+            Text    : String (1..Length);
+            Pointer : Integer := Text'First;
+         begin
+            Put_Internal
+            (  Destination      => Text,
+               Pointer          => Pointer,
+               Value            => Value,
+               Base             => 10,
+               PutPlus          => PutPlus,
+               Fraction         => Fraction,
+               Vulgar_Fractions => True,
+               Field            => 0,
+               Justify          => Left,
+               Fill             => ' '
+            );
+            return Text (Text'First..Pointer - 1);
+         exception
+            when Layout_Error =>
+               Length := Length * 2;
+         end;
+      end loop;
+   end Image_Vulgar;
 
 end Strings_Edit.Unbounded_Rational_Edit;

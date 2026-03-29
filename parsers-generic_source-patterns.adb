@@ -3,7 +3,7 @@
 --     Parsers.Generic_Source.Patterns             Luebeck            --
 --  Implementation                                 Summer, 2025       --
 --                                                                    --
---                                Last revision :  11:49 15 Feb 2026  --
+--                                Last revision :  12:14 29 Mar 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -723,7 +723,7 @@ package body Parsers.Generic_Source.Patterns is
                (  State.ASS,
                   (  Kind_Of           => Proceed_Statement,
                      Proceed_Statement => This'Unchecked_Access,
-                     Proceed_Pointer   => Get_Pointer (Source.all),
+                     Proceed_Count     => This.Maximum,
                      Proceed_ID        => State.Sequence
                )  );
                Push
@@ -980,17 +980,29 @@ package body Parsers.Generic_Source.Patterns is
             );
          when Proceed_Statement =>
             declare
-               Data : Proceed_Data renames Top (State.ASS);
+               Data : Proceed_Data renames
+                         State.ASS.Stack (State.ASS.Count);
                This : Proceed_Pattern renames
                          Data.Proceed_Statement.all;
                NL   : Statement_Data := (Kind_Of => No_Statement);
             begin
-               Pop (State.MSS, Data.Proceed_ID, NL);
-               if NL.Kind_Of /= No_Statement then
-                  Push (State.MSS, NL);
+               Data.Proceed_Count := Data.Proceed_Count - 1;
+               if Data.Proceed_Count > 0 then
+                  Pop (State.MSS, Data.Proceed_ID, NL);
+                  if NL.Kind_Of /= No_Statement then
+                     Push (State.MSS, NL);
+                  end if;
+                  Current := Pattern_Ref (Ptr (This.Pattern));
+                  goto Process;
+               else
+                  Pop (State.MSS, Data.Proceed_ID, NL);
+                  Pop (State.MSS);
+                  Pop (State.ASS);
+                  if NL.Kind_Of /= No_Statement then
+                     Push (State.MSS, NL);
+                  end if;
+                  goto Success;
                end if;
-               Current := Pattern_Ref (Ptr (This.Pattern));
-               goto Process;
             end;
          when Repeater_Statement =>
             declare
@@ -1575,6 +1587,18 @@ package body Parsers.Generic_Source.Patterns is
       return Left or Text (Right);
    end "or";
 
+   function "or" (Left : String; Right : User_Variable_Ptr)
+      return Pattern_Type is
+   begin
+      return Text (Left) or Empty;
+   end "or";
+
+   function "or" (Left : Pattern_Type; Right : User_Variable_Ptr)
+      return Pattern_Type is
+   begin
+      return Left or Empty;
+   end "or";
+
    function "+" (Left : Pattern_Type) return Pattern_Type is
    begin
       if Voidable (Left) then
@@ -1645,6 +1669,8 @@ package body Parsers.Generic_Source.Patterns is
    begin
       if Right_Ptr = null then
          return Empty;
+      elsif Left = 1 then
+         return Right;
       end if;
       declare
          Result_Ptr : constant Pattern_Ptr := new Repeater_Pattern;
@@ -1878,6 +1904,46 @@ package body Parsers.Generic_Source.Patterns is
       else
          Got_It  := True;
          Pointer := Index;
+      end if;
+   end Get;
+
+   procedure Get
+             (  Line    : String;
+                Pointer : in out Integer;
+                Base    : Strings_Edit.NumberBase;
+                Value   : out Integer;
+                Got_It  : out Boolean
+             )  is
+      Result : Integer := 0;
+      Index  : Integer := Pointer;
+      Digit  : Integer;
+   begin
+      while Index <= Line'Last loop
+         case Line (Index) is
+            when '0'..'9' =>
+               Digit := Character'Pos (Line (Index))
+                      - Character'Pos ('0');
+            when 'A'..'F' =>
+               Digit := Character'Pos (Line (Index))
+                      - Character'Pos ('A')
+                      + 10;
+            when 'a'..'f' =>
+               Digit := Character'Pos (Line (Index))
+                      - Character'Pos ('a')
+                      + 10;
+            when others =>
+               exit;
+         end case;
+         exit when Digit not in 0..Base - 1;
+         Result := Result * Base + Digit;
+         Index := Index + 1;
+      end loop;
+      if Pointer = Index then
+         Got_It := False;
+      else
+         Got_It  := True;
+         Pointer := Index;
+         Value   := Result;
       end if;
    end Get;
 
@@ -2115,6 +2181,26 @@ package body Parsers.Generic_Source.Patterns is
       return "Natural_Number (" & Image (Pattern.Base) & ")";
    end Image;
 
+   function Image (Pattern : Natural_Number_Ranged_Pattern)
+      return String is
+   begin
+      return "Natural_Number ("                 &
+             Image (Pattern.Base)               &
+             " "                                &
+             Image (Pattern.Low,  Pattern.Base) &
+             ".."                               &
+             Image (Pattern.High, Pattern.Base) &
+             ")";
+   end Image;
+
+   function Image (Pattern : Natural_Number_Set_Pattern)
+      return String is
+   begin
+      return "Natural_Number_Set_Pattern (" &
+             Image (Pattern.Base)           &
+             ")";
+   end Image;
+
    function Image (Pattern : Nil_Pattern) return String is
    begin
       return "Nil";
@@ -2179,7 +2265,12 @@ package body Parsers.Generic_Source.Patterns is
    function Image (Repeater : Proceed_Pattern) return String is
       Object_Ptr : constant Pattern_Ptr := Ptr (Repeater.Pattern);
    begin
-      return "Proceed (" & Image (Object_Ptr.all) & ')';
+      if Repeater.Maximum = Positive'Last then
+         return "Proceed (" & Image (Object_Ptr.all) & ')';
+      else
+         return "Proceed (" & Image (Object_Ptr.all)   &
+                " x "       & Image (Repeater.Maximum) & ')';
+      end if;
    end Image;
 
    function Image (Repeater : Repeater_Pattern) return String is
@@ -2724,6 +2815,55 @@ package body Parsers.Generic_Source.Patterns is
    end Match;
 
    function Match
+            (  Pattern : Natural_Number_Ranged_Pattern;
+               Source  : access Source_Type;
+               State   : access Match_State
+            )  return Result_Type is
+      Line    : Line_Ptr_Type;
+      Value   : Integer;
+      Pointer : Integer;
+      Last    : Integer;
+      Got_It  : Boolean;
+   begin
+      Get_Line (Source.all, Line, Pointer, Last);
+      Get (Line (Pointer..Last), Pointer, Pattern.Base, Value, Got_It);
+      if Got_It and then Value in Pattern.Low..Pattern.High then
+         Set_Pointer (Source.all, Pointer, False);
+         return Matched;
+      else
+         return Unmatched;
+      end if;
+   exception
+      when others =>
+         return Unmatched;
+   end Match;
+
+   function Match
+            (  Pattern : Natural_Number_Set_Pattern;
+               Source  : access Source_Type;
+               State   : access Match_State
+            )  return Result_Type is
+      use Discrete_Integer_Set;
+      Line    : Line_Ptr_Type;
+      Value   : Integer;
+      Pointer : Integer;
+      Last    : Integer;
+      Got_It  : Boolean;
+   begin
+      Get_Line (Source.all, Line, Pointer, Last);
+      Get (Line (Pointer..Last), Pointer, Pattern.Base, Value, Got_It);
+      if Got_It and then Is_In (Pattern.Set, Value) then
+         Set_Pointer (Source.all, Pointer, False);
+         return Matched;
+      else
+         return Unmatched;
+      end if;
+   exception
+      when others =>
+         return Unmatched;
+   end Match;
+
+   function Match
             (  Pattern : Subscript_Digit_Pattern;
                Source  : access Source_Type;
                State   : access Match_State
@@ -2905,6 +3045,29 @@ package body Parsers.Generic_Source.Patterns is
       return Ref (new Natural_Number_Pattern (Base));
    end Natural_Number;
 
+   function Natural_Number_Range
+            (  Low  : Natural;
+               High : Natural;
+               Base : Strings_Edit.NumberBase := 10
+            )  return Pattern_Type is
+   begin
+      if Low > High then
+         raise Constraint_Error;
+      end if;
+      return Ref (new Natural_Number_Ranged_Pattern (Base, Low, High));
+   end Natural_Number_Range;
+
+   function Natural_Number_Set
+            (  Set  : Discrete_Integer_Set.Set;
+               Base : Strings_Edit.NumberBase := 10
+            )  return Pattern_Type is
+   begin
+      return Ref
+             (  new Natural_Number_Set_Pattern'
+                    (  Pattern_Object with Base, Set
+             )      );
+   end Natural_Number_Set;
+
    function Nil return Pattern_Type is
    begin
       return Ref (new Nil_Pattern);
@@ -2979,9 +3142,12 @@ package body Parsers.Generic_Source.Patterns is
       end case;
    end On_Success;
 
-   function Proceed (Pattern : Pattern_Type) return Pattern_Type is
+   function Proceed
+            (  Pattern : Pattern_Type;
+               Maximum : Positive := Positive'Last
+            )  return Pattern_Type is
    begin
-      if Voidable (Pattern) then
+      if Voidable (Pattern) and then Maximum = Positive'Last then
          Raise_Exception
          (  Constraint_Error'Identity,
             Voidable_Error
@@ -2993,13 +3159,17 @@ package body Parsers.Generic_Source.Patterns is
                          Proceed_Pattern (Result_Ptr.all);
       begin
          This.Pattern := Pattern;
+         This.Maximum := Maximum;
          return Ref (Result_Ptr);
       end;
    end Proceed;
 
-   function Proceed (Pattern : String) return Pattern_Type is
+   function Proceed
+            (  Pattern : String;
+               Maximum : Positive := Positive'Last
+            )  return Pattern_Type is
    begin
-      return Proceed (Text (Pattern));
+      return Proceed (Text (Pattern), Maximum);
    end Proceed;
 
    function Print
@@ -3546,6 +3716,22 @@ package body Parsers.Generic_Source.Patterns is
 
    function Voidable
             (  Pattern   : Natural_Number_Pattern;
+               Recursive : Boolean
+            )  return Boolean is
+   begin
+      return False;
+   end Voidable;
+
+   function Voidable
+            (  Pattern   : Natural_Number_Ranged_Pattern;
+               Recursive : Boolean
+            )  return Boolean is
+   begin
+      return False;
+   end Voidable;
+
+   function Voidable
+            (  Pattern   : Natural_Number_Set_Pattern;
                Recursive : Boolean
             )  return Boolean is
    begin

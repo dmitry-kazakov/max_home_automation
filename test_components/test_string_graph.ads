@@ -3,7 +3,7 @@
 --  Test instantiation                             Luebeck            --
 --                                                 Winter, 2009       --
 --                                                                    --
---                                Last revision :  23:22 29 Sep 2017  --
+--                                Last revision :  12:14 29 Mar 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -26,12 +26,28 @@
 --____________________________________________________________________--
 
 with Generic_Directed_Graph;
+with Generic_Undirected_Graph;
+with Generic_Unbounded_Array;
 with Generic_Address_Order;
 
 package Test_String_Graph is
    type Default is access String;
    package Order is new Generic_Address_Order (String);
    use Order;
-   package Instance is
+   package Directed is
       new Generic_Directed_Graph (String, Default'Storage_Pool);
+
+   package Undirected is
+      new Generic_Undirected_Graph (String, Default'Storage_Pool);
+
+   type Node_Set_Array is
+      array (Positive range <>) of Undirected.Node_Sets.Set;
+
+   package Node_Set_Arrays is
+      new Generic_Unbounded_Array
+          (  Index_Type        => Positive,
+             Object_Type       => Undirected.Node_Sets.Set,
+             Object_Array_Type => Node_Set_Array,
+             Null_Element      => Undirected.Node_Sets.Create
+          );
 end Test_String_Graph;

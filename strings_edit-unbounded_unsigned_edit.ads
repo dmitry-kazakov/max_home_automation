@@ -3,7 +3,7 @@
 --     Strings_Edit.                               Luebeck            --
 --        Unbounded_Unsigned_Edit                  Winter, 2024       --
 --  Interface                                                         --
---                                Last revision :  22:39 14 Dec 2024  --
+--                                Last revision :  12:14 29 Mar 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -117,9 +117,9 @@ package Strings_Edit.Unbounded_Unsigned_Edit is
                 Pointer     : in out Integer;
                 Value       : Unbounded_Unsigned;
                 Base        : NumberBase := 10;
-                Field       : Natural := 0;
-                Justify     : Alignment := Left;
-                Fill        : Character := ' '
+                Field       : Natural    := 0;
+                Justify     : Alignment  := Left;
+                Fill        : Character  := ' '
              );
 --
 -- Image -- Integer to string conversion

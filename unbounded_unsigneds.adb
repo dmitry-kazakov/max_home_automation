@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2024       --
 --                                                                    --
---                                Last revision :  17:48 17 Jun 2025  --
+--                                Last revision :  12:14 29 Mar 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -520,7 +520,7 @@ package body Unbounded_Unsigneds is
       if Container = null then
          Container :=
             new Vector (Digit_Count'Max (Size, Minimal_Size));
-      elsif Size > Container.Size     or else
+      elsif Size > Container.Size         or else
             Load (Container.Count'Access) > 1 then
          declare
             Ptr : Vector_Ptr;
@@ -650,7 +650,7 @@ package body Unbounded_Unsigneds is
          declare
             Dummy : Count_Type;
          begin
-            Dummy := Inc (Container.Count'Access);
+            Dummy := Dec (Container.Count'Access);
          end;
          if Length > Container.Size then
             declare
@@ -3371,7 +3371,7 @@ package body Unbounded_Unsigneds is
    begin
       if Source = 0 then
          Destination.Length := 0;
-      elsif Destination.Value = null or else
+      elsif Destination.Value = null               or else
             Load (Destination.Value.Count'Access) > 1 then -- Must clone
          Release (Destination.Value);
          Destination.Length := 1;

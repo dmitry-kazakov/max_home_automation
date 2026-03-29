@@ -3,7 +3,7 @@
 --  Test                                           Luebeck            --
 --                                                 Summer, 2025       --
 --                                                                    --
---                                Last revision :  11:49 15 Feb 2026  --
+--                                Last revision :  12:14 29 Mar 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -29,6 +29,7 @@ with Ada.Exceptions;       use Ada.Exceptions;
 with Ada.Text_IO;          use Ada.Text_IO;
 with Strings_Edit.Quoted;  use Strings_Edit.Quoted;
 
+with Discrete_Integer_Set;
 with Parsers.Multiline_Patterns.Fields;
 with Parsers.Multiline_Patterns.Floats;
 with Parsers.Multiline_Patterns.Integers;
@@ -1046,7 +1047,7 @@ begin
    begin
       Set_Tracing (State, Tracing);
       declare
-         Pattern : constant Pattern_Type := (Text ("a") or Empty);
+         Pattern : constant Pattern_Type := (Text ("a") or null);
       begin
          declare
             Line   : aliased String := "b";
@@ -1682,6 +1683,70 @@ begin
                   (  "Proceed test 3 ""aaad"" Pointer"
                   &  Integer'Image (Get_Pointer (Code))
                   &  " /= 5 (expected)"
+               )  );
+            end if;
+         end;
+      end;
+   end;
+   Put_Line ("Proceed test 4");
+   declare
+      use Parsers.String_Patterns;
+      use Parsers.String_Source;
+      State : aliased Match_State (Stack_Size);
+   begin
+      Set_Tracing (State, Tracing);
+      declare
+         Pattern : constant Pattern_Type := Proceed ("a", 3) & "b";
+      begin
+         declare
+            Line   : aliased String := "aaab";
+            Code   : aliased Source (Line'Access);
+            Result : constant Result_Type :=
+                     Match (Pattern, Code'Access, State'Access);
+         begin
+            if Result.Outcome /= Successful then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Proceed test 4 ""aaab"" not matched"
+               );
+            elsif Get_Pointer (Code) /= 5 then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  (  "Proceed test 4 ""aaab"" Pointer"
+                  &  Integer'Image (Get_Pointer (Code))
+                  &  " /= 5 (expected)"
+               )  );
+            end if;
+         end;
+      end;
+   end;
+   Put_Line ("Proceed test 5");
+   declare
+      use Parsers.String_Patterns;
+      use Parsers.String_Source;
+      State : aliased Match_State (Stack_Size);
+   begin
+      Set_Tracing (State, Tracing);
+      declare
+         Pattern : constant Pattern_Type := Proceed ("a", 3) & "b";
+      begin
+         declare
+            Line   : aliased String := "aaaab";
+            Code   : aliased Source (Line'Access);
+            Result : constant Result_Type :=
+                     Match (Pattern, Code'Access, State'Access);
+         begin
+            if Result.Outcome = Successful then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Proceed test 5 ""aaaab"" is matched"
+               );
+            elsif Get_Pointer (Code) /= 1 then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  (  "Proceed test 5 ""aaaab"" Pointer"
+                  &  Integer'Image (Get_Pointer (Code))
+                  &  " /= 1 (expected)"
                )  );
             end if;
          end;
@@ -2621,6 +2686,172 @@ begin
                   (  "Natural_Number test ""1AbCD"" Pointer"
                   &  Integer'Image (Get_Pointer (Code))
                   &  " /= 5 (expected)"
+               )  );
+            end if;
+         end;
+      end;
+   end;
+   Put_Line ("Natural_Number_Range test 1");
+   declare
+      use Parsers.String_Source;
+      use Parsers.String_Patterns;
+      State : aliased Match_State (Stack_Size);
+   begin
+      Set_Tracing (State, Tracing);
+      declare
+         Pattern : constant Pattern_Type :=
+                            Natural_Number_Range (4, 9, 10);
+      begin
+         declare
+            Line   : aliased String := "6a";
+            Code   : aliased Source (Line'Access);
+            Result : constant Result_Type :=
+                     Match (Pattern, Code'Access, State'Access);
+         begin
+            if Result.Outcome /= Successful then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Natural_Number_Range test 1 ""6a"" not matched"
+               );
+            elsif Get_Pointer (Code) /= 2 then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  (  "Natural_Number_Range test 1 ""6a"" Pointer"
+                  &  Integer'Image (Get_Pointer (Code))
+                  &  " /= 2 (expected)"
+               )  );
+            end if;
+         end;
+         declare
+            Line   : aliased String := "600a";
+            Code   : aliased Source (Line'Access);
+            Result : constant Result_Type :=
+                     Match (Pattern, Code'Access, State'Access);
+         begin
+            if Result.Outcome = Successful then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Natural_Number_Range test 1 ""600a"" matched"
+               );
+            elsif Get_Pointer (Code) /= 1 then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  (  "Natural_Number_Range test 1 ""600a"" Pointer"
+                  &  Integer'Image (Get_Pointer (Code))
+                  &  " /= 2 (expected)"
+               )  );
+            end if;
+         end;
+      end;
+   end;
+   Put_Line ("Natural_Number_Range test 2");
+   declare
+      use Parsers.String_Source;
+      use Parsers.String_Patterns;
+      use Strings_Edit.Integers;
+      State : aliased Match_State (Stack_Size);
+   begin
+      Set_Tracing (State, Tracing);
+      declare
+         L       : constant String := Image (Integer'Last);
+         Pattern : constant Pattern_Type :=
+                            Natural_Number_Range (4, Integer'Last, 10);
+      begin
+         declare
+            Line   : aliased String := L & "a";
+            Code   : aliased Source (Line'Access);
+            Result : constant Result_Type :=
+                     Match (Pattern, Code'Access, State'Access);
+         begin
+            if Result.Outcome /= Successful then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Natural_Number_Range test 2 """ & Line &
+                  """ not matched"
+               );
+            elsif Get_Pointer (Code) /= L'Length + 1 then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  (  "Natural_Number_Range test 2 """ & Line &
+                     """ Pointer"
+                  &  Integer'Image (Get_Pointer (Code))
+                  &  " /= " & Image (L'Length + 1) & " (expected)"
+               )  );
+            end if;
+         end;
+         declare
+            Line   : aliased String := L & "0a";
+            Code   : aliased Source (Line'Access);
+            Result : constant Result_Type :=
+                     Match (Pattern, Code'Access, State'Access);
+         begin
+            if Result.Outcome = Successful then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Natural_Number_Range test 2 """ & Line &
+                  """ matched"
+               );
+            elsif Get_Pointer (Code) /= 1 then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  (  "Natural_Number_Range test 2 """ & Line &
+                     """ Pointer"
+                  &  Integer'Image (Get_Pointer (Code))
+                  &  " /= 2 (expected)"
+               )  );
+            end if;
+         end;
+      end;
+   end;
+   Put_Line ("Natural_Number_Set test 1");
+   declare
+      use Discrete_Integer_Set;
+      use Parsers.String_Source;
+      use Parsers.String_Patterns;
+      State : aliased Match_State (Stack_Size);
+   begin
+      Set_Tracing (State, Tracing);
+      declare
+         Pattern : constant Pattern_Type :=
+                            Natural_Number_Set (Create (4, 9));
+      begin
+         declare
+            Line   : aliased String := "6a";
+            Code   : aliased Source (Line'Access);
+            Result : constant Result_Type :=
+                     Match (Pattern, Code'Access, State'Access);
+         begin
+            if Result.Outcome /= Successful then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Natural_Number_Set test 1 ""6a"" not matched"
+               );
+            elsif Get_Pointer (Code) /= 2 then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  (  "Natural_Number_Set test 1 ""6a"" Pointer"
+                  &  Integer'Image (Get_Pointer (Code))
+                  &  " /= 2 (expected)"
+               )  );
+            end if;
+         end;
+         declare
+            Line   : aliased String := "600a";
+            Code   : aliased Source (Line'Access);
+            Result : constant Result_Type :=
+                     Match (Pattern, Code'Access, State'Access);
+         begin
+            if Result.Outcome = Successful then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Natural_Number_Range test 1 ""600a"" matched"
+               );
+            elsif Get_Pointer (Code) /= 1 then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  (  "Natural_Number_Range test 1 ""600a"" Pointer"
+                  &  Integer'Image (Get_Pointer (Code))
+                  &  " /= 2 (expected)"
                )  );
             end if;
          end;

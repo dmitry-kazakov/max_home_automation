@@ -83,6 +83,7 @@ project Components is
       "block_streams.adb",
       "block_streams.ads",
       "deposit_handles.ads",
+      "discrete_integer_set.ads",
       "gamma.adb",
       "generic_address_order.adb",
       "generic_address_order.ads",
@@ -148,6 +149,8 @@ project Components is
       "generic_unbounded_array.ads",
       "generic_unbounded_ptr_array.adb",
       "generic_unbounded_ptr_array.ads",
+      "generic_undirected_graph.adb",
+      "generic_undirected_graph.ads",
       "ieee_754.adb",
       "ieee_754.ads",
 	  "ieee_754-decimal32.adb",
@@ -454,6 +457,7 @@ project Components is
    package Compiler renames Strings_Edit.Compiler;
    package Binder   renames Strings_Edit.Binder;
    package Builder  renames Strings_Edit.Builder;
+
    package Linker is
       case Tables.Target_OS is
          when "Linux" =>
@@ -466,6 +470,9 @@ project Components is
                   for Default_Switches ("Ada") use
                      Strings_Edit.Linker'Default_Switches ("Ada");
             end case;
+         when "Windows" | "Windows_NT" =>
+            for Default_Switches ("Ada") use
+               Strings_Edit.Linker'Default_Switches ("Ada");
          when others =>
             for Default_Switches ("Ada") use
                Strings_Edit.Linker'Default_Switches ("Ada");

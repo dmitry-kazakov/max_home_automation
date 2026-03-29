@@ -3,7 +3,7 @@
 --     Test_Unbounded_Rationals                    Luebeck            --
 --  Test                                           Spring, 2025       --
 --                                                                    --
---                                Last revision :  11:49 15 Feb 2026  --
+--                                Last revision :  12:14 29 Mar 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -2555,6 +2555,47 @@ begin
       Check (   1/10,   "0.1"               );
       Check (   1/9,    "0.1",             9);
       Check ( 511/64,   "7.77",            8);
+   end;
+   Put_Line ("Vulgar fractions test");
+   declare
+      procedure Check (V : Unbounded_Rational) is
+         use Strings_Edit.Unbounded_Unsigned_Edit;
+         I : constant String := Image_Vulgar (V);
+         R : constant Unbounded_Rational := Value_Vulgar (I);
+      begin
+         if R /= V then
+            Raise_Exception
+            (  Data_Error'Identity,
+               (  "Value (Image) = "
+               &  Image (Get_Numerator   (R))
+               &  " / "
+               &  Image (Get_Denominator (R))
+               &  " /= "
+               &  Image (Get_Numerator   (V))
+               &  " / "
+               &  Image (Get_Denominator (V))
+               &  " (expected) Image = "
+               &  I
+            )  );
+         end if;
+      end Check;
+   begin
+      Check (   1/3 );
+      Check (   1/1 );
+      Check (   0/1 );
+      Check (   2/3 );
+      Check (   4/3 );
+      Check (  -4/12);
+      Check (  -7/3 );
+      Check (   1/7 );
+      Check (   2/8 );
+      Check (   3/8 );
+      Check (   4/8 );
+      Check (   5/8 );
+      Check (   7/8 );
+      Check (   9/8 );
+      Check (   1/10);
+      Check (   1/9 );
    end;
 exception
    when Error : others =>

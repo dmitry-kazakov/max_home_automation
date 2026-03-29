@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2004       --
 --                                                                    --
---                                Last revision :  11:48 10 Aug 2025  --
+--                                Last revision :  12:14 29 Mar 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -43,8 +43,8 @@ procedure Test_Ada_Parser is
    File   : aliased File_Type;
    Parser : Ada_Expression;
    Result : Argument_Token;
-   Stub   : Node_Ptr;
-   Lines  : constant Line_Numers := (1 => 357);
+   Stub   : Node_Ptr;            -- The list of lines to print the tree:
+   Lines  : constant Line_Numers := (1 => 357, 2 => 396);
 begin
    Open (File, In_File, "test_ada_parser.txt");
    declare
