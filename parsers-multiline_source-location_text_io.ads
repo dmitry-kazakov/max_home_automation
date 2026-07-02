@@ -3,7 +3,7 @@
 --     Parsers.Multiline_Source                    Luebeck            --
 --        Location_Text_IO                         Summer, 2009       --
 --  Instantiation                                                     --
---                                Last revision :  12:54 06 Jun 2009  --
+--                                Last revision :  10:48 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -27,5 +27,4 @@
 
 with Parsers.Generic_Source.Text_IO;
 
-package Parsers.Multiline_Source.Location_Text_IO is
-   new Code.Text_IO;
+package Parsers.Multiline_Source.Location_Text_IO is new Code.Text_IO;

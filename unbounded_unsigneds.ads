@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2024       --
 --                                                                    --
---                                Last revision :  17:48 17 Jun 2025  --
+--                                Last revision :  10:48 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -362,6 +362,7 @@ package Unbounded_Unsigneds is
 --    Index - 1..
 --
 -- The result is 0 when Index is greater than Get_Length (Left)
+--
 -- Returns :
 --
 --    The digit by its position (little-endian)
@@ -634,6 +635,29 @@ package Unbounded_Unsigneds is
 --    Constraint_Error - Left is zero
 --
    function Log2 (Left : Half_Word) return Natural;
+--
+-- Log -- Logarithm
+--
+--    Left  - The number
+--    Base  - The logarithm base 2..
+--    Power - The result
+--    Exact - The result is exact
+--
+-- This function computes integer logarithm. It finds the greatest Power
+-- such that:
+--
+--    Base ** Power <= Left
+--
+-- Exceptions :
+--
+--    Constraint_Error - Left is zero or Base is 0 or 1
+--
+   procedure Log
+             (  Left  : Unbounded_Unsigned;
+                Base  : Half_Word;
+                Power : out Half_Word;
+                Exact : out Boolean
+             );
 --
 -- Log2 -- Logarithm
 --

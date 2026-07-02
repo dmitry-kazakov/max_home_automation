@@ -3,7 +3,7 @@
 --     Parsers.Generic_Ada_Parser.                 Luebeck            --
 --        Generic_Dot                              Summer, 2025       --
 --  Implementation                                                    --
---                                Last revision :  11:48 10 Aug 2025  --
+--                                Last revision :  10:48 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -40,6 +40,8 @@ package body Parsers.Generic_Ada_Parser.Generic_Dot is
                 Output         : access Root_Stream_Type'Class;
                 Show_Locations : Boolean := True
              )  is
+      procedure Put (Node : Tokens.Argument_Token);
+
       procedure Write (Text : String) is
          Data : Stream_Element_Array (1..Text'Length);
          pragma Import (Ada, Data);
@@ -104,6 +106,164 @@ package body Parsers.Generic_Ada_Parser.Generic_Dot is
          end if;
       end Label;
 
+      procedure Put (Node : Subtype_Mark) is
+      begin
+         if Node.Attribute = No_Attribute then
+            Put (Node.Name);
+         else
+            declare
+               Where : constant String :=
+                          Image (Node.Name.Location) & ".attribute";
+            begin
+               Name (Where);
+               Write (Edge);
+               Put (Node.Name);
+               Name (Where);
+               Write (Edge);
+               case Node.Attribute is
+                  when No_Attribute =>
+                     null;
+                  when Class_Attribute =>
+                     Put ("Case");
+                  when Base_Attribute =>
+                     Put ("Base");
+                  when Base_Range_Attribute =>
+                     Put ("Base'Range");
+                  when Range_Attribute =>
+                     Put ("Range");
+                  when Dimension_Range_Attribute =>
+                     Put ("Range");
+                     Write (Edge);
+                     Put (Node.Dimension);
+               end case;
+               Name (Where);
+               Label ("'");
+            end;
+         end if;
+      end Put;
+
+      procedure Put (Node : Subtype_Indication) is
+         Constraint : Subtype_Constraint renames Node.Constraint;
+         procedure Put_Range (Parent : String) is
+         begin
+            case Node.Mode is
+               when Subtype_Range_Mode | Range_Mode =>
+                  declare
+                     Where  : constant String :=
+                              Image (Node.Range_Constraint.Location) &
+                              ".range";
+                  begin
+                     Name (Parent);
+                     Write (Edge);
+                     Name (Where);
+                     Write (Edge);
+                     Put (Node.Range_Constraint);
+                     Name (Where);
+                     Label ("range");
+                  end;
+               when Subtype_Mode =>
+                  null;
+               when Unconstrained_Mode =>
+                  Name (Parent);
+                  Write (Edge);
+                  Put ("<>");
+            end case;
+         end Put_Range;
+      begin
+         case Node.Constraint.Mode is
+            when No_Constraint =>
+               Put (Node.Mark);
+               Put_Range (Image (Node.Mark.Name.Location));
+            when Fixed_Point_Constraint =>
+               declare
+                  Where : constant String :=
+                     Image (Constraint.Delta_Constraint.Location) &
+                     ".delta";
+               begin
+                  Name (Where);
+                  Write (Edge);
+                  Put (Node.Mark);
+                  Name  (Where);
+                  Write (Edge);
+                  Put (Constraint.Delta_Constraint);
+                  Name (Where);
+                  Name (Where);
+                  Label ("delta");
+                  Put_Range (Where);
+               end;
+            when Floating_Point_Constraint =>
+               declare
+                  Where : constant String :=
+                     Image (Constraint.Digits_Constraint.Location) &
+                     ".digits";
+               begin
+                  Name (Where);
+                  Write (Edge);
+                  Put (Node.Mark);
+                  Name  (Where);
+                  Write (Edge);
+                  Put (Constraint.Digits_Constraint);
+                  Name (Where);
+                  Name  (Where);
+                  Label ("digits");
+                  Put_Range (Where);
+               end;
+            when Index_Constraint | Discriminant_Constraint =>
+               Put (Node.Mark);
+               Write (Edge);
+               Put (Constraint.Constraint);
+               Put_Range (Image (Node.Mark.Name.Location));
+         end case;
+      end Put;
+
+      procedure Put (Node : Array_Type_Definition) is
+         Array_At : constant String :=
+            Image (Node.Component.Mark.Name.Location) & ".array";
+         Component_At : constant String :=
+            Image (Node.Component.Mark.Name.Location) & ".of";
+      begin
+         for Dimension in Node.Indices'Range loop
+            Name (Array_At);
+            Write (Edge);
+            Put (Node.Indices (Dimension));
+         end loop;
+         Name (Array_At);
+         Write (Edge);
+         Name (Component_At);
+         Name (Component_At);
+         Write (Edge);
+         Put (Node.Component);
+         Name (Component_At);
+         if Node.Aliased_Component then
+            Label ("of aliased");
+         else
+            Label ("of");
+         end if;
+         Name (Array_At);
+         Label ("array");
+      end Put;
+
+      procedure Put (List : Subtype_Indication_Array) is
+      begin
+         if List'Length = 1 then
+            Put (List (List'First));
+         else
+            declare
+               Where : constant Location_Type :=
+                                List (List'First).Mark.Name.Location &
+                                List (List'Last).Mark.Name.Location;
+            begin
+               for Index in List'Range loop
+                  Name (Where);
+                  Write (Edge);
+                  Put (List (Index));
+               end loop;
+               Name (Where);
+               Label ("|");
+            end;
+         end if;
+      end Put;
+
       procedure Put (Node : Tokens.Argument_Token) is
       begin
          case Get_Class (Node.Value.all) is
@@ -130,17 +290,19 @@ package body Parsers.Generic_Ada_Parser.Generic_Dot is
                   Put (This.Selector);
                   for Index in This.Alternatives'Range loop
                      declare
-                        Item  : Alternative_Pair renames
+                        Item  : Case_Alternative renames
                                 This.Alternatives (Index);
                         Where : constant Location_Type :=
-                                         Item.Guard.Location &
-                                         Item.Value.Location;
+                                Item.Choice
+                                (  Item.Choice'First
+                                ) .Mark.Name.Location &
+                                Item.Value.Location;
                      begin
                         Name (Node.Location);
                         Write (Edge);
                         Name (Where);
                         Write (Edge);
-                        Put (Item.Guard);
+                        Put (Item.Choice.all);
                         Name (Where);
                         Write (Edge);
                         Put (Item.Value);
@@ -401,31 +563,38 @@ package body Parsers.Generic_Ada_Parser.Generic_Dot is
                   Decl  : constant String :=
                           Image (This.Expression.Location) & ".declare";
                   procedure Put
-                            (  Item    : Declare_Object_Item'Class;
+                            (  Item     : Declare_Object_Item'Class;
                                Location : Sources.Location_Type
                             )  is
+                     Where : constant Sources.Location_Type :=
+                                Item.Names (1).Location &
+                                Item.Names (Item.Names'Last).Location;
                      Colon : constant String :=
                                       Image (Location) & ".Colon";
-                  begin
+                  begin null;
                      Name (Decl);
                      Write (Edge);
                      Name (Colon);
                      Write (Edge);
-                     Put (Item.Name);
+
+                     Name (Where);
+                     Character'Write (Output, LF);
+                     Name (Where);
+                     Label (Image (Item.Names), Where);
+
                      Name (Colon);
                      Write (Edge);
-                     Put (Item.Object);
-                     if Item.Kind_Of in Immutable..Initialized then
-                        Name (Colon);
-                        Write (Edge);
-                        Put (Item.Value);
+                     if Item.Array_Object then
+                        Put (Item.Definition.all);
+                     else
+                        Put (Item.Object);
                      end if;
                      Name (Colon);
-                     if Item.Kind_Of = Immutable then
-                        Label (": constant");
-                     else
-                        Label (":");
-                     end if;
+                     Write (Edge);
+                     Put (Item.Value);
+
+                     Name (Colon);
+                     Label (": constant");
                   end Put;
 
                   procedure Put
@@ -450,6 +619,8 @@ package body Parsers.Generic_Ada_Parser.Generic_Dot is
                   Name (Block);
                   Write (Edge);
                   Name (Decl);
+                  Write ((1 => LF));
+
                   for Index in This.Items'Range loop
                      declare
                         Item : Declare_Token renames This.Items (Index);

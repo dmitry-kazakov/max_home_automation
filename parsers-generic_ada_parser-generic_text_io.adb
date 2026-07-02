@@ -3,7 +3,7 @@
 --     Parsers.Generic_Ada_Parser.                 Luebeck            --
 --        Generic_Text_IO                          Summer, 2025       --
 --  Implementation                                                    --
---                                Last revision :  11:48 10 Aug 2025  --
+--                                Last revision :  10:48 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -28,13 +28,197 @@
 package body Parsers.Generic_Ada_Parser.Generic_Text_IO is
    use Sources;
 
-   type Nesting is (Top, Child, Inline);
+   procedure Put
+             (  Aspect : Aspect_Items_Array;
+                Output : File_Type := Standard_Output;
+                Prefix : String    := "";
+                Nested : Nesting   := Top
+             )  is
+      procedure Do_Put
+                (  Argument : Global_Aspect_Element;
+                   Prefix   : String;
+                   Nested   : Nesting := Child
+                )  is
+      begin
+         case Nested is
+            when Top =>
+               Put (Output, Prefix);
+            when Child =>
+               if Prefix'Length >= 3 then
+                  Put
+                  (  Output,
+                     Prefix (Prefix'First..Prefix'Last - 3) & "|__"
+                  );
+               end if;
+            when Inline =>
+               null;
+         end case;
+         if Argument.Extended then
+            Put (Output, "overriding ");
+         end if;
+         Put (Output, Image (Argument.Mode) & ' ');
+         case Argument.Kind_Of is
+            when All_Designator_Mode =>
+               Put_Line (Output, "all");
+            when Synchronized_Designator_Mode =>
+               Put_Line (Output, "synchronized");
+            when Global_Name_Designator_Mode =>
+               New_Line (Output);
+               for Index in Argument.List'First
+                         .. Argument.List'Last - 1 loop
+                  Put
+                  (  Argument.List (Index),
+                     Output,
+                     Prefix & "|  ",
+                     Child
+                  );
+               end loop;
+               Put
+               (  Argument.List (Argument.List'Last),
+                  Output,
+                  Prefix & "   ",
+                  Child
+               );
+         end case;
+      end Do_Put;
+
+      procedure Do_Put
+                (  Argument : Aspect_Specification_Item;
+                   Prefix   : String;
+                   Nested   : Nesting := Child
+                )  is
+      begin
+         Put (Argument.Mark, Output, Prefix, Nested);
+         case Argument.Mode is
+            when Value_Designator =>
+               Put (Argument.Value, Output, Prefix & "|  ", Child);
+            when No_Designator =>
+               null;
+            when Null_Designator =>
+               Put_Line (Output, Prefix & "|__null");
+            when Unspecified_Designator =>
+               Put_Line (Output, Prefix & "|__unspecified");
+            when Global_Designator =>
+               Do_Put (Argument.Designator.all, Prefix & "|  ");
+            when Global_Aspect_Elements_List_Designator =>
+               for Index in Argument.List'First
+                         .. Argument.List'Last - 1
+               loop
+                  Do_Put (Argument.List (Index).all, Prefix & "|  ");
+               end loop;
+               Do_Put
+               (  Argument.List (Argument.List'Last).all,
+                  Prefix & " * "
+               );
+         end case;
+      end Do_Put;
+   begin
+      if Aspect'Length = 0 then
+         return;
+      end if;
+      case Nested is
+         when Top =>
+            Put (Output, Prefix);
+         when Child =>
+            if Prefix'Length >= 3 then
+               Put
+               (  Output,
+                  Prefix (Prefix'First..Prefix'Last - 3) & "|__"
+               );
+            end if;
+         when Inline =>
+            null;
+      end case;
+      Put_Line (Output, "with");
+      for Index in Aspect'First..Aspect'Last - 1 loop
+         Do_Put (Aspect (Index).all, Prefix & "|  ");
+      end loop;
+      Do_Put (Aspect (Aspect'Last).all, Prefix & "   ");
+   end Put;
 
    procedure Put
              (  Tree   : Tokens.Argument_Token;
                 Output : File_Type := Standard_Output;
-                Prefix : String    := ""
+                Prefix : String    := "";
+                Nested : Nesting   := Top
              )  is
+      procedure Do_Put
+                (  Argument : Tokens.Argument_Token;
+                   Prefix   : String;
+                   Nested   : Nesting := Child
+                );
+
+      procedure Do_Put
+                (  Argument : Subtype_Indication_Array;
+                   Prefix   : String;
+                   Nested   : Nesting := Child
+                )  is
+      begin
+         case Nested is
+            when Top =>
+               Put (Output, Prefix);
+            when Child =>
+               if Prefix'Length >= 3 then
+                  Put
+                  (  Output,
+                     Prefix (Prefix'First..Prefix'Last - 3) & "|__"
+                  );
+               end if;
+            when Inline =>
+               null;
+         end case;
+         Put_Line (Output, Image (Argument (Argument'First)));
+         for Index in Argument'First + 1..Argument'Last loop
+            Put (Output, Prefix);
+            Put_Line (Output, Image (Argument (Index)));
+         end loop;
+      end Do_Put;
+
+      procedure Do_Put
+                (  Argument : Array_Type_Definition;
+                   Prefix   : String;
+                   Nested   : Nesting := Child
+                )  is
+      begin
+         case Nested is
+            when Top =>
+               Put (Output, Prefix);
+            when Child =>
+               if Prefix'Length >= 3 then
+                  Put
+                  (  Output,
+                     Prefix (Prefix'First..Prefix'Last - 3) & "|__"
+                  );
+               end if;
+            when Inline =>
+               null;
+         end case;
+         Put_Line (Output, "array");
+         Put (Output, Prefix & "(  ");
+         Put (Output, Image (Argument.Indices (1)));
+         if Argument.Indices'Length = 1 then
+            New_Line (Output);
+         else
+            Put_Line (Output, Prefix & ",");
+         end if;
+         for Index in 2..Argument.Indices'Last loop
+            Put (Output, Prefix & "   ");
+            Put (Output, Image (Argument.Indices (Index)));
+            if Index = Argument.Indices'Last then
+               New_Line (Output);
+            else
+               Put_Line (Output, Prefix & ",");
+            end if;
+         end loop;
+         if Argument.Aliased_Component then
+            Put_Line (Output, Prefix & ")  of");
+         else
+            Put_Line (Output, Prefix & ")  of aliased");
+         end if;
+         Put (Output, Prefix);
+         Put_Line (Output, Image (Argument.Component));
+      end Do_Put;
+
       procedure Do_Put
                 (  Argument : Tokens.Argument_Token;
                    Prefix   : String;
@@ -85,7 +269,7 @@ package body Parsers.Generic_Ada_Parser.Generic_Text_IO is
                   for Index in This.Alternatives'Range loop
                      Put (Output, Prefix & "   when ");
                      Do_Put
-                     (  This.Alternatives (Index).Guard,
+                     (  This.Alternatives (Index).Choice.all,
                         Prefix & "        ",
                         Inline
                      );
@@ -140,7 +324,7 @@ package body Parsers.Generic_Ada_Parser.Generic_Text_IO is
                      );
                   end loop;
                   if This.Has_Else then
-                     Put_Line (Prefix & "else");
+                     Put_Line (Output, Prefix & "else");
                      Put (Output, Prefix & "   ");
                      Do_Put
                      (  This.Else_Alternative,
@@ -286,17 +470,12 @@ package body Parsers.Generic_Ada_Parser.Generic_Text_IO is
                   This : Declare_Expression'Class renames
                          Declare_Expression'Class (Argument.Value.all);
                begin
-                  Put_Line (Output, Prefix & "declare");
+                  Put_Line (Output, "declare");
                   for Index in This.Items'Range loop
+                     Put (Output, Prefix & "   ");
                      declare
                         Item : Declare_Token renames This.Items (Index);
                      begin
-                        Put (Output, Prefix & "   ");
-                        Do_Put
-                        (  Item.Value.Name,
-                           Prefix & "   ",
-                           Inline
-                        );
                         if Item.Value.all in Declare_Renaming_Item then
                            declare
                               Object : Declare_Renaming_Item renames
@@ -306,11 +485,21 @@ package body Parsers.Generic_Ada_Parser.Generic_Text_IO is
                            begin
                               Put
                               (  Output,
-                                 Prefix & "      renames "
+                                 Image (Object.Name.Value.all)
                               );
+                              if Object.Has_Mark then
+                                 Put (Output, " : ");
+                                 Put_Line (Output, Image (Object.Mark));
+                                 Put
+                                 (  Output,
+                                    Prefix & "      renames "
+                                 );
+                              else
+                                 Put (Output, Prefix & " renames ");
+                              end if;
                               Do_Put
                               (  Object.Object,
-                                 Prefix & "              ",
+                                 Prefix & "      ",
                                  Inline
                               );
                            end;
@@ -321,52 +510,34 @@ package body Parsers.Generic_Ada_Parser.Generic_Text_IO is
                                        (  Item.Value.all
                                        );
                            begin
-                              case Object.Kind_Of is
-                                 when Immutable =>
-                                    Put
-                                    (  Output,
-                                       Prefix & "      : constant "
-                                    );
-                                    Do_Put
-                                    (  Object.Object,
-                                       Prefix & "                 ",
-                                       Inline
-                                    );
-                                    Put
-                                    (  Output,
-                                       Prefix & "         := "
-                                    );
-                                    Do_Put
-                                    (  Object.Value,
-                                       Prefix & "            ",
-                                       Inline
-                                    );
-                                 when Initialized =>
-                                    Put (Output, Prefix & "      : ");
-                                    Do_Put
-                                    (  Object.Object,
-                                       Prefix & "        ",
-                                       Inline
-                                    );
-                                    Put
-                                    (  Output,
-                                       Prefix & "          := "
-                                    );
-                                    Do_Put
-                                    (  Object.Value,
-                                       Prefix & "             ",
-                                       Inline
-                                    );
-                                 when Uninitialized =>
-                                    Put (Output, Prefix & "      : ");
-                                    Do_Put
-                                    (  Object.Object,
-                                       Prefix & "        ",
-                                       Inline
-                                    );
-                              end case;
+                              Put (Output, Image (Object.Names));
+                              Put (Output, " : constant ");
+                              if Object.Array_Object then
+                                 Do_Put
+                                 (  Object.Definition.all,
+                                    Prefix & "                ",
+                                    Inline
+                                 );
+                              else
+                                 Do_Put
+                                 (  Object.Object,
+                                    Prefix & "                ",
+                                    Inline
+                                 );
+                              end if;
+                              Put (Output, Prefix & "      := ");
+                              Do_Put
+                              (  Object.Value,
+                                 Prefix & "            ",
+                                 Inline
+                              );
                            end;
                         end if;
+                        Put
+                        (  Item.Value.Aspects,
+                           Output,
+                           Prefix & "         "
+                        );
                      end;
                   end loop;
                   Put_Line (Output, Prefix & "begin");
@@ -385,29 +556,51 @@ package body Parsers.Generic_Ada_Parser.Generic_Text_IO is
          end case;
       end Do_Put;
    begin
-      Do_Put (Tree, Prefix, Top);
+      Do_Put (Tree, Prefix, Nested);
+   end Put;
+
+   function Get_Name (Name : String) return String is
+   begin
+      for Index in reverse Name'Range loop
+         if Name (Index) = '.' then
+            return Name;
+         end if;
+      end loop;
+      return Name & ".txt";
+   end Get_Name;
+
+   procedure Put
+             (  Aspect : Aspect_Items_Array;
+                Name   : String;
+                Prefix : String  := "";
+                Nested : Nesting := Top
+             )  is
+      File   : constant String := Get_Name (Name);
+      Output : File_Type;
+   begin
+      Create (Output, Out_File, File);
+      begin
+         Put (Aspect, Output, Prefix, Nested);
+         Close (Output);
+      exception
+         when others =>
+            Close (Output);
+            raise;
+      end;
    end Put;
 
    procedure Put
              (  Tree   : Tokens.Argument_Token;
                 Name   : String;
-                Prefix : String := ""
+                Prefix : String  := "";
+                Nested : Nesting := Top
              )  is
-      function Get_Name return String is
-      begin
-         for Index in reverse Name'Range loop
-            if Name (Index) = '.' then
-               return Name;
-            end if;
-         end loop;
-         return Name & ".txt";
-      end Get_Name;
-      File   : constant String := Get_Name;
+      File   : constant String := Get_Name (Name);
       Output : File_Type;
    begin
       Create (Output, Out_File, File);
       begin
-         Put (Tree, Output, Prefix);
+         Put (Tree, Output, Prefix, Nested);
          Close (Output);
       exception
          when others =>

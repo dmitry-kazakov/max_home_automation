@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2004       --
 --                                                                    --
---                                Last revision :  11:48 10 Aug 2025  --
+--                                Last revision :  10:48 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -105,5 +105,13 @@ package Parsers is
 --
 
    Encoding_Error : constant String := "Illegal UTF-8 encoding at ";
+--
+-- Nesting -- Of the subtree
+--
+--    Top    - Output as a top node
+--    Child  - Output as a child node (a list element)
+--    Inline - Output as a continuation of an output line
+--
+   type Nesting is (Top, Child, Inline);
 
 end Parsers;

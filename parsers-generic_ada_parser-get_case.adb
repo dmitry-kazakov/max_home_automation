@@ -3,7 +3,7 @@
 --     Parsers.Generic_Ada_Parser                  Luebeck            --
 --        Get_Case                                 Summer, 2025       --
 --  Separate body implementation                                      --
---                                Last revision :  11:48 10 Aug 2025  --
+--                                Last revision :  10:48 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -32,25 +32,27 @@ separate (Parsers.Generic_Ada_Parser)
                 Argument : out Tokens.Argument_Token;
                 Left     : Location_Type
              )  is
-   Count      : Natural       := 0;
-   Where      : Location_Type := Link (Code);
-   Others_At  : Location_Type := Where;
-   Got_Others : Boolean       := False;
-   Got_It     : Boolean;
-   Selector   : Argument_Token;
-   Default    : Argument_Token;
+   use Case_Alternatives_Stack;
 
-   procedure Get (Text : String; Delimited : Boolean := True) is
+   type Case_Expression_Ptr is access Case_Expression;
+   for Case_Expression_Ptr'Storage_Pool use Context.Pool.all;
+
+   Where    : constant Location_Type := Link (Code);
+   Selector : Argument_Token;
+   Pair     : Case_Alternative;
+
+   function Get (Text : String; Delimited : Boolean := True)
+      return Boolean is
+      Got_It : Boolean;
    begin
       Get_Delimited (Code, Text, Delimited, Got_It);
+      return Got_It;
    end;
 begin
    Get_Blank (Context, Code);
    Lexers.Parse (Context, Code, Selector);
    Get_Blank (Context, Code);
-   Set_Pointer (Code, Get_Pointer (Code));
-   Get ("is");
-   if not Got_It then
+   if not Get ("is") then
       Raise_Exception
       (  Parsers.Syntax_Error'Identity,
          "'is' is expected at " & Image (Link (Code))
@@ -58,115 +60,72 @@ begin
    end if;
    for Index in Positive'Range loop
       Get_Blank (Context, Code);
-      Set_Pointer (Code, Get_Pointer (Code));
-      Get ("when");
-      if not Got_It then
+      if not Get ("when") then
          Raise_Exception
          (  Parsers.Syntax_Error'Identity,
             "'when' is expected at " & Image (Link (Code))
          );
-      end if;
-      Get_Blank (Context, Code);
-      Set_Pointer (Code, Get_Pointer (Code));
-      Get ("others");
-      if Got_It then
-         if Index = 1 then
-            Raise_Exception
-            (  Parsers.Syntax_Error'Identity,
-               (  "'others' choice is the first variant specified at "
-               &  Image (Link (Code))
-            )  );
-         elsif Got_Others then
-            Raise_Exception
-            (  Parsers.Syntax_Error'Identity,
-               (  "'others' choice appeared at "
-               &  Image (Others_At)
-               & " is duplicated at "
-               &  Image (Link (Code))
-            )  );
-         end if;
+      elsif Get ("others") then
          Get_Blank (Context, Code);
-         Set_Pointer (Code, Get_Pointer (Code));
-         Get ("=>", False);
-         if not Got_It then
+         if not Get ("=>", False) then
             Raise_Exception
             (  Parsers.Syntax_Error'Identity,
-               (  "'=>' is expected after 'others' at "
-               &  Image (Link (Code))
-            )  );
-         end if;
-         Got_Others := True;
-         Others_At  := Link (Code);
-         Get_Blank (Context, Code);
-         Lexers.Parse (Context, Code, Default);
-         Where := Where & Default.Location;
-      else
-         if Got_Others then
-            Raise_Exception
-            (  Parsers.Syntax_Error'Identity,
-               (  "'others' choice at "
-               &  Image (Others_At)
-               & " is followed by another variant at "
-               &  Image (Link (Code))
-            )  );
-         end if;
-         Count := Count + 1;
-         Get_Blank (Context, Code);
-         Lexers.Parse (Context, Code, Argument);
-         Push (Context, Argument);
-         Get_Blank (Context, Code);
-         Set_Pointer (Code, Get_Pointer (Code));
-         Get ("=>", False);
-         if not Got_It then
-            Raise_Exception
-            (  Parsers.Syntax_Error'Identity,
-               "'=>' is expected at " & Image (Link (Code))
+               "'=>' is expected after 'others' at " &
+               Image (Link (Code))
             );
          end if;
-         Get_Blank (Context, Code);
          Lexers.Parse (Context, Code, Argument);
-         Push (Context, Argument);
-      end if;
-      Get (",", False);
-      exit when not Got_It;
-   end loop;
-   declare
-      Line    : Line_Ptr_Type;
-      Pointer : Integer;
-      Last    : Integer;
-   begin
-      Get_Line (Code, Line, Pointer, Last);
-      if Pointer > Last or else Line (Pointer) /= ')' then
-         Raise_Exception
-         (  Parsers.Syntax_Error'Identity,
-            (  "Bracket closing case expression's left bracket at "
-            &  Image (Left)
-            &  " is expected at "
-            &  Image (Link (Code))
-         )  );
-      end if;
-   end;
-   Argument.Value := new Case_Expression (Count, Got_Others);
-   declare
-      Item : Tokens.Arguments.Frame (1..2);
-      This : Case_Expression'Class renames
-             Case_Expression'Class (Argument.Value.all);
-   begin
-      This.Selector := Selector;
-      if Got_Others then
-         This.Others_Alternative := Default;
-      end if;
-      for Index in reverse This.Alternatives'Range loop
+         Get_Blank (Context, Code);
+         if not Has_Bracket (Code) then
+            Raise_Exception
+            (  Parsers.Syntax_Error'Identity,
+               (  "Parenthesis closing the case expression starting at "
+               &  Image (Left)
+               &  " is expected at "
+               &  Image (Link (Code))
+            )  );
+         end if;
          declare
-            Pair : Alternative_Pair renames
-                   This.Alternatives (Index);
+            Result : constant Case_Expression_Ptr :=
+                          new Case_Expression (Index - 1, True);
+            This   : Case_Expression renames Result.all;
          begin
-            Pop (Context, Item);
-            Pair.Guard := Item (1);
-            Pair.Value := Item (2);
+            This.Selector := Selector;
+            This.Others_Alternative := Argument;
+            for Index in reverse This.Alternatives'Range loop
+               Pop (Context, This.Alternatives (Index));
+            end loop;
+            Argument.Value    := This'Unchecked_Access;
+            Argument.Location := Where & Argument.Location;
+            return;
          end;
-      end loop;
-      Argument.Location :=
-         Where & This.Alternatives (Count).Value.Location;
-   end;
+      end if;
+      Get_Discrete_Choice_List (Context, Code, Pair.Choice);
+      Lexers.Parse (Context, Code, Pair.Value);
+      Push (Context, Pair);
+      if not Get (",", False) then
+         if not Has_Bracket (Code) then
+            Raise_Exception
+            (  Parsers.Syntax_Error'Identity,
+               (  "Parenthesis closing the case expression starting at "
+               &  Image (Left)
+               &  " is expected at "
+               &  Image (Link (Code))
+            )  );
+         end if;
+         declare
+            Result : constant Case_Expression_Ptr :=
+                          new Case_Expression (Index, False);
+            This   : Case_Expression renames Result.all;
+         begin
+            This.Selector := Selector;
+            for Index in reverse This.Alternatives'Range loop
+               Pop (Context, This.Alternatives (Index));
+            end loop;
+            Argument.Value    := This'Unchecked_Access;
+            Argument.Location := Where & Argument.Location;
+            return;
+         end;
+      end if;
+   end loop;
 end Get_Case;

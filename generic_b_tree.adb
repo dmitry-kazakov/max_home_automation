@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Spring, 2014       --
 --                                                                    --
---                                Last revision :  18:00 18 Aug 2022  --
+--                                Last revision :  10:48 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -30,7 +30,6 @@ with Ada.IO_Exceptions;  use Ada.IO_Exceptions;
 with Ada.Tags;           use Ada.Tags;
 
 with Ada.Unchecked_Deallocation;
---with Ada.Text_IO, Strings_Edit.Integers, System.Storage_Elements;
 
 package body Generic_B_Tree is
 

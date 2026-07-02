@@ -3,7 +3,7 @@
 --     Parsers.Generic_Token                       Luebeck            --
 --  Interface                                      Winter, 2004       --
 --                                                                    --
---                                Last revision :  11:37 13 Oct 2007  --
+--                                Last revision :  15:25 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -84,6 +84,7 @@ generic
       return Boolean is <>;
 package Parsers.Generic_Token is
    use Sources;
+   subtype Token_Source_Type is Sources.Source_Type;
 --
 -- Table_Token -- A lexeme to recognize in the source
 --

@@ -3,7 +3,7 @@
 --     Test_Unbounded_Integers                    Luebeck            --
 --  Test                                           Winter, 2024       --
 --                                                                    --
---                                Last revision :  17:53 15 Jan 2025  --
+--                                Last revision :  15:25 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -407,6 +407,11 @@ begin
          end if;
       end Check;
    begin
+      Check
+      (  X => Value ("3"),
+         Y => Value ("-3"),
+         R => Value ("0")
+      );
       Check
       (  X => Value ("76457688543397543207896535678900561234326478098"),
          Y => Value ("145674686357948906756438976521900875"),
@@ -817,7 +822,6 @@ begin
          R => "1"
       );
    end;
---end if;
    declare
       procedure Check (X, Y, Q, R : String) is
          Q1 : constant Unbounded_Integer := Value (X) / Value (Y);

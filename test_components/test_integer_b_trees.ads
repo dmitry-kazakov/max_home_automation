@@ -1,9 +1,9 @@
 --                                                                    --
 --  package                         Copyright (c)  Dmitry A. Kazakov  --
 --     Test_Integer_B_Trees                        Luebeck            --
---  Instantiation                                  Spring, 2014       --
+--  Instantiation                                  Summer, 2026       --
 --                                                                    --
---                                Last revision :  18:00 18 Aug 2022  --
+--                                Last revision :  15:25 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --

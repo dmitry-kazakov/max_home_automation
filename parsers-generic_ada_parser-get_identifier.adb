@@ -3,7 +3,7 @@
 --     Parsers.Generic_Ada_Parser.                 Luebeck            --
 --        Get_Identifier                           Winter, 2025       --
 --  Separate body implementation                                      --
---                                Last revision :  11:48 10 Aug 2025  --
+--                                Last revision :  10:48 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -27,7 +27,8 @@
 
 separate (Parsers.Generic_Ada_Parser) 
    procedure Get_Identifier
-             (  Code     : in out Lexers.Lexer_Source_Type;
+             (  Context  : in out Ada_Expression;
+                Code     : in out Lexers.Lexer_Source_Type;
                 Line     : String;
                 Pointer  : Integer;
                 Argument : out Tokens.Argument_Token
@@ -55,12 +56,15 @@ begin
    Malformed := Malformed or Underline;
    Set_Pointer (Code, Index);
    Argument.Location := Link (Code);
-   Argument.Value := new Identifier (Index - Pointer);
    declare
-      This : Identifier renames Identifier (Argument.Value.all);
+      type Arena_Ptr is access Identifier;
+      for Arena_Ptr'Storage_Pool use Context.Pool.all;
+      Result : constant Arena_Ptr := new Identifier (Index - Pointer);
+      This   : Identifier renames Result.all;
    begin
       This.Malformed := Malformed;
       This.Value     := Line (Pointer..Index - 1);
+      Argument.Value := This'Unchecked_Access;
    end;
 exception
    when Data_Error =>

@@ -3,7 +3,7 @@
 --     Parsers.Generic_Ada_Parser.                 Luebeck            --
 --        Get_Character_Literal                    Winter, 2004       --
 --  Separate body implementation                                      --
---                                Last revision :  11:48 10 Aug 2025  --
+--                                Last revision :  10:48 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -27,11 +27,15 @@
 
 separate (Parsers.Generic_Ada_Parser) 
    procedure Get_Character_Literal
-             (  Code     : in out Lexers.Lexer_Source_Type;
+             (  Context  : in out Ada_Expression;
+                Code     : in out Lexers.Lexer_Source_Type;
                 Line     : String;
                 Pointer  : Integer;
                 Argument : out Tokens.Argument_Token
              )  is
+   type Arena_Ptr is access Character_Literal;
+   for Arena_Ptr'Storage_Pool use Context.Pool.all;
+   Result : Arena_Ptr;
    Symbol : UTF8_Code_Point;
    Index  : Integer := Pointer + 1;
 begin
@@ -39,10 +43,10 @@ begin
       Get (Line, Index, Symbol);
       if Index <= Line'Last and then ''' = Line (Index) then
          Set_Pointer (Code, Index + 1);
+         Result := new Character_Literal (Index - Pointer - 1);
+         Result.Value      := Line (Pointer + 1..Index - 1);
+         Argument.Value    := Result.all'Unchecked_Access;
          Argument.Location := Link (Code);
-         Argument.Value := new Character_Literal (Index - Pointer - 1);
-         Character_Literal (Argument.Value.all).Value :=
-            Line (Pointer + 1..Index - 1);
          return;
       end if;
    end if;

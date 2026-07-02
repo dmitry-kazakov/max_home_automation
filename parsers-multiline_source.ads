@@ -3,7 +3,7 @@
 --     Parsers.Multiline_Source                    Luebeck            --
 --  Interface                                      Winter, 2004       --
 --                                                                    --
---                                Last revision :  11:24 12 Jul 2025  --
+--                                Last revision :  10:48 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -28,6 +28,8 @@
 --  This  package  provides an implementation of code sources consisting
 --  of several lines. The package defines an abstract base type Source.
 --
+with Strings_Edit;  use Strings_Edit;
+
 with Ada.Finalization;
 with Ada.Unchecked_Deallocation;
 with Parsers.Generic_Source;
@@ -41,7 +43,10 @@ package Parsers.Multiline_Source is
       Line   : Line_Number;
       Column : Integer;
    end record;
-   function "<" (Left, Right : Position) return Boolean;
+   function "<"  (Left, Right : Position) return Boolean;
+   function "<=" (Left, Right : Position) return Boolean;
+   function ">"  (Left, Right : Position) return Boolean;
+   function ">=" (Left, Right : Position) return Boolean;
 --
 -- Location -- File slice from First to previous to Next
 --
@@ -49,6 +54,11 @@ package Parsers.Multiline_Source is
       First : Position;
       Next  : Position;
    end record;
+   function "<" (Left, Right : Location)      return Boolean;
+   function ">" (Left, Right : Location)      return Boolean;
+   function Contains (Left, Right : Location) return Boolean;
+
+   Empty : constant Location;
 
    type String_Ptr is access all String;
 --
@@ -89,6 +99,25 @@ package Parsers.Multiline_Source is
 --
    procedure Initialize (Code : in out Source);
 --
+-- Get -- Location from its textual form
+--
+--    Source  - The text to get location from
+--    Pointer - To start at, advanced after successful completion
+--    Value   - The result
+--
+-- Exceptions :
+--
+--    End_Error    - No location at Pointer found
+--    Data_Error   - Invalid location
+--    Layout_Error - Pointer is not in the range
+--                   Source'First..Source'Last + 1
+--
+   procedure Get
+             (  Source  : String;
+                Pointer : in out Integer;
+                Value   : out Location
+             );
+--
 -- Get_Line -- Read the next line into the buffer
 --
 --    Code - The source code
@@ -126,6 +155,33 @@ package Parsers.Multiline_Source is
                Prefix  : String := "at "
             )  return Location;
 --
+-- Put -- Put location into a string
+--
+--    Destination - The string that accepts the output
+--    Pointer     - The current position in the string
+--    Value       - The value to be put
+--    Field       - The output field
+--    Justify     - Alignment within the field
+--    Fill        - The fill character
+--
+-- This procedure places the location specified by the  parameter  Value
+-- into  the  output  string Destination. The string is written starting
+-- from Destination (Pointer).
+--
+-- Exceptions:
+--
+--      Layout_Error - Pointer is not in Destination'Range or  there  is
+--                     no room for the output.
+--
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Value       : Location;
+                Field       : Natural   := 0;
+                Justify     : Alignment := Left;
+                Fill        : Character := ' '
+             );
+--
 -- Skip -- Advance source to the specified location
 --
 --    Code - The source code
@@ -143,6 +199,25 @@ package Parsers.Multiline_Source is
 --    Any other    - I/O error etc
 --
    procedure Skip (Code : in out Source'Class; Link : Location);
+--
+-- Value -- String to an integer conversion
+--
+--    Source  - The string to be processed
+--
+-- This function gets a location from the string  Source.  The  location
+-- can  be surrounded by spaces and tabs. The whole string Source should
+-- be matched. Otherwise the exception Data_Error is propagated.
+--
+-- Returns :
+--
+--    The location
+--
+-- Exceptions:
+--
+--    Data_Error - Syntax error in the location
+--    End_Error  - There is no location
+--
+   function Value (Source : String) return Location;
 --
 -- Implementations of the Parsers.Generic_Source interface
 --
@@ -185,6 +260,8 @@ private
    pragma Inline (Get_Pointer);
    pragma Inline (Link);
    pragma Inline (Reset_Pointer);
+
+   Empty : constant Location := ((2, 0), (1, 0));
 
    procedure Free is
       new Ada.Unchecked_Deallocation (String, String_Ptr);

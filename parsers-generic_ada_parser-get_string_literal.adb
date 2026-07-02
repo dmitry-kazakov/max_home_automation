@@ -3,7 +3,7 @@
 --     Parsers.Generic_Ada_Parser.                 Luebeck            --
 --        Get_String_Literal                       Winter, 2004       --
 --  Separate body implementation                                      --
---                                Last revision :  11:48 10 Aug 2025  --
+--                                Last revision :  10:48 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -27,7 +27,8 @@
 
 separate (Parsers.Generic_Ada_Parser)
    procedure Get_String_Literal
-             (  Code     : in out Lexers.Lexer_Source_Type;
+             (  Context  : in out Ada_Expression;
+                Code     : in out Lexers.Lexer_Source_Type;
                 Line     : String;
                 Pointer  : Integer;
                 Argument : out Tokens.Argument_Token
@@ -58,11 +59,12 @@ begin
                   );
             end;
             Set_Pointer (Code, Index);
-            Argument.Location := Link (Code);
-            Argument.Value    := new String_Literal (Length);
             declare
-               This : String_Literal renames
-                         String_Literal (Argument.Value.all);
+               type Arena_Ptr is access String_Literal;
+               for Arena_Ptr'Storage_Pool use Context.Pool.all;
+               Result : constant Arena_Ptr :=
+                             new String_Literal (Length);
+               This   : String_Literal renames Result.all;
             begin
                Index := Index - 2;
                for Target in reverse This.Value'Range loop
@@ -73,6 +75,8 @@ begin
                      Index := Index - 1;
                   end if;
                end loop;
+               Argument.Value    := This'Unchecked_Access;
+               Argument.Location := Link (Code);
             end;
             return;
          end if;
@@ -83,7 +87,7 @@ begin
    Set_Pointer (Code, Index);
    Raise_Exception
    (  Parsers.Syntax_Error'Identity,
-      (  "Missing "" in the string literal at "
+      (  "Missing "" closing the string literal at "
       &  Image (Link (Code))
    )  );
 end Get_String_Literal;

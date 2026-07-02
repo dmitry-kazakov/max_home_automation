@@ -3,7 +3,7 @@
 --     Parsers.Generic_Token.                      Luebeck            --
 --        Generic_Token_Lexer                      Winter, 2004       --
 --  Implementation                                                    --
---                                Last revision :  11:48 10 Aug 2025  --
+--                                Last revision :  15:25 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -28,6 +28,7 @@
 with Ada.Exceptions;  use Ada.Exceptions;
 
 package body Parsers.Generic_Token.Generic_Token_Lexer is
+
    use Implementation;
    use Vocabulary;
 --
@@ -41,13 +42,13 @@ package body Parsers.Generic_Token.Generic_Token_Lexer is
 --    The corresponding lexic token
 --
    function Get_Token
-            (  Code  : Source_Type;
+            (  Code  : Token_Source_Type;
                Token : Table_Token
             )  return Lexical_Token;
    pragma Inline (Get_Token);
 
    function Get_Token
-            (  Code  : Source_Type;
+            (  Code  : Token_Source_Type;
                Token : Table_Token
             )  return Lexical_Token is
    begin
@@ -113,7 +114,7 @@ package body Parsers.Generic_Token.Generic_Token_Lexer is
 
    procedure Get_Infix
              (  Context : in out Lexer;
-                Code    : in out Source_Type;
+                Code    : in out Token_Source_Type;
                 Token   : out Lexical_Token;
                 Got_It  : out Boolean
              )  is
@@ -138,7 +139,7 @@ package body Parsers.Generic_Token.Generic_Token_Lexer is
 
    procedure Get_Postfix
              (  Context : in out Lexer;
-                Code    : in out Source_Type;
+                Code    : in out Token_Source_Type;
                 Token   : out Lexical_Token;
                 Got_It  : out Boolean
              )  is
@@ -163,7 +164,7 @@ package body Parsers.Generic_Token.Generic_Token_Lexer is
 
    procedure Get_Prefix
              (  Context : in out Lexer;
-                Code    : in out Source_Type;
+                Code    : in out Token_Source_Type;
                 Token   : out Lexical_Token;
                 Got_It  : out Boolean
              )  is
@@ -188,7 +189,7 @@ package body Parsers.Generic_Token.Generic_Token_Lexer is
 
    procedure On_Association_Error
              (  Context : in out Lexer;
-                Code    : in out Source_Type;
+                Code    : in out Token_Source_Type;
                 Left    : in out Operation_Token;
                 Right   : in out Operation_Token
              )  is
@@ -204,7 +205,7 @@ package body Parsers.Generic_Token.Generic_Token_Lexer is
 
    procedure On_Missing_Operand
              (  Context  : in out Lexer;
-                Code     : in out Source_Type;
+                Code     : in out Token_Source_Type;
                 Argument : out Argument_Token
              )  is
    begin
@@ -217,7 +218,7 @@ package body Parsers.Generic_Token.Generic_Token_Lexer is
 
    procedure On_Missing_Operand
              (  Context   : in out Lexer;
-                Code      : in out Source_Type;
+                Code      : in out Token_Source_Type;
                 Operation : Operation_Token;
                 Argument  : out Argument_Token
              )  is
@@ -230,7 +231,7 @@ package body Parsers.Generic_Token.Generic_Token_Lexer is
 
    procedure On_Missing_Operation
              (  Context   : in out Lexer;
-                Code      : in out Source_Type;
+                Code      : in out Token_Source_Type;
                 Modifier  : Operation_Token;
                 Operation : out Lexical_Token;
                 Got_It    : out Boolean
@@ -247,7 +248,7 @@ package body Parsers.Generic_Token.Generic_Token_Lexer is
 
    procedure On_Missing_Right_Bracket
              (  Context : in out Lexer;
-                Code    : in out Source_Type;
+                Code    : in out Token_Source_Type;
                 Left    : in out Operation_Token;
                 Right   : out Operation_Token
              )  is
@@ -263,7 +264,7 @@ package body Parsers.Generic_Token.Generic_Token_Lexer is
 
    procedure On_Wrong_Comma
              (  Context : in out Lexer;
-                Code    : in out Source_Type;
+                Code    : in out Token_Source_Type;
                 Left    : in out Operation_Token;
                 Comma   : in out Operation_Token
              )  is
@@ -279,7 +280,7 @@ package body Parsers.Generic_Token.Generic_Token_Lexer is
 
    procedure On_Wrong_Right_Bracket
              (  Context : in out Lexer;
-                Code    : in out Source_Type;
+                Code    : in out Token_Source_Type;
                 Left    : in out Operation_Token;
                 Right   : in out Operation_Token;
                 Got_It  : out Boolean

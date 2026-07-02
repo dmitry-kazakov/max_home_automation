@@ -3,7 +3,7 @@
 --     Strings_Edit.                               Luebeck            --
 --        Unbounded_Rational_Edit                  Spring, 2025       --
 --  Interface                                                         --
---                                Last revision :  12:14 29 Mar 2026  --
+--                                Last revision :  10:48 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -544,26 +544,22 @@ package body Strings_Edit.Unbounded_Rational_Edit is
            Put (Text, Index, "+");
         end if;
         if Fraction = 0 then
-           Put
-           (  Text,
-              Index,
-              Get_Mantissa (Round (abs Value)),
-              Base
-           );
+           declare
+              Rounded : constant Unbounded_Integer := Round (abs Value);
+           begin
+              Put (Text, Index, Get_Mantissa (Rounded), Base);
+           end;
         elsif Not_Vulgar_Fraction then
            declare
               Radix   : constant Unbounded_Unsigned :=
                            From_Half_Word (Half_Word (Base));
               Shifted : constant Unbounded_Rational :=
                            abs Value * Radix ** Bit_Count (Fraction);
+              Rounded : constant Unbounded_Integer := Round (Shifted);
+              Exact   : constant Boolean := Rounded = Shifted;
               Start   : constant Integer := Index;
            begin
-              Put
-              (  Text,
-                 Index,
-                 Get_Mantissa (Round (Shifted)),
-                 Base
-              );
+              Put (Text, Index, Get_Mantissa (Rounded), Base);
               declare
                  Length : constant Integer := Index - Start;
               begin

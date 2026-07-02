@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2009       --
 --                                                                    --
---                                Last revision :  12:39 04 Aug 2022  --
+--                                Last revision :  10:48 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -407,7 +407,6 @@ package body SQLite is
       Invalidate (Base.Handle);
    end Close;
 
-
    function Column
             (  Command  : Statement;
                Position : Positive
@@ -517,6 +516,21 @@ package body SQLite is
    begin
       return Natural (Internal (Ptr (Command.Handle).Handle));
    end Column_Count;
+
+   function Column_Name
+            (  Command  : Statement;
+               Position : Positive
+            )  return String is
+      Handle : constant SQLite_Handle := Ptr (Command.Handle).Handle;
+      Index  : constant int           := int (Position) - 1;
+      function Internal
+               (  Statement : SQLite_Handle;
+                  Index     : int
+               )  return chars_ptr;
+      pragma Import (C, Internal, "sqlite3_column_name");
+   begin
+      return Value (Internal (Handle, Index));
+   end Column_Name;
 
    function Column_Type
             (  Command  : Statement;

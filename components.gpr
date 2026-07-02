@@ -339,6 +339,8 @@ project Components is
       "stack_storage-mark_and_release.ads",
       "stack_storage.adb",
       "stack_storage.ads",
+      "stack_storage-text_io.adb",
+      "stack_storage-text_io.ads",
       "storage_streams.adb",
       "storage_streams.ads",
       "strings_edit-continued_fraction_edit.adb",

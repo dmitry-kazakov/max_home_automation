@@ -3,7 +3,7 @@
 --     Parsers.Generic_Lexer                       Luebeck            --
 --  Interface                                      Winter, 2004       --
 --                                                                    --
---                                Last revision :  11:48 10 Aug 2025  --
+--                                Last revision :  10:48 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -486,6 +486,21 @@ package Parsers.Generic_Lexer is
                 Got_It   : out Boolean
              );
 --
+-- On_Success -- Successful parsing call-back
+--
+--    Context - The parsing context
+--    Code    - The source being parsed
+--    Result  - The parsing result
+--
+-- This  procedure  is called after  successful  parsing  to adjust  the
+-- result or the source. The default implementation does nothing.
+--
+   procedure On_Success
+             (  Context : in out Lexer;
+                Code    : in out Source_Type;
+                Result  : in out Argument_Type
+             );
+--
 -- On_Unexpected -- Handler
 --
 --    Context - The parsing context
@@ -563,16 +578,20 @@ package Parsers.Generic_Lexer is
 --
 -- Parse -- Expression in the source
 --
---    Context - The parsing context
---    Code    - The source to parse
---    Result  - The expression result
+--    Context         - The parsing context
+--    Code            - The source to parse
+--  [ Left / Operand ]- Left bracket or operand
+--    Result          - The expression result
 --
 -- Upon successful completion Result is one of the expression. The  Code
 -- cursor  indicates  how  far  the  expression  parsing  gone. Parse is
 -- recursive-call safe  as  long  as  implementations  of  the  abstract
 -- operations do not change Context and Code in an inappropriate way. It
 -- means that an implementation of an operation may in turn  call  Parse
--- to get a subexpression from source if that necessary.
+-- to get a subexpression  from  source  if  that  necessary.  When  the
+-- parameter Left is given,  the  parser  assumes  that  the  expression
+-- starts with this bracket. When Operand is specified the parser starts
+-- with it.
 --
 -- Exceptions :
 --
@@ -581,6 +600,18 @@ package Parsers.Generic_Lexer is
    procedure Parse
              (  Context : in out Lexer'Class;
                 Code    : in out Source_Type;
+                Result  : out Argument_Type
+             );
+   procedure Parse
+             (  Context : in out Lexer'Class;
+                Code    : in out Source_Type;
+                Left    : Operation_Type;
+                Result  : out Argument_Type
+             );
+   procedure Parse
+             (  Context : in out Lexer'Class;
+                Code    : in out Source_Type;
+                Operand : Argument_Type;
                 Result  : out Argument_Type
              );
 ------------------------------------------------------------------------
@@ -778,6 +809,12 @@ package Parsers.Generic_Lexer is
                 Count   : Natural
              );
 --
+-- Mark -- Delegated to the argument stack.  It marks the argument stack
+--         in order to release  it upon successful completion  or error.
+--         See Release.
+--
+   procedure Mark (Context : in out Lexer);
+--
 -- Pop -- Delegated to the argument stack
 --
    procedure Pop
@@ -791,6 +828,13 @@ package Parsers.Generic_Lexer is
              (  Context  : in out Lexer;
                 Argument : Argument_Type
              );
+--
+-- Release -- Delegated  to the argument stack.  This procedure releases
+--            the  argument stack  up to  the mark pushed  by a call  to
+--            Mark.
+--
+   procedure Release (Context : in out Lexer);
+
 private
    pragma Inline (Do_Binary, Do_Postfix, Do_Prefix);
    pragma Inline (Do_Comma);
@@ -802,6 +846,8 @@ private
    pragma Inline (Get_Operation_Stack_Depth);
    pragma Inline (Get_Operation_Stack_Item);
    pragma Inline (Is_Expected);
+   pragma Inline (Pop);
+   pragma Inline (Push);
 --
 -- Lexer -- Type completion
 --

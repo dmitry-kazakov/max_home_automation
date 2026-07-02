@@ -3,7 +3,7 @@
 --     Parsers.Generic_Ada_Parser.                 Luebeck            --
 --        Generic_Text_IO                          Summer, 2025       --
 --  Interface                                                                  --
---                                Last revision :  11:48 10 Aug 2025  --
+--                                Last revision :  10:48 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -32,19 +32,33 @@ package Parsers.Generic_Ada_Parser.Generic_Text_IO is
 --
 -- Put -- Write syntax tree into a file
 --
---    Tree      - The syntax tree
---   [ Output ] - The file or stream to write into
---    Prefix    - The prefix to decorate output
+--    Tree            - The syntax tree or aspect specification
+--  [ Output / Name ] - The file or file name to write into
+--    Prefix          - The prefix to decorate output
 --
    procedure Put
              (  Tree   : Tokens.Argument_Token;
                 Output : File_Type := Standard_Output;
-                Prefix : String    := ""
+                Prefix : String    := "";
+                Nested : Nesting   := Top
              );
    procedure Put
              (  Tree   : Tokens.Argument_Token;
                 Name   : String;
-                Prefix : String := ""
+                Prefix : String  := "";
+                Nested : Nesting := Top
+             );
+   procedure Put
+             (  Aspect : Aspect_Items_Array;
+                Output : File_Type := Standard_Output;
+                Prefix : String    := "";
+                Nested : Nesting   := Top
+             );
+   procedure Put
+             (  Aspect : Aspect_Items_Array;
+                Name   : String;
+                Prefix : String  := "";
+                Nested : Nesting := Top
              );
 
 end Parsers.Generic_Ada_Parser.Generic_Text_IO;

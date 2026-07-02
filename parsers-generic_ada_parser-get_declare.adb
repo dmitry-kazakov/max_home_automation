@@ -3,7 +3,7 @@
 --     Parsers.Generic_Ada_Parser.                 Luebeck            --
 --        Get_Declare                              Summer, 2025       --
 --  Separate body implementation                                      --
---                                Last revision :  11:48 10 Aug 2025  --
+--                                Last revision :  10:48 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -35,53 +35,30 @@ separate (Parsers.Generic_Ada_Parser)
    Got_It : Boolean;
    Count  : Natural := 0;
    Where  : constant Location_Type := Link (Code);
-   Name   : Tokens.Argument_Token;
+   Length : Positive;
    Object : Tokens.Argument_Token;
-   Value  : Tokens.Argument_Token;
 
    procedure Get (Text : String; Delimited : Boolean := True) is
    begin
       Get_Delimited (Code, Text, Delimited, Got_It);
    end;
+
+   function Get_Aspects_Count return Natural is
+      Count : Natural := 0;
+   begin
+      Get ("with");
+      if Got_It then
+         Get_Aspect (Context, Code, Count);
+      end if;
+      return Count;
+   end Get_Aspects_Count;
 begin
    for Index in Positive'Range loop
       Get_Blank (Context, Code);
       Get ("begin");
       exit when Got_It;
       Count := Count + 1;
-      declare
-         Line    : Line_Ptr_Type;
-         Pointer : Integer;
-         Index   : Integer;
-         Last    : Integer;
-         Symbol  : UTF8_Code_Point;
-      begin
-         Get_Line (Code, Line, Pointer, Last);
-         Index := Pointer;
-         begin
-            Get (Line (Pointer..Last), Index, Symbol);
-         exception
-            when Data_Error =>
-               Set_Pointer (Code, Pointer);
-               Set_Pointer (Code, Pointer);
-               Raise_Exception
-               (  Syntax_Error'Identity,
-                  Encoding_Error & Image (Link (Code))
-               );
-         end;
-         if not Is_Identifier_Start (Symbol) then
-            Raise_Exception
-            (  Parsers.Syntax_Error'Identity,
-               "Identifier is expected at " & Image (Link (Code))
-            );
-         end if;
-         Get_Identifier
-         (  Code,
-            Line (Pointer..Last),
-            Pointer,
-            Name
-         );
-      end;
+      Get_Names_List (Context, Code, Length);
       Get_Blank (Context, Code);
       Get (":", False);
       if Got_It then
@@ -89,40 +66,119 @@ begin
          Get ("constant");
          if Got_It then
             Get_Blank (Context, Code);
-            Lexers.Parse (Context, Code, Object);
-            Get_Blank (Context, Code);
-            Get (":=", False);
-            if not Got_It then
+            Get ("access");
+            if Got_It then
                Raise_Exception
                (  Parsers.Syntax_Error'Identity,
-                  "':=' is expected at " & Image (Link (Code))
+                  "Anonymous access type is not allowed in " &
+                  "a declare expression as found at "        &
+                  Image (Link (Code))
                );
             end if;
-            Get_Blank (Context, Code);
-            Lexers.Parse (Context, Code, Value);
-            Argument.Value := new Declare_Object_Item (Immutable);
-         else
-            Lexers.Parse (Context, Code, Object);
-            Get_Blank (Context, Code);
-            Get (":=", False);
-            if Got_It then
+            Get ("array");
+            declare
+               type Arena_Ptr is access Declare_Object_Item;
+               for Arena_Ptr'Storage_Pool use Context.Pool.all;
+               Result : Arena_Ptr;
+            begin
+               if Got_It then
+                  declare
+                     Definition : Array_Type_Definition_Ptr;
+                  begin
+                     Get_Blank (Context, Code);
+                     Get_Array_Type_Definition
+                     (  Context  => Context,
+                        Code     => Code,
+                        Argument => Definition
+                     );
+                     Result :=
+                        new Declare_Object_Item
+                            (  Names_Count   => Length,
+                               Array_Object  => True,
+                               Aspects_Count => Get_Aspects_Count
+                            );
+                     Result.Definition := Definition;
+                  end;
+               else
+                  Get_Blank (Context, Code);
+                  Lexers.Parse (Context, Code, Object);
+                  Result :=
+                     new Declare_Object_Item
+                         (  Names_Count   => Length,
+                            Array_Object  => False,
+                            Aspects_Count => Get_Aspects_Count
+                         );
+                  Result.Object := Object;
+               end if;
+               Pop (Context, Result.Aspects);
+               Pop (Context, Result.Names);
                Get_Blank (Context, Code);
-               Lexers.Parse (Context, Code, Value);
-               Argument.Value := new Declare_Object_Item (Initialized);
-            else
-               Argument.Value := new Declare_Object_Item (Uninitialized);
-            end if;
+               Get (":=", False);
+               if not Got_It then
+                  Raise_Exception
+                  (  Parsers.Syntax_Error'Identity,
+                     "':=' is expected at " & Image (Link (Code))
+                  );
+               end if;
+               Get_Blank (Context, Code);
+               Lexers.Parse (Context, Code, Result.Value);
+               Argument.Value := Result.all'Unchecked_Access;
+               Argument.Location :=
+                  Result.Names (1).Location & Link (Code);
+            end;
+         else
+            declare
+               Not_Null : Boolean;
+               Mark     : Subtype_Mark;
+            begin
+               Get_Not_Null (Context, Code, Not_Null);
+               Get_Subtype_Mark
+               (  Context  => Context,
+                  Code     => Code,
+                  No_Range => True,
+                  Not_Null => Not_Null,
+                  Mark     => Mark
+               );
+               Get ("renames");
+               if not Got_It then
+                  Raise_Exception
+                  (  Parsers.Syntax_Error'Identity,
+                     "Object in declare statement must be constant " &
+                     "at "                                           &
+                     Image (Link (Code))
+                  );
+               end if;
+               if Length > 1 then
+                  Raise_Exception
+                  (  Parsers.Syntax_Error'Identity,
+                     "Renaming cannot involve several names " &
+                     "as found at "                           &
+                     Image (Link (Code))
+                  );
+               end if;
+               Get_Blank (Context, Code);
+               Lexers.Parse (Context, Code, Object);             
+               declare
+                  type Arena_Ptr is access Declare_Renaming_Item;
+                  for Arena_Ptr'Storage_Pool use Context.Pool.all;
+                  Result : constant Arena_Ptr :=
+                                new Declare_Renaming_Item
+                                    (  True,
+                                       Get_Aspects_Count
+                                    );
+                  This   : Declare_Renaming_Item renames Result.all;
+                  Token  : Tokens.Arguments.Frame (1..1);
+               begin
+                  Argument.Value := This'Unchecked_Access;
+                  This.Mark      := Mark;
+                  This.Object    := Object;
+                  Pop (Context, This.Aspects);
+                  Pop (Context, Token);
+                  This.Name  := Token (1);
+                  Argument.Location := This.Name.Location & Link (Code);
+               end;
+            end;
          end if;
-         declare
-            This : Declare_Object_Item renames
-                   Declare_Object_Item (Argument.Value.all);
-         begin
-            This.Name   := Name;
-            This.Object := Object;
-            if This.Kind_Of in Immutable..Initialized then
-               This.Value := Value;
-            end if;
-         end;
       else
          Get ("renames");
          if not Got_It then
@@ -132,17 +188,34 @@ begin
                &  Image (Link (Code))
             )  );
          end if;
+         if Length > 1 then
+            Raise_Exception
+            (  Parsers.Syntax_Error'Identity,
+               "Renaming cannot involve several names as found at " &
+               Image (Link (Code))
+            );
+         end if;
          Get_Blank (Context, Code);
          Lexers.Parse (Context, Code, Object);
-         Argument.Value := new Declare_Renaming_Item;
+         Get_Blank (Context, Code);
          declare
-            This : Declare_Renaming_Item renames
-                   Declare_Renaming_Item (Argument.Value.all);
+            type Arena_Ptr is access Declare_Renaming_Item;
+            for Arena_Ptr'Storage_Pool use Context.Pool.all;
+            Result : constant Arena_Ptr :=
+                          new Declare_Renaming_Item
+                              (  False,
+                                 Get_Aspects_Count
+                              );
+            This  : Declare_Renaming_Item renames Result.all;
+            Token : Tokens.Arguments.Frame (1..1);
          begin
-            This.Name   := Name;
-            This.Object := Object;
+            Argument.Value := This'Unchecked_Access;
+            This.Object    := Object;
+            Pop (Context, This.Aspects);
+            Pop (Context, Token);
+            This.Name := Token (1);
+            Argument.Location := This.Name.Location & Link (Code);
          end;
-         Argument.Location := Name.Location & Link (Code);
       end if;
       Push (Context, Argument);
       Get_Blank (Context, Code);
@@ -155,46 +228,43 @@ begin
          )  );
       end if;
    end loop;
-   Get_Blank (Context, Code);
-   Lexers.Parse (Context, Code, Value);
-   Get_Blank (Context, Code);
    declare
-      Line    : Line_Ptr_Type;
-      Pointer : Integer;
-      Last    : Integer;
+      type Arena_Ptr is access Declare_Expression;
+      for Arena_Ptr'Storage_Pool use Context.Pool.all;
+      Result : constant Arena_Ptr := new Declare_Expression (Count);
+      This   : Declare_Expression renames Result.all;
    begin
-      Get_Line (Code, Line, Pointer, Last);
-      if Pointer > Last or else Line (Pointer) /= ')' then
+      Argument.Value := This'Unchecked_Access;
+      Get_Blank (Context, Code);
+      Lexers.Parse (Context, Code, This.Expression);
+      Get_Blank (Context, Code);
+      Get (")", False);
+      if not Got_It then
          Raise_Exception
          (  Parsers.Syntax_Error'Identity,
-            (  "Bracket closing declare expression's left bracket at "
-            &  Image (Left)
-            &  " is expected at "
-            &  Image (Link (Code))
-         )  );
+            "Parenthesis closing the declare expression's left " &
+            "parenthesis at "                                    &
+            Image (Left)                                         &
+            " is expected at "                                   &
+            Image (Link (Code))
+         );
       end if;
-      Argument.Value := new Declare_Expression (Count);
-      declare
-         This : Declare_Expression'Class renames
-                Declare_Expression'Class (Argument.Value.all);
-      begin
-         This.Expression := Value;
-         for Index in reverse This.Items'Range loop
+      Reset_Pointer (Code);
+      for Index in reverse This.Items'Range loop
+         declare
+            Token : Tokens.Arguments.Frame (1..1);
+            Item  : Declare_Token renames This.Items (Index);
+         begin
+            Pop (Context, Token);
             declare
-               Token : Tokens.Arguments.Frame (1..1);
-               Item  : Declare_Token renames This.Items (Index);
+               Value : Tokens.Argument_Token renames Token (1);
             begin
-               Pop (Context, Token);
-               declare
-                  Value : Tokens.Argument_Token renames Token (1);
-               begin
-                  Item.Location := Value.Location;
-                  Item.Value :=
-                     Declare_Item'Class (Value.Value.all)'Access;
-               end;
+               Item.Location := Value.Location;
+               Item.Value :=
+                  Abstract_Declare_Item'Class (Value.Value.all)'Access;
             end;
-         end loop;
-      end;
-      Argument.Location := Where & Link (Code);
+         end;
+      end loop;
    end;
+   Argument.Location := Where & Link (Code);
 end Get_Declare;

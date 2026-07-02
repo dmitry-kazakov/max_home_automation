@@ -3,7 +3,7 @@
 --     Test_Unbounded_Unsigneds                    Luebeck            --
 --  Test                                           Winter, 2024       --
 --                                                                    --
---                                Last revision :  12:14 29 Mar 2026  --
+--                                Last revision :  15:25 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -2736,6 +2736,70 @@ begin
          "BD36460ED93E531D",
          16
       );
+   end;
+   declare
+      procedure Check
+                (  X : String;
+                   R : Half_Word;
+                   E : Boolean;
+                   Base : Positive := 10
+                )  is
+         function Image (X : Boolean) return String is
+         begin
+            if X then
+               return "exact";
+            else
+               return "inexact";
+            end if;
+         end Image;
+
+         Left : constant Unbounded_Unsigned := Value (X, Base);
+         E1   : Boolean;
+         R1   : Half_Word;
+      begin
+         Log (Left, 10, R1, E1);
+         if R1 /= R then
+            Raise_Exception
+            (  Data_Error'Identity,
+               (  X
+               &  " log"
+               &  Half_Word'Image (R)
+               &  " is "
+               &  Image (E1)
+               &  Half_Word'Image (R1)
+               &  " /= "
+               &  Image (E)
+               &  Half_Word'Image (R)
+               &  " (expected)"
+            )  );
+         end if;
+      end Check;
+   begin
+      Put_Line ("Log test");
+      Check (X =>        "1", R => 0, E => True);
+      Check (X =>        "2", R => 0, E => False);
+      Check (X =>        "9", R => 0, E => False);
+      Check (X =>       "10", R => 1, E => True);
+      Check (X =>       "11", R => 1, E => False);
+      Check (X =>       "99", R => 1, E => False);
+      Check (X =>      "100", R => 2, E => True);
+      Check (X =>      "101", R => 2, E => False);
+      Check (X =>      "999", R => 2, E => False);
+      Check (X =>     "1000", R => 3, E => True);
+      Check (X =>     "1001", R => 3, E => False);
+      Check (X =>     "9999", R => 3, E => False);
+      Check (X =>    "10000", R => 4, E => True);
+      Check (X =>    "10001", R => 4, E => False);
+      Check (X =>    "99999", R => 4, E => False);
+      Check (X =>   "100000", R => 5, E => True);
+      Check (X =>   "100001", R => 5, E => False);
+      Check (X =>   "999999", R => 5, E => False);
+      Check (X =>  "1000000", R => 6, E => True);
+      Check (X =>  "1000001", R => 6, E => False);
+      Check (X =>  "9999999", R => 6, E => False);
+      Check (X => "10000000", R => 7, E => True);
+      Check (X => "10000001", R => 7, E => False);
+      Check (X => "99999999", R => 7, E => False);
    end;
    declare
       procedure Check

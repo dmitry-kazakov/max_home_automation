@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2024       --
 --                                                                    --
---                                Last revision :  12:14 29 Mar 2026  --
+--                                Last revision :  10:48 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -1797,6 +1797,88 @@ package body Unbounded_Unsigneds is
    begin
       return Left.Length = 0;
    end Is_Zero;
+
+   procedure Log
+             (  Left  : Unbounded_Unsigned;
+                Base  : Half_Word;
+                Power : out Half_Word;
+                Exact : out Boolean
+             )  is
+   begin
+      if Base < 2 or else Is_Zero (Left) then
+         raise Constraint_Error;
+      elsif Is_One (Left) then
+         Power := 0;
+         Exact := True;
+      elsif Base = 2 then
+         declare
+            Logarithm : Bit_Count;
+            Remainder : Mod_2_Remainder;
+         begin
+            Log2 (Left, Logarithm, Remainder);
+            case Remainder is
+               when -1 =>
+                  Exact := False;
+                  Power := Half_Word (Logarithm) - 1;
+               when 0 =>
+                  Exact := True;
+                  Power := Half_Word (Logarithm);
+               when others =>
+                  Exact := False;
+                  Power := Half_Word (Logarithm);
+            end case;
+         end;
+      else
+         case Compare (Left, Base) is
+            when Less =>
+               Power := 0;
+               Exact := False;
+            when Equal =>
+               Power := 1;
+               Exact := True;
+            when Greater =>
+               declare
+                  Remainder : Unbounded_Unsigned;
+                  High      : Unbounded_Unsigned;
+                  Low       : Unbounded_Unsigned;
+
+                  function Log return Half_Word is
+                     Result : Half_Word := 2;
+                  begin
+                     Set (High, Base);
+                     Set (Low,  Base);
+                     Mul (High, Base);
+                     loop
+                        case Compare (High, Remainder) is
+                           when Less =>
+                              Square (High, Low);
+                              Swap   (High, Low);
+                              Result := Result * 2;
+                           when Equal =>
+                              return Result;
+                           when Greater =>
+                              Result := Result / 2;
+                              Div (Remainder, Low);
+                              case Compare (Remainder, Base) is
+                                 when Less =>
+                                    Exact := False;
+                                    return Result;
+                                 when Equal =>
+                                    Exact := True;
+                                    return Result + 1;
+                                 when Greater =>
+                                    return Result + Log;
+                              end case;
+                        end case;
+                     end loop;
+                  end Log;
+               begin
+                  Set (Remainder, Left);
+                  Power := Log;
+               end;
+         end case;
+      end if;
+   end Log;
 
    function Log2 (Left : Half_Word) return Natural is
       Offset : Natural := 0;
@@ -4777,7 +4859,6 @@ package body Unbounded_Unsigneds is
 
    function "-" (Left : Half_Word; Right : Unbounded_Unsigned)
       return Half_Word is
-      Result : Unbounded_Unsigned := From_Half_Word (Left);
    begin
       if Right.Length > 1 then
          raise Constraint_Error;

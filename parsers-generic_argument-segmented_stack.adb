@@ -4,7 +4,7 @@
 --        Segmented_Stack                          Winter, 2004       --
 --  Implementation                                                    --
 --                                                                    --
---                                Last revision :  11:37 13 Oct 2007  --
+--                                Last revision :  10:48 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -44,11 +44,7 @@ package body Parsers.Generic_Argument.Segmented_Stack is
                 List      : in out Frame
              )  is
    begin
-      if (  (  Mark (Container.Data)
-            -  Top  (Container.Stubs)
-            )
-         >= List'Length
-         )
+      if Mark (Container.Data) - Top (Container.Stubs) >= List'Length
       then
          for Index in reverse List'Range loop
             List (Index) := Top (Container.Data);

@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2004       --
 --                                                                    --
---                                Last revision :  12:14 29 Mar 2026  --
+--                                Last revision :  15:25 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,6 +25,7 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
+with Ada.Command_Line;          use Ada.Command_Line;
 with Ada.Exceptions;            use Ada.Exceptions;
 with Ada.Text_IO;               use Ada.Text_IO;
 with Parsers.Multiline_Source;  use Parsers.Multiline_Source;
@@ -32,6 +33,7 @@ with Strings_Edit.Integers;     use Strings_Edit.Integers;
 with Strings_Edit.Quoted;       use Strings_Edit.Quoted;
 
 with Parsers.Multiline_Source.Text_IO;
+with Stack_Storage;
 with Test_Parsers;
 
 procedure Test_Ada_Parser is
@@ -41,10 +43,11 @@ procedure Test_Ada_Parser is
    type Line_Numers is array (Positive range <>) of Line_Number;
 
    File   : aliased File_Type;
-   Parser : Ada_Expression;
-   Result : Argument_Token;
+   Arena  : aliased Stack_Storage.Pool (2048, 128);
+   Parser : Ada_Expression (Arena'Access);
+   Result : Tokens.Argument_Token;
    Stub   : Node_Ptr;            -- The list of lines to print the tree:
-   Lines  : constant Line_Numers := (1 => 357, 2 => 396);
+   Lines  : constant Line_Numers := (1 => 258);
 begin
    Open (File, In_File, "test_ada_parser.txt");
    declare
@@ -57,12 +60,22 @@ begin
       Last    : Integer;
    begin
       loop
-         Stub := new Mark; -- Mark the stack
+         Get_Line (Code, Line, Pointer, Last);
+         if Strings_Edit.Is_Prefix ("folding>", Line (Pointer..Last))
+         then
+            Set_Pointer (Code, Pointer + 8);
+            Set_Constant_Folding (Parser, True);
+         else
+            Set_Constant_Folding (Parser, False);
+         end if;
+         Push_Stub (Parser, Stub); -- Mark the stack
          begin
             Checked := False;
             Parse (Parser, Code, Result);
             for Index in Lines'Range loop
-               if Link (Code).Next.Line = Lines (Index) then
+               if Lines (Index) in Result.Location.First.Line
+                                .. Result.Location.Next.Line
+               then
                   Test_Parsers.IO.Put (Result);
                   exit;
                end if;
@@ -77,30 +90,26 @@ begin
                   Pointer := Pointer + 1;
                   if Result.Location.First.Column /= First or else
                      Result.Location.Next.Column  /= Next  then
-                     Raise_Exception
-                     (  Data_Error'Identity,
-                        (  Image (Link (Code))
-                        &  ">location: "
-                        &  Image (Result.Location.First.Column)
-                        &  ".."
-                        &  Image (Result.Location.Next.Column)
-                        &  " /= "
-                        &  Image (First)
-                        &  ".."
-                        &  Image (Next)
-                        &  " (expected)"
-                     )  );
-                  elsif Image (Result.Value.all)
-                     /= Line (Pointer..Last) then
-                     Raise_Exception
-                     (  Data_Error'Identity,
-                        (  Image (Link (Code))
-                        &  ">"
-                        &  Image (Result.Value.all)
-                        &  " /= "
-                        &  Line (Pointer..Last)
-                        &  " (expected)"
-                     )  );
+                     Put_Line
+                     (  Image (Link (Code)) &  ">location: "
+                     &  Image (Result.Location.First.Column)
+                     &  ".."
+                     &  Image (Result.Location.Next.Column)
+                     &  " /= "
+                     &  Image (First)
+                     &  ".."
+                     &  Image (Next)
+                     &  " (expected)"
+                     );
+                     raise Data_Error;
+                  elsif Image (Result.Value.all) /= Line (Pointer..Last)
+                  then
+                     Put_Line (Image (Link (Code)));
+                     Put ("     got>");
+                     Put_Line (Image (Result.Value.all));
+                     Put ("expected>");
+                     Put (Line (Pointer..Last));
+                     raise Data_Error;
                   end if;
                   Checked := True;
                   exit;
@@ -134,14 +143,12 @@ begin
                   for Index in reverse Pointer..Last loop
                      if Line (Index) = '?' then
                         if Message /= Line (Index + 1..Last) then
-                           Raise_Exception
-                           (  Data_Error'Identity,
-                              (  Image (Link (Code))
-                              &  Quote (Message)
-                              &  " /= "
-                              &  Quote (Line (Index + 1..Last))
-                              &  " (expected)"
-                           )  );
+                           Put_Line (Image (Link (Code)));
+                           Put (" message>");
+                           Put_Line (Quote (Message));
+                           Put ("expected>");
+                           Put_Line (Quote (Line (Index + 1..Last)));
+                           raise Data_Error;
                         end if;
                         Checked := True;
                         exit;
@@ -154,17 +161,28 @@ begin
                      &  Message
                      );
                   end if;
+               exception
+                  when End_Error =>
+                     Put_Line
+                     (  Image (Link (Code))
+                     &  ">Error : "
+                     &  Message
+                     );
                end;
          end;
-         Free (Stub);      -- Release the tree on the stack
+         Free (Parser, Stub);      -- Release the tree on the stack
          Next_Line (Code);
       end loop;
    exception
       when End_Error =>
          null;
    end;
+   Set_Exit_Status (Success);
 exception
+   when Data_Error =>
+      Set_Exit_Status (Failure);
    when Error : others =>
       Put ("Error :");
       Put_Line (Exception_Information (Error));
+      Set_Exit_Status (Failure);
 end Test_Ada_Parser;

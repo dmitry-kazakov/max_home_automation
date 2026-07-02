@@ -4,7 +4,7 @@
 --        Segmented_Lexer                          Winter, 2004       --
 --  Interface                                                         --
 --                                                                    --
---                                Last revision :  09:20 06 Oct 2019  --
+--                                Last revision :  15:25 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -117,16 +117,20 @@ package Parsers.Generic_Token.Segmented_Lexer is
 --
 -- Parse -- Expression in the source
 --
---    Context - The parsing context
---    Code    - The source to parse
---    Result  - The expression result
+--    Context         - The parsing context
+--    Code            - The source to parse
+--  [ Left / Operand ]- Left bracket or operand
+--    Result          - The expression result
 --
--- Upon successful completion Result  is  one  of  the  expression.  The
--- context state indicates how far the expression parsing gone. Parse is
+-- Upon successful completion Result is one of the expression. The  Code
+-- cursor  indicates  how  far  the  expression  parsing  gone. Parse is
 -- recursive-call safe  as  long  as  implementations  of  the  abstract
 -- operations do not change Context and Code in an inappropriate way. It
 -- means that an implementation of an operation may in turn  call  Parse
--- to get a subexpression from source if that necessary.
+-- to get a subexpression  from  source  if  that  necessary.  When  the
+-- parameter Left is given,  the  parser  assumes  that  the  expression
+-- starts with this bracket. When Operand is specified the parser starts
+-- with it.
 --
 -- Exceptions :
 --
@@ -134,7 +138,19 @@ package Parsers.Generic_Token.Segmented_Lexer is
 --
    procedure Parse
              (  Context : in out Token_Lexer.Implementation.Lexer'Class;
-                Code    : in out Source_Type;
+                Code    : in out Lexer_Source_Type;
+                Result  : out Argument_Token
+             )  renames Token_Lexer.Implementation.Parse;
+   procedure Parse
+             (  Context : in out Token_Lexer.Implementation.Lexer'Class;
+                Code    : in out Lexer_Source_Type;
+                Left    : Operation_Token;
+                Result  : out Argument_Token
+             )  renames Token_Lexer.Implementation.Parse;
+   procedure Parse
+             (  Context : in out Token_Lexer.Implementation.Lexer'Class;
+                Code    : in out Lexer_Source_Type;
+                Operand : Argument_Token;
                 Result  : out Argument_Token
              )  renames Token_Lexer.Implementation.Parse;
 

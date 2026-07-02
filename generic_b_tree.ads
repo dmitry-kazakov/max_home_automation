@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Spring, 2014       --
 --                                                                    --
---                                Last revision :  18:00 18 Aug 2022  --
+--                                Last revision :  10:48 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -43,11 +43,11 @@
 --  The children nodes on the left of the key Km have keys Kl <= Km. The
 --  children nodes on the right of the key have keys Kr > Km
 --
---                                         K7
---                                      [ * | * |   |   ]
---                                       /     \
---                        K3            /       \
---                     [ * | * |   |   ]        [ * | * |   |   ]
+--                                        K7
+--                                     [ * | * |   |   ]
+--                                      /     \
+--                       K3            /       \
+--                    [ * | * |   |   ]        [ * | * |   |   ]
 --                     /     \                  /    \
 --      K1  K2        /       \  K4  K5  K6
 --   [ 0 | 0 | 0 |   ]        [ 0 | 0 | 0 | 0 ]

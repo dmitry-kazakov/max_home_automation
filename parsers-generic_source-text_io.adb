@@ -3,7 +3,7 @@
 --     Parsers.Generic_Source.Text_IO              Luebeck            --
 --  Implementation                                 Winter, 2004       --
 --                                                                    --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  10:48 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -32,11 +32,13 @@ package body Parsers.Generic_Source.Text_IO is
    procedure Put_Line
              (  File        : File_Type;
                 Code        : Source_Type;
-                Expand_Tabs : Boolean := False
+                Expand_Tabs : Boolean := False;
+                Message     : String  := ""
              )  is
       Line    : String  := Get_Line (Code);
       Pointer : constant Integer := Get_Pointer (Code);
       Length  : Natural := 0;
+
       procedure Fill (Expand : Boolean; Replacement : Character) is
          pragma Inline (Fill);
       begin
@@ -59,15 +61,16 @@ package body Parsers.Generic_Source.Text_IO is
          Fill (Expand_Tabs and then Line (Index) = HT, '^');
          Line (Index) := '^';
       end loop;
-      Put_Line (File, "|");
+      Put_Line (File, "|" & Message);
    end Put_Line;
 
    procedure Put_Line
              (  Code        : Source_Type;
-                Expand_Tabs : Boolean := False
+                Expand_Tabs : Boolean := False;
+                Message     : String  := ""
              )  is
    begin
-      Put_Line (Standard_Output, Code, Expand_Tabs);
+      Put_Line (Standard_Output, Code, Expand_Tabs, Message);
    end Put_Line;
 
 end Parsers.Generic_Source.Text_IO;

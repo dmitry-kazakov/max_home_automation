@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2024       --
 --                                                                    --
---                                Last revision :  17:48 17 Jun 2025  --
+--                                Last revision :  10:48 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -359,7 +359,7 @@ package body Unbounded_Integers is
    begin
       if Left.Sign then
          if Right.Sign then
-            return Compare (Left.Mantissa, Right.Mantissa);
+            return Compare (Right.Mantissa, Left.Mantissa);
          else
             return Less;
          end if;
@@ -367,7 +367,7 @@ package body Unbounded_Integers is
          if Right.Sign then
             return Greater;
          else
-            return Compare (Right.Mantissa, Left.Mantissa);
+            return Compare (Left.Mantissa, Right.Mantissa);
          end if;
       end if;
    end Compare;

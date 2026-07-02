@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2009       --
 --                                                                    --
---                                Last revision :  08:30 04 Aug 2022  --
+--                                Last revision :  10:48 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -243,6 +243,25 @@ package SQLite is
 --    Constraint_Error - Command is an invalid handle
 --
    function Column_Count (Command : Statement) return Natural;
+--
+-- Column_Name -- Get row's column name
+--
+--    Command  - The statement being execured
+--    Position - The column number
+--
+-- Returns :
+--
+--    The name of the column Position in the current row set
+--
+-- Exceptions :
+--
+--    Constraint_Error - Command is an invalid handle or else the result
+--                       of SQLIte call is NULL
+--
+   function Column_Name
+            (  Command  : Statement;
+               Position : Positive
+            )  return String;
 --
 -- Column_Type -- Get result row's column type
 --

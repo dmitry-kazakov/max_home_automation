@@ -3,7 +3,7 @@
 --     Parsers.Generic_Ada_Parser                  Luebeck            --
 --  Implementation                                 Winter, 2004       --
 --                                                                    --
---                                Last revision :  11:48 10 Aug 2025  --
+--                                Last revision :  15:25 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -32,21 +32,289 @@ with Strings_Edit.Integers;    use Strings_Edit.Integers;
 with Strings_Edit.Quoted;      use Strings_Edit.Quoted;
 with Strings_Edit.UTF8;        use Strings_Edit.UTF8;
 
+with Ada.Unchecked_Conversion;
+with Ada.Unchecked_Deallocation;
+with Ada.Strings.Maps.Constants;
+with Strings_Edit.Unbounded_Integer_Edit;
+with Strings_Edit.Unbounded_Rational_Edit;
+with Strings_Edit.Unbounded_Unsigned_Edit;
+with Strings_Edit.UTF8.Mapping;
+with System;
+
 with Strings_Edit.UTF8.Categorization;
 use  Strings_Edit.UTF8.Categorization;
 
 package body Parsers.Generic_Ada_Parser is
    use Sources;
+   use Tokens.Arguments;
 
-   Keywords : Keyword_Tables.Dictionary;
---
--- Get_Delimited -- Get delimited text
---
---    Code      - The source
---    Text      - Lower case ASCII text
---    Delimited - Check delimiter after the text
---    Got_It    - True if matched
---
+   Image_Length   : constant := 2048;
+   Fraction       : constant := 15;
+   Keywords       : Keyword_Tables.Dictionary;
+   Operators      : Operator_Tables.Dictionary;
+   Reserved_Words : Reserved_Words_Tables.Dictionary;
+
+   Logical_Priority : constant := 1;
+
+   type Node_Ref is access all Node'Class;
+   function Ref is new Ada.Unchecked_Conversion (Node_Ptr, Node_Ref);
+
+   procedure Free is
+      new Ada.Unchecked_Deallocation
+          (  Unbounded_Integer,
+             Unbounded_Integer_Ptr
+          );
+   procedure Free is
+      new Ada.Unchecked_Deallocation
+          (  Unbounded_Rational,
+             Unbounded_Rational_Ptr
+          );
+   function Fold_And_Then
+            (  Context   : access Ada_Expression'Class;
+               Operation : Tokens.Operation_Token;
+               List      : Tokens.Arguments.Frame
+            )  return Tokens.Argument_Token is separate;
+   function Fold_Inverse
+            (  Context   : access Ada_Expression'Class;
+               Operation : Tokens.Operation_Token;
+               List      : Tokens.Arguments.Frame
+            )  return Tokens.Argument_Token is separate;
+   function Fold_Not
+            (  Context   : access Ada_Expression'Class;
+               Operation : Tokens.Operation_Token;
+               List      : Tokens.Arguments.Frame
+            )  return Tokens.Argument_Token is separate;
+   function Fold_Or_Else
+            (  Context   : access Ada_Expression'Class;
+               Operation : Tokens.Operation_Token;
+               List      : Tokens.Arguments.Frame
+            )  return Tokens.Argument_Token is separate;
+   function Fold_Pow
+            (  Context   : access Ada_Expression'Class;
+               Operation : Tokens.Operation_Token;
+               List      : Tokens.Arguments.Frame
+            )  return Tokens.Argument_Token is separate;
+   function Generic_Boolean_Folder
+            (  Context   : access Ada_Expression'Class;
+               Operation : Tokens.Operation_Token;
+               List      : Tokens.Arguments.Frame
+            )  return Tokens.Argument_Token is separate;
+   function Generic_Dyadic_Folder
+            (  Context     : access Ada_Expression'Class;
+               Operation   : Tokens.Operation_Token;
+               List        : Tokens.Arguments.Frame
+            )  return Tokens.Argument_Token is separate;
+   function Generic_Integer_Folder
+            (  Context   : access Ada_Expression'Class;
+               Operation : Tokens.Operation_Token;
+               List      : Tokens.Arguments.Frame
+            )  return Tokens.Argument_Token is separate;
+   function Generic_Logical_Folder
+            (  Context   : access Ada_Expression'Class;
+               Operation : Tokens.Operation_Token;
+               List      : Tokens.Arguments.Frame
+            )  return Tokens.Argument_Token is separate;
+   function Generic_Unary_Folder
+            (  Context   : access Ada_Expression'Class;
+               Operation : Tokens.Operation_Token;
+               List      : Tokens.Arguments.Frame
+            )  return Tokens.Argument_Token is separate;
+
+   package body Generic_Stack_Access is
+      function From_Pointer is
+         new Ada.Unchecked_Conversion (Pointer_Type, Node_Ptr);
+      function To_Pointer is
+         new Ada.Unchecked_Conversion (Node_Ptr, Pointer_Type);
+
+      procedure Pop
+                (  Context  : in out Ada_Expression'Class;
+                   Pointer  : out Pointer_Type;
+                   Location : out Location_Type
+                )  is
+         Token : Frame (1..1);
+      begin
+         Pop (Context, Token);
+         Pointer  := To_Pointer (Token (1).Value);
+         Location := Token (1).Location;
+      end Pop;
+
+      procedure Push
+                (  Context  : in out Ada_Expression'Class;
+                   Pointer  : Pointer_Type;
+                   Location : Location_Type
+                )  is
+      begin
+         Push
+         (  Context,
+            Tokens.Argument_Token'
+            (  Value    => From_Pointer (Pointer),
+               Location => Location
+         )  );
+      end Push;
+   end Generic_Stack_Access;
+
+   package body Generic_Stack_Object is
+      Token_Size : constant Argument_No :=
+                            Frame'Component_Size / System.Storage_Unit;
+      Item_Size  : constant Argument_No :=
+                   (  (  Object_Type'Max_Size_In_Storage_Elements
+                      +  Token_Size
+                      -  1
+                      )
+                      / Token_Size
+                   );
+      subtype Chunk_Frame is Tokens.Arguments.Frame (1..Item_Size);
+      pragma Assert
+             (  Item_Size
+             <= Chunk_Frame'Max_Size_In_Storage_Elements
+             );
+
+      function From_Object is
+         new Ada.Unchecked_Conversion (Object_Type, Chunk_Frame);
+
+      function To_Object is
+         new Ada.Unchecked_Conversion (Chunk_Frame, Object_Type);
+
+      procedure Pop
+                (  Context : in out Ada_Expression'Class;
+                   Object  : out Object_Type
+                )  is
+         Chunk : Chunk_Frame;
+      begin
+         Pop (Context, Chunk);
+         Object := To_Object (Chunk);
+      end Pop;
+
+      procedure Push
+                (  Context : in out Ada_Expression'Class;
+                   Object  : Object_Type
+                )  is
+         Chunk : Chunk_Frame;
+      begin
+         Chunk := From_Object (Object);
+         for Index in Chunk'Range loop
+            Push (Context, Chunk (Index));
+         end loop;
+      end Push;
+
+   end Generic_Stack_Object;
+
+   package Stubtype_Indication_Stack is
+      new Generic_Stack_Object (Subtype_Indication);
+
+   package Case_Alternatives_Stack is
+      new Generic_Stack_Object (Case_Alternative);
+
+   function Compare (Left, Right : String) return Precedence is
+      use Strings_Edit.UTF8.Mapping;
+      I    : Integer := Left'First;
+      J    : Integer := Right'First;
+      This : UTF8_Code_Point;
+      That : UTF8_Code_Point;
+   begin
+      loop
+         Get (Left, I, This);
+         This := To_Lowercase (This);
+         Get (Right, J, That);
+         That := To_Lowercase (That);
+         if This = That then
+            exit when I > Left'Last;
+            if J > Right'Last then
+               return Greater;
+            end if;
+         elsif This < That then
+            return Less;
+         else
+            return Greater;
+         end if;
+      end loop;
+      if J <= Right'Last then
+         return Less;
+      else
+         return Equal;
+      end if;
+   end Compare;
+
+   function Compare (Left, Right : Node'Class) return Precedence is
+   begin
+      if Left in Identifier then
+         if Right in Identifier then
+            return Compare
+                   (  Identifier (Left).Value,
+                      Identifier (Right).Value
+                   );
+         else
+            return Less;
+         end if;
+      elsif Left in Text_Literal'Class then
+         if Right in Text_Literal'Class then
+            return Compare
+                   (  Text_Literal'Class (Left).Value,
+                      Text_Literal'Class (Right).Value
+                   );
+         else
+            return Greater;
+         end if;
+      else
+         Raise_Exception
+         (  Program_Error'Identity,
+            "Invalid name comparison"
+         );
+      end if;
+   end Compare;
+
+   function Compare (Left, Right : Argument_List) return Precedence is
+      I : Integer := Left'First;
+      J : Integer := Right'First;
+   begin
+      loop
+         case Compare (Left (I).Value.all, Right (J).Value.all) is
+            when Less =>
+               return Less;
+            when Greater =>
+               return Greater;
+            when Equal =>
+               if I = Left'Last then
+                  if J <= Right'Last then
+                     return Less;
+                  else
+                     return Equal;
+                  end if;
+               elsif J = Right'Last then
+                  return Greater;
+               end if;
+         end case;
+         I := I + 1;
+         J := J + 1;
+      end loop;
+   end Compare;
+
+   procedure Free (Item : Tokens.Argument_Token) is
+      Tail : Node'Class renames Item.Value.all;
+   begin
+      if Tail in Universal_Integer then
+         declare
+            Second : Universal_Integer renames
+                     Universal_Integer (Ref (Item.Value).all);
+         begin
+            Free (Second.Value);
+         end;
+      elsif Tail in Universal_Real then
+         declare
+            Second : Universal_Real renames
+                     Universal_Real (Ref (Item.Value).all);
+         begin
+            Free (Second.Value);
+         end;
+      end if;
+   end Free;
+
+   function Get_Constant_Folding (Context : Ada_Expression)
+      return Boolean is
+   begin
+      return Context.Fold;
+   end Get_Constant_Folding;
+
    procedure Get_Delimited
              (  Code      : in out Lexers.Lexer_Source_Type;
                 Text      : String;
@@ -93,6 +361,39 @@ package body Parsers.Generic_Ada_Parser is
       Set_Pointer (Code, Pointer);
    end Get_Delimited;
 
+   function Get_Operator
+            (  Item : Tokens.Argument_Token
+            )  return Operations is
+      use Operator_Tables;
+      Offset : Natural;
+   begin
+      if Item.Value.all in String_Literal then
+         Offset :=
+            Locate (Operators, String_Literal (Item.Value.all).Value);
+      elsif Item.Value.all in Expression then
+         declare
+            This : Expression renames Expression (Item.Value.all);
+         begin
+            if This.Operation = Component then
+               declare
+                  Last : Node'Class renames
+                         This.Operands (This.Operands'Last).Value.all;
+               begin
+                  if Last in String_Literal then
+                     Offset :=
+                        Locate (Operators, String_Literal (Last).Value);
+                  else
+                     return Reserved;
+                  end if;
+               end;
+            end if;
+         end;
+      else
+         return Reserved;
+      end if;
+      return GetTag (Operators, Offset);
+   end Get_Operator;
+
    function "and" (Left, Right : Operations) return Boolean is
    begin
       case Right is
@@ -135,6 +436,13 @@ package body Parsers.Generic_Ada_Parser is
             case Left is
                when Left_Bracket | Left_Index =>
                   return True;
+               when others =>
+                  return True;
+            end case;
+         when Relational =>
+            case Left is
+               when Relational =>
+                  return False;
                when others =>
                   return True;
             end case;
@@ -207,6 +515,13 @@ package body Parsers.Generic_Ada_Parser is
       end case;
    end Is_Inverse;
 
+   function Is_Range (Item : Tokens.Argument_Token) return Boolean is
+      This : Node'Class renames Item.Value.all;
+   begin
+      return This in Identifier and then
+             Equal = Compare (Identifier (This).Value, "range");
+   end Is_Range;
+
    function Group_Inverse (Operation : Operations) return Operations is
    begin
       case Operation is
@@ -247,13 +562,143 @@ package body Parsers.Generic_Ada_Parser is
          return True;
    end Check_Matched;
 
+   function Inequal (Left, Right : Unbounded_Integer) return Boolean is
+   begin
+      return Left /= Right;
+   end Inequal;
+
+   function Inequal (Left, Right : Unbounded_Rational) return Boolean is
+   begin
+      return Left /= Right;
+   end Inequal;
+
+   function Fold_Abs is new Generic_Unary_Folder
+                            (  Unbounded_Integers."abs",
+                               Unbounded_Rationals."abs"
+                            );
+   function Fold_Add is new Generic_Dyadic_Folder
+                            (  Int_Op      => Unbounded_Integers."+",
+                               Int_Rev_Op  => Unbounded_Integers."+",
+                               Real_Op     => Unbounded_Rationals."+",
+                               Real_Rev_Op => Unbounded_Rationals."+"
+                            );
+   function Fold_And is new Generic_Boolean_Folder ("and", True, True);
+   function Fold_Div is new Generic_Dyadic_Folder
+                            (  Int_Op      => Unbounded_Integers."/",
+                               Int_Rev_Op  => Unbounded_Integers."*",
+                               Real_Op     => Unbounded_Rationals."/",
+                               Real_Rev_Op => Unbounded_Rationals."*"
+                            );
+   function Fold_EQ is new Generic_Logical_Folder
+                           (  Unbounded_Integers."=",
+                              Unbounded_Rationals."="
+                           );
+   function Fold_GE is new Generic_Logical_Folder
+                           (  Unbounded_Integers.">",
+                              Unbounded_Rationals.">"
+                           );
+   function Fold_GT is new Generic_Logical_Folder
+                           (  Unbounded_Integers.">=",
+                              Unbounded_Rationals.">="
+                           );
+   function Fold_LE is new Generic_Logical_Folder
+                           (  Unbounded_Integers."<",
+                              Unbounded_Rationals."<"
+                           );
+   function Fold_LT is new Generic_Logical_Folder
+                           (  Unbounded_Integers."<=",
+                              Unbounded_Rationals."<="
+                           );
+   function Fold_Minus is new Generic_Unary_Folder
+                              (  Unbounded_Integers."-",
+                                 Unbounded_Rationals."-"
+                              );
+   function Fold_Mod is new Generic_Integer_Folder
+                            (  Unbounded_Integers."mod"
+                            );
+   function Fold_Mul is new Generic_Dyadic_Folder
+                            (  Int_Op      => Unbounded_Integers."*",
+                               Int_Rev_Op  => Unbounded_Integers."*",
+                               Real_Op     => Unbounded_Rationals."*",
+                               Real_Rev_Op => Unbounded_Rationals."*"
+                            );
+   function Fold_NE is new Generic_Logical_Folder (Inequal, Inequal);
+   function Fold_Or is new Generic_Boolean_Folder ("or", True, False);
+   function Fold_Plus is new Generic_Unary_Folder
+                             (  Unbounded_Integers."+",
+                                Unbounded_Rationals."+"
+                             );
+   function Fold_Rem is new Generic_Integer_Folder
+                            (  Unbounded_Integers."rem"
+                            );
+   function Fold_Sub is new Generic_Dyadic_Folder
+                            (  Int_Op      => Unbounded_Integers."-",
+                               Int_Rev_Op  => Unbounded_Integers."+",
+                               Real_Op     => Unbounded_Rationals."-",
+                               Real_Rev_Op => Unbounded_Rationals."+"
+                            );
+   function Fold_Xor is new Generic_Boolean_Folder ("xor");
+
    function Call
             (  Context   : access Ada_Expression;
                Operation : Tokens.Operation_Token;
                List      : Tokens.Arguments.Frame
             )  return Tokens.Argument_Token is
-      use Tokens.Arguments;
+      type Arena_Ptr is access Expression;
+      for Arena_Ptr'Storage_Pool use Context.Pool.all;
    begin
+      if Context.Fold then
+         case Operation.Operation is
+            when Abs_Value =>
+               return Fold_Abs      (Context, Operation, List);
+            when Add =>
+               return Fold_Add      (Context, Operation, List);
+            when And_Then =>
+               return Fold_And_Then (Context, Operation, List);
+            when Div =>
+               return Fold_Div      (Context, Operation, List);
+            when EQ =>
+               return Fold_EQ       (Context, Operation, List);
+            when GE =>
+               return Fold_GE       (Context, Operation, List);
+            when GT =>
+               return Fold_GT       (Context, Operation, List);
+            when LE =>
+               return Fold_LE       (Context, Operation, List);
+            when Logical_And =>
+               return Fold_And      (Context, Operation, List);
+            when Logical_Not =>
+               return Fold_Not      (Context, Operation, List);
+            when Logical_Or =>
+               return Fold_Or       (Context, Operation, List);
+            when Logical_Xor =>
+               return Fold_Xor      (Context, Operation, List);
+            when LT =>
+               return Fold_LT       (Context, Operation, List);
+            when Modulus =>
+               return Fold_Mod      (Context, Operation, List);
+            when Minus | Add_Inv =>
+               return Fold_Minus    (Context, Operation, List);
+            when Mul =>
+               return Fold_Mul      (Context, Operation, List);
+            when Mul_Inv =>
+               return Fold_Inverse  (Context, Operation, List);
+            when NE =>
+               return Fold_NE       (Context, Operation, List);
+            when Or_Else =>
+               return Fold_Or_Else  (Context, Operation, List);
+            when Plus =>
+               return Fold_Plus     (Context, Operation, List);
+            when Pow =>
+               return Fold_Pow      (Context, Operation, List);
+            when Remainder =>
+               return Fold_Rem      (Context, Operation, List);
+            when Sub =>
+               return Fold_Sub      (Context, Operation, List);
+            when others =>
+               null;
+            end case;
+      end if;
       if Operation.Operation = Allocator and then
          List'Length = 1                     then
          --
@@ -262,11 +707,11 @@ package body Parsers.Generic_Ada_Parser is
          declare
             Second : constant Node_Ptr := List (List'First).Value;
          begin
-            if Second.all in Expression'Class then
+            if Second.all in Expression then
                declare
                   use Descriptors;
-                  Tail : Expression'Class renames
-                         Expression'Class (Second.all);
+                  Tail : Expression renames
+                         Expression (Second.all);
                begin
                   if Tail.Operation = Left_Bracket and then
                      Tail.Count = 1 then
@@ -295,28 +740,22 @@ package body Parsers.Generic_Ada_Parser is
          declare
             Second : constant Node_Ptr := List (List'Last).Value;
          begin
-            if Second.all in Expression'Class then
+            if Second.all in Expression then
                declare
-                  Tail : Expression'Class renames
-                         Expression'Class (Second.all);
+                  Tail : Expression renames
+                         Expression (Second.all);
                begin
                   if Tail.Operation = Left_Bracket then
                      declare
-                        Result : constant Node_Ptr :=
-                                      new Expression (Tail.Count + 1);
+                        Result : constant Arena_Ptr :=
+                           new Expression (Tail.Count + 1, Attribute);
+                        This   : Expression renames Result.all;
                      begin
-                        declare
-                           This : Expression renames
-                                  Expression (Result.all);
-                        begin
-                           This.Operation := Attribute;
-                           This.Location  := Operation.Location;
-                           This.Operands (1) := List (List'First);
-                           This.Operands (2..This.Count) :=
-                              Tail.Operands;
-                        end;
+                        This.Location  := Operation.Location;
+                        This.Operands (1) := List (List'First);
+                        This.Operands (2..This.Count) := Tail.Operands;
                         return
-                        (  Result,
+                        (  This'Unchecked_Access,
                            Operation.Location & Link (List)
                         );
                      end;
@@ -326,15 +765,21 @@ package body Parsers.Generic_Ada_Parser is
          end;
       end if;
       declare
-         Result : constant Node_Ptr := new Expression (List'Length);
-         This   : Expression renames Expression (Result.all);
+         Result : constant Arena_Ptr :=
+                  new Expression (List'Length, Operation.Operation);
+         This   : Expression renames Result.all;
       begin
-         This.Operation := Operation.Operation;
-         This.Location  := Operation.Location;
+         This.Location := Operation.Location;
          for Argument in List'Range loop
             This.Operands (Integer (Argument)) := List (Argument);
          end loop;
-         return (Result, Operation.Location & Link (List));
+         if Context.Fold then
+            Store (Context.all, This.Operands);
+         end if;
+         return
+         (  This'Unchecked_Access,
+            Operation.Location & Link (List)
+         );
       end;
    end Call;
 
@@ -344,10 +789,33 @@ package body Parsers.Generic_Ada_Parser is
                Right   : Tokens.Operation_Token;
                List    : Tokens.Arguments.Frame
             )  return Tokens.Argument_Token is
+      procedure Check_Aggregate is
+         Have_Keyed : Boolean := False;
+      begin
+         for Index in List'First..List'Last loop
+            declare
+               This : Tokens.Argument_Token renames List (Index);
+            begin
+               if This.Value.all in Expression and then
+                  Expression (This.Value.all).Operation = Associate
+               then
+                  Have_Keyed := True;
+               elsif Have_Keyed then
+                  Raise_Exception
+                  (  Parsers.Syntax_Error'Identity,
+                     "A positional association appears after a " &
+                     "named one at "                             &
+                     Image (This.Location)
+                  );
+               end if;
+            end;
+         end loop;
+      end Check_Aggregate;
    begin
       if List'Length = 1 then
          case Left.Operation is
             when Left_Bracket => -- Check if we can drop the brackets
+               Check_Aggregate;
                declare
                   use Descriptors;
                   This : Node_Ptr renames List (List'First).Value;
@@ -387,17 +855,19 @@ package body Parsers.Generic_Ada_Parser is
                         end if;
                      end;
                   end if;
-                  if This.all in Expression'Class      then
-                     if Operation.Class = Operator and then
-                        Operation.Operation.Operation = Attribute
-                     then
-                        return -- X'(...) case
-                        (  This,
-                           Left.Location & Right.Location & Link (List)
-                        );
-                     end if;
-                     case Expression'Class (This.all).Operation is
-                        when Associate | Extend =>
+                  if This.all in Expression then
+                     --  if Operation.Class = Operator and then
+                     --     Operation.Operation.Operation = Attribute
+                     --  then
+                     --     return -- X'(...) case
+                     --     (  This,
+                     --        Left.Location & Right.Location & Link (List)
+                     --     );
+                     --  end if;
+                     case Expression (This.all).Operation is
+                        when Associate    | Alternative | Attribute |
+                             Component    | Extend      | Ellipsis  |
+                             Extend_Delta =>
                            goto Keep;  -- (X => Y) or (X with Y)
                         when others =>
                            return
@@ -407,12 +877,12 @@ package body Parsers.Generic_Ada_Parser is
                               &  Link (List)
                            )  );
                      end case;
-                  elsif This.all not in For_Expression'Class then
+                  elsif This.all not in For_Expression then
                      return -- (X)
                      (  This,
                         Left.Location & Right.Location & Link (List)
                      );
-                   end if;
+                  end if;
                end;
             when Left_Square_Bracket =>
                if List (List'First).Value.all in
@@ -422,29 +892,108 @@ package body Parsers.Generic_Ada_Parser is
                      Left.Location & List (List'First).Location
                   );
                end if;
+               Check_Aggregate;
             when others =>
                null;
          end case;
+      elsif Left.Operation = Left_Index then
+         declare
+            Have_Keyed : Boolean := False;
+         begin
+            for Index in List'First + 1..List'Last loop
+               declare
+                  This : Tokens.Argument_Token renames List (Index);
+               begin
+                  if This.Value.all in Expression and then
+                     Expression (This.Value.all).Operation = Associate
+                  then
+                     Have_Keyed := True;
+                  elsif Have_Keyed then
+                     Raise_Exception
+                     (  Parsers.Syntax_Error'Identity,
+                        "A positional parameter appears after a " &
+                        "named one at "                           &
+                        Image (This.Location)
+                     );
+                  end if;
+               end;
+            end loop;
+         end;
       end if;
 <<Keep>>
       declare
-         Result : constant Node_Ptr := new Expression (List'Length);
+         type Arena_Ptr is access Expression;
+         for Arena_Ptr'Storage_Pool use Context.Pool.all;
+         Result : constant Arena_Ptr :=
+                       new Expression (List'Length, Left.Operation);
+         This   : Expression renames Result.all;
       begin
-         declare
-            This : Expression renames Expression (Result.all);
-         begin
-            This.Operation := Left.Operation;
-            This.Location  := Left.Location & Right.Location;
-            for Argument in List'Range loop
-               This.Operands (Integer (Argument)) := List (Argument);
-            end loop;
-         end;
+         This.Location := Left.Location & Right.Location;
+         for Argument in List'Range loop
+            This.Operands (Integer (Argument)) := List (Argument);
+         end loop;
+         if Context.Fold then
+            Store (Context.all, This.Operands);
+         end if;
          return
-         (  Result,
+         (  This'Unchecked_Access,
             Left.Location & Right.Location & Link (List)
          );
       end;
    end Enclose;
+
+   procedure Free
+             (  Context : Ada_Expression;
+                Pointer : in out Node_Ptr
+             )  is
+      type Arena_Ptr is access Node'Class;
+      for Arena_Ptr'Storage_Pool use Context.Pool.all;
+      procedure Free_Arena is
+         new Ada.Unchecked_Deallocation (Node'Class, Arena_Ptr);
+      function To_Arena_Ptr is
+         new Ada.Unchecked_Conversion (Node_Ptr, Arena_Ptr);
+      Ptr : Arena_Ptr := To_Arena_Ptr (Pointer);
+   begin
+      Free_Arena (Ptr);
+      Pointer := null;
+   end Free;
+
+   function Generic_Image
+            (  Item       : Item_Type;
+               Max_Length : Output_Length := Output_Length'Last
+            )  return String is
+      Length : Integer := Image_Length;
+   begin
+      loop
+         declare
+            Result  : String (1..Length);
+            Pointer : Integer := 1;
+         begin
+            Put (Result, Pointer, Item);
+            Pointer := Pointer - 1;
+            if Pointer <= Max_Length then
+               return Result (1..Pointer);
+            else
+               declare
+                  Half : constant Integer := (Max_Length - 3) / 2;
+               begin
+                  return Result (1..Max_Length - Half - 3) &
+                         "..."                             &
+                         Result (Pointer - Half + 1..Pointer);
+               end;
+            end if;
+         exception
+            when Layout_Error =>
+               Length := Length * 3 / 2;
+         end;
+      end loop;
+   end Generic_Image;
+
+   procedure Get_Array_Type_Definition
+             (  Context  : in out Ada_Expression;
+                Code     : in out Lexers.Lexer_Source_Type;
+                Argument : out Array_Type_Definition_Ptr
+             )  is separate;
 
    function Get_Class (Item : Case_Expression) return Node_Class is
    begin
@@ -456,7 +1005,8 @@ package body Parsers.Generic_Ada_Parser is
       return Declare_Node;
    end Get_Class;
 
-   function Get_Class (Item : Declare_Item) return Node_Class is
+   function Get_Class (Item : Abstract_Declare_Item)
+      return Node_Class is
    begin
       return Declare_Item_Node;
    end Get_Class;
@@ -491,6 +1041,12 @@ package body Parsers.Generic_Ada_Parser is
       return Term_Node;
    end Get_Class;
 
+   procedure Get_Aspect
+             (  Context : in out Ada_Expression;
+                Code    : in out Lexers.Lexer_Source_Type;
+                Count   : out Positive
+             )  is separate;
+
    procedure Get_Case
              (  Context  : in out Ada_Expression;
                 Code     : in out Lexers.Lexer_Source_Type;
@@ -499,14 +1055,16 @@ package body Parsers.Generic_Ada_Parser is
              )  is separate;
 
    procedure Get_Character_Literal
-             (  Code     : in out Lexers.Lexer_Source_Type;
+             (  Context  : in out Ada_Expression;
+                Code     : in out Lexers.Lexer_Source_Type;
                 Line     : String;
                 Pointer  : Integer;
                 Argument : out Tokens.Argument_Token
              )  is separate;
 
    procedure Get_Identifier
-             (  Code     : in out Lexers.Lexer_Source_Type;
+             (  Context  : in out Ada_Expression;
+                Code     : in out Lexers.Lexer_Source_Type;
                 Line     : String;
                 Pointer  : Integer;
                 Argument : out Tokens.Argument_Token
@@ -518,6 +1076,92 @@ package body Parsers.Generic_Ada_Parser is
                 Argument : out Tokens.Argument_Token;
                 Left     : Location_Type
              )  is separate;
+
+   procedure Get_Discrete_Choice_List
+             (  Context : in out Ada_Expression;
+                Code    : in out Lexers.Lexer_Source_Type;
+                List    : out Subtype_Indication_Array_Ptr
+             )  is
+      type Indication_Array_Ref is access Subtype_Indication_Array;
+      for Indication_Array_Ref'Storage_Pool use Context.Pool.all;
+      Count : Positive;
+      Ref   : Indication_Array_Ref;
+   begin
+      Get_Ranges_List (Context, Code, True, "", "|", "=>", Count);
+      Ref := new Subtype_Indication_Array (1..Count);
+      Pop (Context, Ref.all);
+      if Count > 1 then
+         for Index in Ref'Range loop
+            if Is_Name (Ref (Index).Mark.Name, "others") then
+               Raise_Exception
+               (  Parsers.Syntax_Error'Identity,
+                  (  "'others' is not the single choice in "
+                  &  "the list at "
+                  &  Image (Ref (Index).Mark.Name.Location)
+               )  );
+            end if;
+         end loop;
+      end if;
+      List := Ref.all'Unchecked_Access;
+   end Get_Discrete_Choice_List;
+
+   procedure Get_Expanded_Name
+             (  Context    : in out Ada_Expression;
+                Code       : in out Lexers.Lexer_Source_Type;
+                No_Strings : Boolean;
+                Argument   : out Tokens.Argument_Token
+             )  is
+      Got_It : Boolean;
+      Item   : Tokens.Argument_Token;
+      Count  : Positive := 1;
+   begin
+      loop
+         Get_Simple_Name (Context, Code, False, Item);
+         if No_Strings and then Item.Value.all not in Identifier then
+            Raise_Exception
+            (  Parsers.Syntax_Error'Identity,
+               "Identifier is expected at " & Image (Item.Location)
+            );
+         end if;
+         Get_Blank (Context, Code);
+         Get_Delimited (Code, ".", False, Got_It);
+         exit when not Got_It;
+         Push (Context, Item);
+         Count := Count + 1;
+      end loop;
+      if Count > 1 then
+         declare
+            type Arena_Ptr is access Expression;
+            for Arena_Ptr'Storage_Pool use Context.Pool.all;
+            Result : constant Arena_Ptr :=
+                          new Expression
+                              (  Count     => Count,
+                                 Operation => Component
+                              );
+            This   : Expression renames Result.all;
+            List   : Frame (1..1);
+         begin
+            Argument.Value := This'Unchecked_Access;
+            This.Operands (Count) := Item;
+            for Index in reverse 1..Count - 1 loop
+               Pop (Context, List);
+               if List (1).Value.all not in Identifier then
+                  Raise_Exception
+                  (  Parsers.Syntax_Error'Identity,
+                     "Identifier is expected at " &
+                     Image (List (1).Location)
+                  );
+               end if;
+               This.Operands (Index) := List (1);
+            end loop;
+            This.Location :=
+               This.Operands (1).Location & Item.Location;
+            Argument.Location := This.Location;
+         end;
+      else
+         Argument := Item;
+      end if;
+   end Get_Expanded_Name;
 
    procedure Get_For
              (  Context   : in out Ada_Expression;
@@ -534,25 +1178,68 @@ package body Parsers.Generic_Ada_Parser is
                 Left     : Location_Type
              )  is separate;
 
+   procedure Get_Names_List
+             (  Context : in out Ada_Expression;
+                Code    : in out Lexers.Lexer_Source_Type;
+                Count   : out Positive
+             )  is
+      Name   : Tokens.Argument_Token;
+      Got_It : Boolean;
+   begin
+      Count := 1;
+      loop
+         Get_Simple_Name (Context, Code, True, Name);
+         Push (Context, Name);
+         Get_Blank (Context, Code);
+         Get_Delimited (Code, ",", False, Got_It);
+         exit when not Got_It;
+         Count := Count + 1;
+      end loop;
+   end Get_Names_List;
+
+   procedure Get_Not_Null
+             (  Context: in out Ada_Expression;
+                Code   : in out Lexers.Lexer_Source_Type;
+                Got_It : out Boolean
+             )  is
+   begin
+      Get_Blank (Context, Code);
+      Get_Delimited (Code, "not", True, Got_It);
+      if Got_It then
+         Get_Blank (Context, Code);
+         Get_Delimited (Code, "null", True, Got_It);
+         if not Got_It then
+            Raise_Exception
+            (  Parsers.Syntax_Error'Identity,
+               "'null' is expected after 'not' at " &
+               Image (Link (Code))
+            );
+         end if;
+      end if;
+   end Get_Not_Null;
+
    procedure Get_Numeric_Literal
-             (  Code     : in out Lexers.Lexer_Source_Type;
+             (  Context  : in out Ada_Expression;
+                Code     : in out Lexers.Lexer_Source_Type;
                 Line     : String;
                 Pointer  : Integer;
                 Argument : out Tokens.Argument_Token
+             )  is separate;
+
+   procedure Get_Range
+             (  Context     : in out Ada_Expression;
+                Code        : in out Lexers.Lexer_Source_Type;
+                Constrained : Boolean;
+                Any_Name    : Boolean;
+                Argument    : out Subtype_Indication
              )  is separate;
 
    procedure Get_Raise
              (  Context  : in out Ada_Expression;
                 Code     : in out Lexers.Lexer_Source_Type;
                 Argument : out Tokens.Argument_Token;
+                Enclosed : Boolean;
                 Left     : Location_Type
-             )  is separate;
-
-   procedure Get_String_Literal
-             (  Code     : in out Lexers.Lexer_Source_Type;
-                Line     : String;
-                Pointer  : Integer;
-                Argument : out Tokens.Argument_Token
              )  is separate;
 
    procedure Get_Operand
@@ -569,7 +1256,8 @@ package body Parsers.Generic_Ada_Parser is
       case Line (Pointer) is
          when '"' =>
             Get_String_Literal
-            (  Code,
+            (  Context,
+               Code,
                Line (Pointer..Last),
                Pointer,
                Argument
@@ -577,7 +1265,8 @@ package body Parsers.Generic_Ada_Parser is
             Got_It := True;
          when ''' =>
             Get_Character_Literal
-            (  Code,
+            (  Context,
+               Code,
                Line (Pointer..Last),
                Pointer,
                Argument
@@ -585,7 +1274,8 @@ package body Parsers.Generic_Ada_Parser is
             Got_It := True;
          when '0'..'9' =>
             Get_Numeric_Literal
-            (  Code,
+            (  Context,
+               Code,
                Line (Pointer..Last),
                Pointer,
                Argument
@@ -596,11 +1286,28 @@ package body Parsers.Generic_Ada_Parser is
                Line (Pointer - 1) = '['      then
                Argument.Location :=
                   Direct_Link (Code, Pointer, Pointer) & Link (Code);
-               Argument.Value := new Null_Aggregate;
+               declare
+                  type Arena_Ptr is access Null_Aggregate;
+                  for Arena_Ptr'Storage_Pool use Context.Pool.all;
+                  Result : constant Arena_Ptr := new Null_Aggregate;
+               begin
+                  Argument.Value := Result.all'Unchecked_Access;
+               end;
                Got_It := True;
             else
                Got_It := False;
             end if;
+         when '@' =>
+            declare
+               type Arena_Ptr is access Target_Name;
+               for Arena_Ptr'Storage_Pool use Context.Pool.all;
+               Result : constant Arena_Ptr := new Target_Name;
+            begin
+               Argument.Value := Result.all'Unchecked_Access;
+            end;
+            Argument.Location := Link (Code);
+            Set_Pointer (Code, Pointer + 1);
+            Got_It := True;
          when others =>
             declare
                use Descriptors;
@@ -668,6 +1375,7 @@ package body Parsers.Generic_Ada_Parser is
                                  (  Context,
                                     Code,
                                     Argument,
+                                    True,
                                     Where
                                  );
                                  return;
@@ -708,13 +1416,35 @@ package body Parsers.Generic_Ada_Parser is
                   Line (Pointer..Pointer + 1) = "<>" then
                   Set_Pointer (Code, Pointer + 2);
                   Argument.Location := Link (Code);
-                  Argument.Value := new Box_Choice;
+                  declare
+                     type Arena_Ptr is access Box_Choice;
+                     for Arena_Ptr'Storage_Pool
+                        use Context.Pool.all;
+                     Result : constant Arena_Ptr := new Box_Choice;
+                  begin
+                     Argument.Value := Result.all'Unchecked_Access;
+                  end;
+                  Got_It := True;
+               elsif Strings_Edit.Is_Prefix
+                     (  "raise",
+                        Line (Pointer..Last),
+                        Ada.Strings.Maps.Constants.Lower_Case_Map
+                     )  then
+                  Set_Pointer (Code, Pointer + 5);
+                  Get_Raise
+                  (  Context,
+                     Code,
+                     Argument,
+                     False,
+                     Link (Code)
+                  );
                   Got_It := True;
                else
                   Get (Line (Pointer..Last), Index, Symbol);
                   if Is_Identifier_Start (Symbol) then
                      Get_Identifier
-                     (  Code,
+                     (  Context,
+                        Code,
                         Line (Pointer..Last),
                         Pointer,
                         Argument
@@ -739,423 +1469,264 @@ package body Parsers.Generic_Ada_Parser is
          Got_It := False;
    end Get_Operand;
 
-   function Image (Item : Mark) return String is
+   procedure Get_Ranges_List
+             (  Context   : in out Ada_Expression;
+                Code      : in out Lexers.Lexer_Source_Type;
+                Any_Name  : Boolean;
+                Prefix    : String;
+                Delimiter : String;
+                Suffix    : String;
+                Count     : out Positive
+             )  is
+      Got_It : Boolean;
    begin
-      return "";
-   end Image;
-
-   function Image (Item : Numeric_Literal) return String is
-   begin
-      if Item.Malformed then
-         return "<malformed>";
-      elsif Item.Exponent = Integer'First then
-         return "<underflown>";
-      elsif Item.Exponent = Integer'Last then
-         return "<overflown>";
-      elsif Item.Base = 10 then
-         if Item.Exponent = 0 then
-            return Item.Value;
-         else
-            return Item.Value & "E" & Image (Item.Exponent);
-         end if;
-      else
-         if Item.Exponent = 0 then
-            return Image (Item.Base) & '#' & Item.Value & '#';
-         else
-            return
-            (  Image (Item.Base)
-            &  '#' & Item.Value & '#'
-            &  "E" & Image (Item.Exponent)
+      if Prefix'Length > 0 then
+         Get_Blank (Context, Code);
+         Get_Delimited (Code, Prefix, False, Got_It);
+         if not Got_It then
+            Raise_Exception
+            (  Parsers.Syntax_Error'Identity,
+               "'"                 &
+               Prefix              &
+               "' is expected at " &
+               Image (Link (Code))
             );
          end if;
       end if;
-   end Image;
-
-   function Image (Item : Integer_Literal) return String is
-   begin
-      if Item.Malformed then
-         return "<malformed>";
-      elsif Item.Exponent = Integer'First then
-         return "<underflown>";
-      elsif Item.Exponent = Integer'Last then
-         return "<overflown>";
-      elsif Item.Base = 10 then
-         if Item.Exponent = 0 then
-            return Item.Value;
-         else
-            return Item.Value & "E" & Image (Item.Exponent);
-         end if;
-      else
-         if Item.Exponent = 0 then
-            return Image (Item.Base) & '#' & Item.Value & '#';
-         else
-            return
-            (  Image (Item.Base)
-            &  '#' & Item.Value & '#'
-            &  "E" & Image (Item.Exponent)
-            );
-         end if;
-      end if;
-   end Image;
-
-   function Image (Item : Real_Literal) return String is
-      Exponent : Integer := Item.Exponent;
-
-      function "abs" (S : String) return String is
+      declare
+         Item   : Subtype_Indication;
+         Result : Natural := 0;
       begin
-         if S'Length <= 1 then
-            if Exponent = -1 then
-               Exponent := 0;
-               return "0." & S;
+         loop
+            Get_Range (Context, Code, False, Any_Name, Item);
+            if Item.Mark.Name.Value.all in Expression then
+               declare
+                  This : Expression renames
+                         Expression (Item.Mark.Name.Value.all);
+               begin
+                  if This.Operation = Alternative then
+                     for Index in This.Operands'First
+                               .. This.Operands'Last - 1
+                     loop
+                        Push
+                        (  Context,
+                           Subtype_Indication'
+                           (  Mode       => Subtype_Mode,
+                              Not_Null   => False,
+                              Mark       => (  No_Attribute,
+                                               This.Operands (Index)
+                                            ),
+                              Constraint => (Mode => No_Constraint)
+                        )  );
+                        Result := Result + 1;
+                     end loop;
+                     Item.Mark.Name :=
+                        This.Operands (This.Operands'Last);
+                     Push (Context, Item);
+                     Result := Result + 1;
+                  else
+                     Push (Context, Item);
+                     Result := Result + 1;
+                  end if;
+               end;
             else
-               return S & ".0";
+               Push (Context, Item);
+               Result := Result + 1;
             end if;
-         elsif Exponent = 0 then
-            return S & ".0";
-         elsif Exponent = -S'Length then
-            Exponent := 0;
-            return "0." & S;
-         elsif Exponent in -1..1 - S'Length then
-            Exponent := 0;
-            return S (S'First..S'Last + Item.Exponent) &
-                   '.'                                 &
-                   S (S'Last + Item.Exponent + 1..S'Last);
-         else
-            Exponent := Exponent + S'Length - 1;
-            return S (S'First) & '.' & S (S'First + 1..S'Last);
-         end if;
-      end "abs";
-   begin
-      if Item.Malformed then
-         return "<malformed>";
-      elsif Item.Exponent = Integer'First then
-         return "<underflown>";
-      elsif Item.Exponent = Integer'Last then
-         return "<overflown>";
-      else
-         declare
-            Value : constant String := abs Item.Value;
-         begin
-            if Item.Base = 10 then
-               if Exponent = 0 then
-                  return Value;
-               else
-                  return Value & "E" & Image (Exponent);
-               end if;
-            elsif Exponent = 0 then
-               return Image (Item.Base) & '#' & Value & '#';
-            else
-               return
-               (  Image (Item.Base)
-               &  '#'
-               &  Value
-               &  '#'
-               &  "E"
-               & Image (Exponent)
+            Get_Blank (Context, Code);
+            Get_Delimited (Code, Suffix, False, Got_It);
+            exit when Got_It;
+            Get_Delimited (Code, Delimiter, False, Got_It);
+            if not Got_It then
+               Raise_Exception
+               (  Parsers.Syntax_Error'Identity,
+                  "'"                 &
+                  Delimiter           &
+                  "' or '"            &
+                  Suffix              &
+                  "' is expected at " &
+                  Image (Link (Code))
                );
             end if;
-         end;
+         end loop;
+         Count := Result;
+      end;
+   end Get_Ranges_List;
+
+   procedure Get_Reserved_Word
+             (  Code : in out Lexers.Lexer_Source_Type;
+                Word : out Reserved_Word
+             )  is
+      use Reserved_Words_Tables;
+      Got_It  : Boolean;
+      Line    : Line_Ptr_Type;
+      Last    : Integer;
+      Pointer : Integer;
+   begin
+      Get_Line (Code, Line, Pointer, Last);
+      Get (Line (Pointer..Last), Pointer, Reserved_Words, Word, Got_It);
+      if not Got_It then
+         Word := No_Reserved_Word;
       end if;
-   end Image;
+      Set_Pointer (Code, Pointer);
+   end Get_Reserved_Word;
 
-   function Image (Item : String_Literal) return String is
+   procedure Get_String_Literal
+             (  Context  : in out Ada_Expression;
+                Code     : in out Lexers.Lexer_Source_Type;
+                Line     : String;
+                Pointer  : Integer;
+                Argument : out Tokens.Argument_Token
+             )  is separate;
+
+   procedure Get_Simple_Name
+             (  Context    : in out Ada_Expression;
+                Code       : in out Lexers.Lexer_Source_Type;
+                No_Strings : Boolean;
+                Argument   : out Tokens.Argument_Token
+             )  is separate;
+
+   procedure Get_Subtype_Mark
+             (  Context  : in out Ada_Expression;
+                Code     : in out Lexers.Lexer_Source_Type;
+                No_Range : Boolean;
+                Not_Null : Boolean;
+                Mark     : out Subtype_Mark
+             )  is separate;
+
+   procedure Get_Subtype_Indication
+             (  Context   : in out Ada_Expression;
+                Code      : in out Lexers.Lexer_Source_Type;
+                Composite : Boolean;
+                Not_Null  : in out Boolean;
+                Argument  : out Subtype_Indication
+             )  is separate;
+
+   function Get_Value (Item : Half_Word_Array)
+      return Unbounded_Unsigned is
+      Result : Unbounded_Unsigned;
    begin
-      return Quote (Item.Value);
-   end Image;
+      for Digit in Item'Range loop
+         Shift_Left (Result, 1);
+         Add (Result, Item (Digit));
+      end loop;
+      return Result;
+   end Get_Value;
 
-   function Image (Item : Case_Expression) return String is
-      function Image (List : Guarded_List) return String is
-      begin
-         if List'Length = 0 then
-            return "";
+   function Get_Value (Item : Universal_Integer)
+      return Unbounded_Integer is
+   begin
+      if Item.Value = null then
+         if Item.Data = null then
+            return Unbounded_Integers.Zero;
          else
-            return
-            (  " when "
-            &  Image (List (List'First).Guard.Value.all)
-            &  " => "
-            &  Image (List (List'First).Value.Value.all)
-            &  Image (List (List'First + 1..List'Last))
-            );
+            return Compose
+                   (  Get_Value (Item.Data.all),
+                      Item.Negative
+                   );
          end if;
-      end Image;
-   begin
-      if Item.Has_Others then
-         return
-         (  "(case "
-         &  Image (Item.Selector.Value.all)
-         &  " when "
-         &  Image (Item.Alternatives (1).Guard.Value.all)
-         &  " => "
-         &  Image (Item.Alternatives (1).Value.Value.all)
-         &  Image (Item.Alternatives (2..Item.Count))
-         &  ", others => "
-         &  Image (Item.Others_Alternative.Value.all)
-         &  ")"
-         );
       else
-         return
-         (  "(case "
-         &  Image (Item.Selector.Value.all)
-         &  " when "
-         &  Image (Item.Alternatives (1).Guard.Value.all)
-         &  " => "
-         &  Image (Item.Alternatives (1).Value.Value.all)
-         &  Image (Item.Alternatives (2..Item.Count))
-         &  ")"
-         );
+         return Item.Value.all;
       end if;
-   end Image;
+   end Get_Value;
 
-   function Image (Item : Declare_Expression) return String is
-      function Image (List : Declare_Item_Array) return String is
-      begin
-         if List'Length = 0 then
-            return "";
-         else
-            return
-            (  " "
-            &  Image (List (List'First).Value.all)
-            &  ";"
-            &  Image (List (List'First + 1..List'Last))
-            );
-         end if;
-      end Image;
+   function Get_Value (Item : Universal_Real)
+      return Unbounded_Rational is
    begin
-      return
-      (  "(declare"
-      &  Image (Item.Items)
-      &  " begin "
-      &  Image (Item.Expression.Value.all)
-      &  ")"
+      if Item.Value = null then
+         if Item.Numerator = null then
+            return Unbounded_Rationals.Zero;
+         else
+            return Compose
+                   (  Get_Value (Item.Numerator.all),
+                      Get_Value (Item.Denominator.all),
+                      Item.Negative
+                   );
+         end if;
+      else
+         return Item.Value.all;
+      end if;
+   end Get_Value;
+
+   function Image (Key : Reserved_Word) return String is
+      use Reserved_Words_Tables;
+   begin
+      for Index in 1..GetSize (Reserved_Words) loop
+         if GetTag (Reserved_Words, Index) = Key then
+            return GetName (Reserved_Words, Index);
+         end if;
+      end loop;
+      Raise_Exception
+      (  Program_Error'Identity,
+         "Keyword " & Reserved_Word'Image (Key) & " is not recognized"
       );
    end Image;
 
-   function Image (Item : Declare_Object_Item) return String is
+   function Aspect_Specification_Item_Image is
+      new Generic_Image (Aspect_Specification_Item);
+
+   function Image
+            (  Item       : Aspect_Specification_Item;
+               Max_Length : Output_Length := Output_Length'Last
+            )  return String renames Aspect_Specification_Item_Image;
+
+   procedure Put_Argument_List
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Item        : Argument_List
+             )  is
    begin
-      case Item.Kind_Of is
-         when Immutable =>
-            return
-            (  Image (Item.Name.Value.all)
-            &  " : constant "
-            &  Image (Item.Object.Value.all)
-            &  " := "
-            &  Image (Item.Value.Value.all)
-            );
-         when Initialized =>
-            return
-            (  Image (Item.Name.Value.all)
-            &  " : "
-            &  Image (Item.Object.Value.all)
-            &  " :=  "
-            &  Image (Item.Value.Value.all)
-            );
-         when Uninitialized =>
-            return
-            (  Image (Item.Name.Value.all)
-            &  " : "
-            &  Image (Item.Object.Value.all)
-            );
+      Put (Destination, Pointer, Item, ", ");
+   end Put_Argument_List;
+
+   function Image (Mode : Basic_Global_Mode) return String is
+   begin
+      case Mode is
+         when In_Global_Mode =>
+            return "in";
+         when Inout_Global_Mode =>
+            return "in out";
+         when Out_Global_Mode =>
+            return "out";
       end case;
    end Image;
 
-   function Image (Item : Declare_Renaming_Item) return String is
+   function Argument_List_Image is
+      new Generic_Image (Argument_List, Put_Argument_List);
+   function Image
+            (  Item       : Argument_List;
+               Max_Length : Output_Length := Output_Length'Last
+            )  return String renames Argument_List_Image;
+
+   function Image
+            (  Item       : Node'Class;
+               Max_Length : Output_Length := Output_Length'Last
+            )  return String is
+      Length : Integer := Image_Length;
    begin
-      return
-      (  Image (Item.Name.Value.all)
-      &  " renames "
-      &  Image (Item.Object.Value.all)
-      );
-   end Image;
-
-   function Image (Item : Character_Literal) return String is
-   begin
-      return ''' & Item.Value & ''';
-   end Image;
-
-   function Image (Item : Identifier) return String is
-   begin
-      if Item.Malformed then
-         return "<malformed>";
-      else
-         return Item.Value;
-      end if;
-   end Image;
-
-   function Image (Item : For_Expression) return String is
-
-      function Do_For return String is
-      begin
-         case Item.Qualifier is
-            when For_All =>
-               return "for all ";
-            when For_Some =>
-               return "for some ";
-            when For_Any =>
-               return "for ";
-         end case;
-      end Do_For;
-
-      function Do_In return String is
-         function Do_Reverse return String is
+      loop
+         declare
+            Result  : String (1..Length);
+            Pointer : Integer := 1;
          begin
-            if 0 = (Item.Options and For_Reverse) then
-               return "";
+            Put (Result, Pointer, Item);
+            Pointer := Pointer - 1;
+            if Pointer <= Max_Length then
+               return Result (1..Pointer);
             else
-               return "reverse ";
+               declare
+                  Half : constant Integer := (Max_Length - 3) / 2;
+               begin
+                  return Result (1..Max_Length - Half - 3) &
+                         "..."                             &
+                         Result (Pointer - Half + 1..Pointer);
+               end;
             end if;
-         end Do_Reverse;
-      begin
-         if 0 /= (Item.Options and For_Of) then
-            return " of " & Do_Reverse;
-         elsif 0 = (Item.Options and For_Range) then
-            return " in " & Do_Reverse;
-         else
-            return  " in "    &  Image (Item.Range_Type.Value.all) &
-                    " range " & Do_Reverse;
-         end if;
-      end Do_In;
-
-      function Par return String is
-         function Aspect return String is
-            function Image (List : Guarded_List; First : Boolean)
-               return String is
-            begin
-               if List'Length = 0 then
-                  return "";
-               elsif First then
-                  return
-                  (  Image (List (List'First).Guard.Value.all)
-                  &  " => "
-                  &  Image (List (List'First).Value.Value.all)
-                  &  Image (List (List'First + 1..List'Last), False)
-                  );
-               else
-                  return
-                  (  ", "
-                  &  Image (List (List'First).Guard.Value.all)
-                  &  " => "
-                  &  Image (List (List'First).Value.Value.all)
-                  &  Image (List (List'First + 1..List'Last), False)
-                  );
-               end if;
-            end Image;
-         begin
-            if Item.Count = 0 then
-               return "";
-            else
-               return " with " & Image (Item.Aspects, True);
-            end if;
-         end Aspect;
-
-         function Chunk return String is
-         begin
-            if 0 = (Item.Options and For_Chunk) then
-               return "";
-            else
-               return " (" & Image (Item.Chunk.Value.all) & ")";
-            end if;
-         end Chunk;
-      begin
-         if 0 = (Item.Options and For_Parallel) then
-            return "";
-         else
-            return "parallel" & Chunk & Aspect & " ";
-         end if;
-      end Par;
-
-      function Key return String is
-      begin
-         if 0 = (Item.Options and For_Key) then
-            return "";
-         else
-            return " use " & Image (Item.Key.Value.all);
-         end if;
-      end Key;
-
-      function Condition return String is
-      begin
-         if 0 = (Item.Options and For_Condition) then
-            return "";
-         else
-            return " when " & Image (Item.Condition.Value.all);
-         end if;
-      end Condition;
-
-   begin
-      return
-      (  Par
-      &  Do_For
-      &  Image (Item.Identifier.Value.all)
-      &  Do_In
-      &  Image (Item.Iterator.Value.all)
-      &  Key
-      &  Condition
-      &  " => "
-      &  Image (Item.Expression.Value.all)
-      );
-   end Image;
-
-   function Image (Item : If_Expression) return String is
-      function Image (List : Guarded_List; First : Boolean)
-         return String is
-      begin
-         if List'Length = 0 then
-            return "";
-         elsif First then
-            return
-            (  "if "
-            &  Image (List (List'First).Guard.Value.all)
-            &  " then "
-            &  Image (List (List'First).Value.Value.all)
-            &  Image (List (List'First + 1..List'Last), False)
-            );
-         else
-            return
-            (  " elsif "
-            &  Image (List (List'First).Guard.Value.all)
-            &  " then "
-            &  Image (List (List'First).Value.Value.all)
-            &  Image (List (List'First + 1..List'Last), False)
-            );
-         end if;
-      end Image;
-   begin
-      if Item.Has_Else then
-         return
-         (  "("
-         &  Image (Item.Alternatives, True)
-         &  " else "
-         &  Image (Item.Else_Alternative.Value.all)
-         &  ")"
-         );
-      else
-         return "(" & Image (Item.Alternatives, True) & ")";
-      end if;
-   end Image;
-
-   function Image (Item : Raise_Expression) return String is
-   begin
-      if Item.Has_Message then
-         return
-         (  "(raise "
-         &  Image (Item.Name.Value.all)
-         &  " with "
-         &  Image (Item.Message.Value.all)
-         &  ")"
-         );
-      else
-         return "(raise " & Image (Item.Name.Value.all) & ")";
-      end if;
-   end Image;
-
-   function Image (Item : Missing_Operand) return String is
-   begin
-      return "<missing>";
-   end Image;
-
-   function Image (Item : Null_Aggregate) return String is
-   begin
-      return "[]";
+         exception
+            when Layout_Error =>
+               Length := Length * 3 / 2;
+         end;
+      end loop;
    end Image;
 
    function Image (Operation : Operations) return String is
@@ -1210,168 +1781,80 @@ package body Parsers.Generic_Ada_Parser is
       end case;
    end Image;
 
+   function Subtype_Indication_Image is
+      new Generic_Image (Subtype_Indication);
    function Image
-            (  List      : Argument_List;
-               Operation : Operations;
-               Spacer    : String := " "
-            )  return String is
-   begin
-      case List'Length is
-         when 1 =>
-            return Image (Operation)                   &
-                   " "                                 &
-                   Image (List (List'First).Value.all);
-         when 2 =>
-            return Image (List (List'First).Value.all) &
-                   Spacer                              &
-                   Image (Operation)                   &
-                   Spacer                              &
-                   Image (List (List'Last).Value.all);
-         when others =>
-            return Image (List (List'First).Value.all) &
-                   Spacer                              &
-                   Image (Operation)                   &
-                   Spacer                              &
-                   Image
-                   (  List (List'First + 1..List'Last),
-                      Operation,
-                      Spacer
-                   );
-      end case;
-   end Image;
+            (  Item       : Subtype_Indication;
+               Max_Length : Output_Length := Output_Length'Last
+            )  return String renames Subtype_Indication_Image;
 
+   function Subtype_Mark_Image is
+      new Generic_Image (Subtype_Mark);
    function Image
-            (  List  : Argument_List;
-               First : Boolean := True
-            )  return String is
-   begin
-      if List'Length = 0 then
-         return "";
-      elsif List (List'First).Value.all in Expression'Class and then
-            (  Expression'Class (List (List'First).Value.all).Operation
-            =  Extend
-            )  then
-         return
-         (  " "
-         &  Image (List (List'First).Value.all)
-         &  Image (List (List'First + 1..List'Last), False)
-         );
-      else
-         if First then
-            return
-            (  Image (List (List'First).Value.all)
-            &  Image (List (List'First + 1..List'Last), False)
-            );
-         else
-            return
-            (  ", "
-            &  Image (List (List'First).Value.all)
-            &  Image (List (List'First + 1..List'Last), False)
-            );
-         end if;
-      end if;
-   end Image;
+            (  Item       : Subtype_Mark;
+               Max_Length : Output_Length := Output_Length'Last
+            )  return String renames Subtype_Mark_Image;
 
-   function Image (Item : Box_Choice) return String is
+   function Has_Bracket (Code : Lexers.Lexer_Source_Type)
+      return Boolean is
+      Line    : Line_Ptr_Type;
+      Pointer : Integer;
+      Last    : Integer;
    begin
-      return "<>";
-   end Image;
+      Get_Line (Code, Line, Pointer, Last);
+      return Pointer <= Last and then Line (Pointer) = ')';
+   end Has_Bracket;
 
-   function Image (Item : Expression) return String is
+   function Is_Class (Item : Tokens.Argument_Token) return Boolean is
+      This : Node'Class renames Item.Value.all;
    begin
-      case Item.Operation is
-         when Logical_And | Logical_Xor | Logical_Or | Concatenate |
-              Remainder   | Modulus     | And_Then   | Or_Else     |
-              Add  | Sub  | Mul  | Div  | Pow  |
-              EQ   | NE   | GT   | GE   | LT   |  LE  =>
-            return "(" & Image (Item.Operands, Item.Operation) & ")";
-         when Ellipsis | Component =>
-            return Image (Item.Operands, Item.Operation, "");
-         when Extend =>
-            return "with " & Image (Item.Operands);
-         when Extend_Delta =>
-            return "with delta " & Image (Item.Operands);
-         when Attribute =>
-            if Item.Operands'Length = 2 then
-               declare
-                  List   : Argument_List renames Item.Operands;
-                  Second : Node'Class renames
-                           List (List'Last).Value.all;
-               begin
-                  if Second in Expression'Class then
-                     declare
-                        This : Expression'Class renames
-                               Expression'Class (Second);
-                     begin
-                        if This.Operation = Left_index then
-                           return
-                           (  Image (List (List'First).Value.all)
-                           &  "'"
-                           &  Image (List (List'Last).Value.all)
-                           );
-                        end if;
-                     end;
-                  elsif Second not in Composite'Class and then
-                        Second not in Literal'Class       then
-                     return
-                     (  Image (List (List'First).Value.all)
-                     &  "'"
-                     &  Image (List (List'Last).Value.all)
-                     );
-                  end if;
-               end;
-            end if;
-            return
-            (  Image (Item.Operands (Item.Operands'First).Value.all)
-            &  "'("
-            &  Image
-               (  Item.Operands
-                  (  Item.Operands'First + 1
-                  .. Item.Operands'Last
-               )  )
-            &  ")"
-            );
-         when Associate   | Alternative | Member | Not_Member =>
-            return Image (Item.Operands, Item.Operation);
-         when Left_Bracket =>
-            return "(" & Image (Item.Operands) & ")";
-         when Left_Square_Bracket =>
-            return "[" & Image (Item.Operands) & "]";
-         when Plus | Minus | Abs_Value | Add_Inv | Mul_Inv =>
-            return
-            (  Image (Item.Operation)
-            &  "("
-            &  Image (Item.Operands (1).Value.all)
-            &  Image (Item.Operands (2..Item.Count))
-            &  ")"
-            );
-         when Logical_Not | Allocator | Allocator_Subpool =>
-            return
-            (  Image (Item.Operation)
-            &  " ("
-            &  Image (Item.Operands)
-            &  ")"
-            );
-         when Right_Bracket        |
-              Right_Square_Bracket |
-              Comma                |
-              Keyword_Delta        |
-              Keyword_Record       |
-              Reserved             =>
-            return "";
-         when Left_Index =>
-            return
-            (  Image (Item.Operands (Item.Operands'First).Value.all)
-            &  " ("
-            &  Image
-               (  Item.Operands
-                  (  Item.Operands'First + 1
-                  .. Item.Operands'Last
-               )  )
-            &  ")"
-            );
-      end case;
-   end Image;
+      return This in Identifier and then
+             Equal = Compare (Identifier (This).Value, "class");
+   end Is_Class;
+
+   function Is_Defining_Identifier (Item : Tokens.Argument_Token)
+      return Boolean is
+   begin
+      return Item.Value.all in Identifier;
+   end Is_Defining_Identifier;
+
+   function Is_Defining_Operator (Item : Tokens.Argument_Token)
+      return Boolean is
+      use Operator_Tables;
+   begin
+      return Item.Value.all in Text_Literal and then
+             IsIn (Operators, Text_Literal (Item.Value.all).Value);
+   end Is_Defining_Operator;
+
+   function Is_Name
+            (  Item : Tokens.Argument_Token;
+               Name : String
+            )  return Boolean is
+      This : Node'Class renames Item.Value.all;
+   begin
+      return This in Identifier and then
+             Equal = Compare (Identifier (This).Value, Name);
+   end Is_Name;
+
+   procedure On_Association_Error
+             (  Context : in out Ada_Expression;
+                Code    : in out Lexers.Lexer_Source_Type;
+                Left    : in out Operation_Token;
+                Right   : in out Operation_Token
+             )  is
+   begin
+      Raise_Exception
+      (  Syntax_Error'Identity,
+         (  "Parentheses required. '"
+         &  Image (Left.Operation)
+         &  "' at "
+         &  Image (Left.Location)
+         &  " cannot be associated with '"
+         &  Image (Right.Operation)
+         &  "' at "
+         &  Sources.Image (Right.Location)
+      )  );
+   end On_Association_Error;
 
    procedure On_Missing_Operation
              (  Context  : in out Ada_Expression;
@@ -1384,7 +1867,8 @@ package body Parsers.Generic_Ada_Parser is
    begin
       case Modifier.Operation is
          when Logical_And | Logical_Or =>
-            Token  := (Operator, Modifier, 2, 2);
+            Token  :=
+               (Operator, Modifier, Logical_Priority, Logical_Priority);
             Got_It := True;
          when Logical_Not =>
             Raise_Exception
@@ -1403,6 +1887,22 @@ package body Parsers.Generic_Ada_Parser is
       end case;
    end On_Missing_Operation;
 
+   procedure On_Missing_Right_Bracket
+             (  Context : in out Ada_Expression;
+                Code    : in out Lexers.Lexer_Source_Type;
+                Left    : in out Operation_Token;
+                Right   : out Operation_Token
+             )  is
+   begin
+      Raise_Exception
+      (  Syntax_Error'Identity,
+         (  "Closing parenthesis ')' matching the opening one '(' at "
+         &  Sources.Image (Left.Location)
+         &  " is expected at "
+         &  Sources.Image (Sources.Link (Code))
+      )  );
+   end On_Missing_Right_Bracket;
+
    procedure On_Postmodifier
              (  Context  : in out Ada_Expression;
                 Code     : in out Lexers.Lexer_Source_Type;
@@ -1418,9 +1918,15 @@ package body Parsers.Generic_Ada_Parser is
                   Identifier'Class (Argument.Value.all).Value = "null"
                )
             then
-               Free (Argument.Value);
-               Argument.Value := new Identifier (11);
-               Identifier (Argument.Value.all).Value := "null record";
+               Free (Context, Argument.Value);
+               declare
+                  type Arena_Ptr is access Identifier;
+                  for Arena_Ptr'Storage_Pool use Context.Pool.all;
+                  Result : constant Arena_Ptr := new Identifier (11);
+               begin
+                  Result.Value   := "null record";
+                  Argument.Value := Result.all'Unchecked_Access;
+               end;
                Argument.Location :=
                   Argument.Location & Modifier.Location;
                Got_It := True;
@@ -1482,8 +1988,8 @@ package body Parsers.Generic_Ada_Parser is
                      (  And_Then,
                         Token.Operation.Location & Modifier.Location
                      ),
-                     3,
-                     3
+                     Logical_Priority,
+                     Logical_Priority
                   );
                Got_It := True;
                return;
@@ -1507,8 +2013,8 @@ package body Parsers.Generic_Ada_Parser is
                      (  Or_Else,
                         Token.Operation.Location & Modifier.Location
                      ),
-                     3,
-                     3
+                     Logical_Priority,
+                     Logical_Priority
                   );
                Got_It := True;
                return;
@@ -1553,11 +2059,1106 @@ package body Parsers.Generic_Ada_Parser is
       Got_It := False;
    end On_Premodifier;
 
+   procedure On_Success
+             (  Context : in out Ada_Expression;
+                Code    : in out Lexers.Lexer_Source_Type;
+                Result  : in out Tokens.Argument_Token
+             )  is
+   begin
+      Store (Context, Result);
+   end On_Success;
+
+   procedure Pop
+             (  Context : in out Ada_Expression;
+                List    : out Argument_List
+             )  is
+      Tokens : Frame (1..1);
+   begin
+      for Item in reverse List'Range loop
+         Pop (Context, Tokens);
+         List (Item) := Tokens (1);
+      end loop;
+   end Pop;
+
+   procedure Pop
+             (  Context : in out Ada_Expression;
+                List    : out Aspect_Items_Array
+             )  is
+      Tokens : Frame (1..1);
+      type Item_Ptr is access Aspect_Specification_Item;
+      for Item_Ptr'Storage_Pool use Context.Pool.all;
+      function To_Item is
+         new Ada.Unchecked_Conversion (Node_Ptr, Item_Ptr);
+   begin
+      for Index in reverse List'Range loop
+         Pop (Context, Tokens);
+         List (Index) :=
+            To_Item (Tokens (1).Value).all'Unchecked_Access;
+      end loop;
+   end Pop;
+
+   procedure Pop
+             (  Context : in out Ada_Expression;
+                List    : out Subtype_Indication_Array
+             )  is
+   begin
+      for Index in reverse List'Range loop
+         Stubtype_Indication_Stack.Pop (Context, List (Index));
+      end loop;
+   end Pop;
+
+   procedure Push
+             (  Context : in out Ada_Expression;
+                Item    : Subtype_Indication
+             )  is
+   begin
+      Stubtype_Indication_Stack.Push (Context, Item);
+   end Push;
+
+   procedure Push_Stub
+             (  Context : in out Ada_Expression;
+                Stub    : out Node_Ptr
+             )  is
+      type Arena_Ptr is access Mark;
+      for Arena_Ptr'Storage_Pool use Context.Pool.all;
+      Result : constant Arena_Ptr := new Mark;
+   begin
+      Stub := Result.all'Unchecked_Access;
+   end Push_Stub;
+
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                List        : Argument_List;
+                Delimiter   : String := " "
+             )  is
+      use Strings_Edit;
+      Index : Integer := Pointer;
+   begin
+      for Item in List'Range loop
+         if Item > List'First then
+            if List (Item).Value.all in Expression and then
+               Expression (List (Item).Value.all).Operation = Extend
+            then
+               Put (Destination, Index, " ");
+            else
+               Put (Destination, Index, Delimiter);
+            end if;
+         end if;
+         Put (Destination, Index, List (Item));
+      end loop;
+      Pointer := Index;
+   end Put;
+
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Item        : Argument_Token
+             )  is
+   begin
+      Put (Destination, Pointer, Item.Value.all);
+   end Put;
+
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Item        : Array_Type_Definition
+             )  is
+      use Strings_Edit;
+      Index : Integer := Pointer;
+   begin
+      Put (Destination, Index, "array ");
+      Put (Destination, Index, Item.Indices);
+      Put (Destination, Index, " of ");
+      if Item.Aliased_Component then
+         Put (Destination, Index, "aliased ");
+      end if;
+      Put (Destination, Index, Item.Component);
+      Pointer := Index;
+   end Put;
+
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                List        : Aspect_Items_Array;
+                Prefix      : String := " with "
+             )  is
+      use Strings_Edit;
+      Index : Integer := Pointer;
+   begin
+      if List'Length = 0 then
+         return;
+      end if;
+      Put (Destination, Index, Prefix);
+      for Item in List'Range loop
+         if Item > List'First then
+            Put (Destination, Index, ", ");
+         end if;
+         Put (Destination, Index, List (Item).all);
+      end loop;
+      Pointer := Index;
+   end Put;
+
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Item        : Aspect_Specification_Item
+             )  is
+      use Strings_Edit;
+      Index : Integer := Pointer;
+   begin
+      Put (Destination, Index, Item.Mark);
+      case Item.Mode is
+         when No_Designator =>
+            null;
+         when Null_Designator =>
+            Put (Destination, Index, " => null");
+         when Unspecified_Designator =>
+            Put (Destination, Index, " => unspecified");
+         when Global_Designator =>
+            Put (Destination, Index, " => ");
+            Put (Destination, Index, Item.Designator.all);
+         when Global_Aspect_Elements_List_Designator =>
+            Put (Destination, Index, " => (");
+            declare
+               List : Global_Aspect_Element_Ptr_Array renames Item.List;
+            begin
+               for Item in List'Range loop
+                  if Item > List'First then
+                     Put (Destination, Index, "; ");
+                  end if;
+                  Put (Destination, Index, List (Item).all);
+               end loop;
+            end;
+            Put (Destination, Index, ")");
+         when Value_Designator =>
+            Put (Destination, Index, " => ");
+            Put (Destination, Index, Item.Value);
+      end case;
+      Pointer := Index;
+   end Put;
+
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Item        : Box_Choice
+             )  is
+      use Strings_Edit;
+   begin
+      Put (Destination, Pointer, "<>");
+   end Put;
+
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                List        : Case_Alternatives_Array;
+                Prefix      : String := "";
+                Delimiter   : String := ", ";
+                Ligature    : String := " => ";
+                Suffix      : String := ""
+             )  is
+      use Strings_Edit;
+      Index : Integer := Pointer;
+   begin
+      if List'Length = 0 then
+         return;
+      end if;
+      Put (Destination, Index, Prefix);
+      for Item in List'Range loop
+         declare
+            This : Case_Alternative renames List (Item);
+         begin
+            if Item > 1 then
+               Put (Destination, Index, Delimiter);
+            end if;
+            for Item in This.Choice'Range loop
+               if Item > This.Choice'First then
+                  Put (Destination, Index, " | ");
+               end if;
+               Put (Destination, Index, This.Choice (Item));
+            end loop;
+            Put (Destination, Index, Ligature);
+            Put (Destination, Index, This.Value);
+         end;
+      end loop;
+      Put (Destination, Index, Suffix);
+      Pointer := Index;
+   end Put;
+
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Item        : Case_Expression
+             )  is
+      use Strings_Edit;
+      Index : Integer := Pointer;
+   begin
+      Put (Destination, Index, "(case ");
+      Put (Destination, Index, Item.Selector);
+      Put (Destination, Index, " is ");
+      Put
+      (  Destination => Destination,
+         Pointer     => Index,
+         List        => Item.Alternatives,
+         Prefix      => "when ",
+         Delimiter   => ", when ",
+         Ligature    => " => "
+      );
+      if Item.Has_Others then
+         Put (Destination, Index, ", when others => ");
+         Put (Destination, Index, Item.Others_Alternative);
+      end if;
+      Put (Destination, Index, ")");
+      Pointer := Index;
+   end Put;
+
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Item        : Character_Literal
+             )  is
+      use Strings_Edit;
+   begin
+      Put (Destination, Pointer, ''' & Item.Value & ''');
+   end Put;
+
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Item        : Declare_Expression
+             )  is
+      use Strings_Edit;
+      Index : Integer := Pointer;
+      List  : Declare_Item_Array renames Item.Items;
+   begin
+      Put (Destination, Index, "(declare");
+      for Item in List'Range loop
+         Put (Destination, Index, " ");
+         Put (Destination, Index, List (Item).Value.all);
+         Put (Destination, Index, ";");
+      end loop;
+      Put (Destination, Index, " begin ");
+      Put (Destination, Index, Item.Expression);
+      Put (Destination, Index, ")");
+      Pointer := Index;
+   end Put;
+
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Item        : Declare_Object_Item
+             )  is
+      use Strings_Edit;
+      Index : Integer := Pointer;
+   begin
+       Put (Destination, Index, Item.Names, ", ");
+       Put (Destination, Index, " : constant ");
+       if Item.Array_Object then
+          Put (Destination, Index, Item.Definition.all);
+       else
+          Put (Destination, Index, Item.Object);
+       end if;
+       Put (Destination, Index, " := ");
+       Put (Destination, Index, Item.Value);
+      Pointer := Index;
+   end Put;
+
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Item        : Declare_Renaming_Item
+             )  is
+      use Strings_Edit;
+      Index : Integer := Pointer;
+   begin
+      Put (Destination, Index, Item.Name);
+      if Item.Has_Mark then
+         Put (Destination, Index, " : ");
+         Put (Destination, Index, Item.Mark);
+      end if;
+      Put (Destination, Index, " renames ");
+      Put (Destination, Index, Item.Object);
+      Pointer := Index;
+   end Put;
+
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Item        : Expression
+             )  is
+      use Strings_Edit;
+      Index : Integer := Pointer;
+
+      procedure Put_Attribute is
+      begin
+         Put
+         (  Destination => Destination,
+            Pointer     => Index,
+            Item        => Item.Operands (Item.Operands'First)
+         );
+         Put (Destination, Index, "'(");
+         Put
+         (  Destination => Destination,
+            Pointer     => Index,
+            List        => Item.Operands
+                           (  Item.Operands'First + 1
+                           .. Item.Operands'Last
+                           ),
+            Delimiter   => ", "
+         );
+         Put (Destination, Index, ")");
+      end Put_Attribute;
+   begin
+      case Item.Operation is
+         when Logical_And | Logical_Xor | Logical_Or | Concatenate |
+              Remainder   | Modulus     | And_Then   | Or_Else     |
+              Add  | Sub  | Mul  | Div  | Pow  |
+              EQ   | NE   | GT   | GE   | LT   |  LE  =>
+            Put (Destination, Index, "(");
+            Put
+            (  Destination => Destination,
+               Pointer     => Index,
+               List        => Item.Operands,
+               Delimiter   => ' ' & Image (Item.Operation) & ' '
+            );
+            Put (Destination, Index, ")");
+         when Ellipsis | Component =>
+            Put
+            (  Destination => Destination,
+               Pointer     => Index,
+               List        => Item.Operands,
+               Delimiter   => Image (Item.Operation)
+            );
+         when Extend =>
+            Put (Destination, Index, "with ");
+            Put (Destination, Index, Item.Operands, ", ");
+         when Extend_Delta =>
+            Put (Destination, Index, "with delta ");
+            Put (Destination, Index, Item.Operands, ", ");
+         when Attribute =>
+            if Item.Operands'Length = 2 then
+               declare
+                  List   : Argument_List renames Item.Operands;
+                  Second : Node'Class renames
+                           List (List'Last).Value.all;
+               begin
+                  if Second in Expression'Class then
+                     declare
+                        This : Expression'Class renames
+                               Expression'Class (Second);
+                     begin
+                        if This.Operation = Left_index then
+                           Put
+                           (  Destination => Destination,
+                              Pointer     => Index,
+                              Item        => List (List'First)
+                           );
+                           Put (Destination, Index, "'");
+                           Put
+                           (  Destination => Destination,
+                              Pointer     => Index,
+                              Item        => List (List'Last)
+                           );
+                        else
+                           Put_Attribute;
+                        end if;
+                     end;
+                  elsif Second not in Composite'Class and then
+                        Second not in Literal'Class       then
+                     Put
+                     (  Destination => Destination,
+                        Pointer     => Index,
+                        Item        => List (List'First)
+                     );
+                     Put (Destination, Index, "'");
+                     Put
+                     (  Destination => Destination,
+                        Pointer     => Index,
+                        Item        => List (List'Last)
+                     );
+                  else
+                     Put_Attribute;
+                  end if;
+               end;
+            else
+               Put_Attribute;
+            end if;
+         when Associate | Alternative | Member | Not_Member =>
+            Put
+            (  Destination => Destination,
+               Pointer     => Index,
+               List        => Item.Operands,
+               Delimiter   => ' ' & Image (Item.Operation) & ' '
+            );
+         when Left_Bracket =>
+            Put (Destination, Index, "(");
+            Put (Destination, Index, Item.Operands, ", ");
+            Put (Destination, Index, ")");
+         when Left_Square_Bracket =>
+            Put (Destination, Index, "[");
+            Put (Destination, Index, Item.Operands, ", ");
+            Put (Destination, Index, "]");
+         when Plus | Minus | Abs_Value | Add_Inv | Mul_Inv =>
+            Put (Destination, Index, Image (Item.Operation));
+            Put (Destination, Index, "(");
+            Put (Destination, Index, Item.Operands, ", ");
+            Put (Destination, Index, ")");
+         when Logical_Not | Allocator | Allocator_Subpool =>
+            Put (Destination, Index, Image (Item.Operation));
+            Put (Destination, Index, " (");
+            Put (Destination, Index, Item.Operands, ", ");
+            Put (Destination, Index, ")");
+         when Right_Bracket        |
+              Right_Square_Bracket |
+              Comma                |
+              Keyword_Delta        |
+              Keyword_Record       |
+              Reserved             =>
+            null;
+         when Left_Index =>
+            Put
+            (  Destination => Destination,
+               Pointer     => Index,
+               Item        => Item.Operands (Item.Operands'First)
+            );
+            Put (Destination, Index, " (");
+            Put
+            (  Destination => Destination,
+               Pointer     => Index,
+               List        => Item.Operands
+                              (  Item.Operands'First + 1
+                              .. Item.Operands'Last
+                              ),
+               Delimiter   => ", "
+            );
+            Put (Destination, Index, ")");
+      end case;
+      Pointer := Index;
+   end Put;
+
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Item        : For_Expression
+             )  is
+      use Strings_Edit;
+      Index : Integer := Pointer;
+   begin
+      if 0 /= (Item.Options and For_Parallel) then
+         Put (Destination, Index, "parallel");
+         if 0 /= (Item.Options and For_Chunk) then
+            Put (Destination, Index, " (");
+            Put (Destination, Index, Item.Chunk);
+            Put (Destination, Index, ")");
+         end if;
+         Put (Destination, Index, Item.Aspects, " with ");
+         Put (Destination, Index, " ");
+      end if;
+      case Item.Qualifier is
+         when For_All =>
+            Put (Destination, Index, "for all ");
+         when For_Some =>
+            Put (Destination, Index, "for some ");
+         when For_Any =>
+            Put (Destination, Index, "for ");
+      end case;
+      Put (Destination, Index, Item.Identifier);
+      if 0 /= (Item.Options and For_Of) then
+         Put (Destination, Index, " of ");
+         if 0 /= (Item.Options and For_Reverse) then
+            Put (Destination, Index, "reverse ");
+         end if;
+      elsif 0 = (Item.Options and For_Range) then
+         Put (Destination, Index, " in ");
+         if 0 /= (Item.Options and For_Reverse) then
+            Put (Destination, Index, "reverse ");
+         end if;
+      else
+         Put (Destination, Index, " in ");
+         Put (Destination, Index, Item.Range_Type);
+         Put (Destination, Index, " range ");
+      end if;
+      Put (Destination, Index, Item.Iterator);
+      if 0 /= (Item.Options and For_Key) then
+         Put (Destination, Index, " use ");
+         Put (Destination, Index, Item.Key);
+      end if;
+      if 0 /= (Item.Options and For_Condition) then
+         Put (Destination, Index, " when ");
+         Put (Destination, Index, Item.Condition);
+      end if;
+      Put (Destination, Index, " => ");
+      Put (Destination, Index, Item.Expression);
+      Pointer := Index;
+   end Put;
+
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Item        : Global_Aspect_Element
+             )  is
+      use Strings_Edit;
+      Index : Integer := Pointer;
+   begin
+      if Item.Extended then
+         Put (Destination, Index, "overriding ");
+      end if;
+      Put (Destination, Index, Image (Item.Mode) & " ");
+      case Item.Kind_Of is
+         when All_Designator_Mode =>
+            Put (Destination, Index, "all");
+         when Synchronized_Designator_Mode =>
+            Put (Destination, Index, "synchronized");
+         when Global_Name_Designator_Mode =>
+            Put (Destination, Index, Item.List, ", ");
+      end case;
+      Pointer := Index;
+   end Put;
+
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                List        : Guarded_List;
+                Prefix      : String := "";
+                Delimiter   : String := ", ";
+                Ligature    : String := " => ";
+                Suffix      : String := ""
+             )  is
+      use Strings_Edit;
+      Index : Integer := Pointer;
+   begin
+      if List'Length = 0 then
+         return;
+      end if;
+      Put (Destination, Index, Prefix);
+      for Item in List'Range loop
+         declare
+            This : Alternative_Pair renames List (Item);
+         begin
+            if Item > 1 then
+               Put (Destination, Index, Delimiter);
+            end if;
+            Put (Destination, Index, This.Guard);
+            Put (Destination, Index, Ligature);
+            Put (Destination, Index, This.Value);
+         end;
+      end loop;
+      Put (Destination, Index, Suffix);
+      Pointer := Index;
+   end Put;
+
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Item        : If_Expression
+             )  is
+      use Strings_Edit;
+      Index : Integer := Pointer;
+   begin
+      Put
+      (  Destination => Destination,
+         Pointer     => Index,
+         List        => Item.Alternatives,
+         Prefix      => "(if ",
+         Delimiter   => " elsif ",
+         Ligature    => " then ",
+         Suffix      => ""
+      );
+      if Item.Has_Else then
+         Put (Destination, Index, " else ");
+         Put (Destination, Index, Item.Else_Alternative);
+      end if;
+      Put (Destination, Index, ")");
+      Pointer := Index;
+   end Put;
+
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Item        : Identifier
+             )  is
+      use Strings_Edit;
+   begin
+      if Item.Malformed then
+         Put (Destination, Pointer, "<malformed>");
+      else
+         Put (Destination, Pointer, Item.Value);
+      end if;
+   end Put;
+
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Item        : Integer_Literal
+             )  is
+      use Strings_Edit;
+      Index : Integer := Pointer;
+   begin
+      if Item.Malformed then
+         Put (Destination, Index, "<malformed>");
+      elsif Item.Exponent = Integer'First then
+         Put (Destination, Index, "<underflown>");
+      elsif Item.Exponent = Integer'Last then
+         Put (Destination, Index, "<overflown>");
+      elsif Item.Base = 10 then
+         if Item.Exponent = 0 then
+            Put (Destination, Index, Item.Value);
+         else
+            Put (Destination, Index, Item.Value);
+            Put (Destination, Index, "E");
+            Put (Destination, Index, Item.Exponent);
+         end if;
+      else
+         if Item.Exponent = 0 then
+            Put (Destination, Index, Item.Base);
+            Put (Destination, Index, "#");
+            Put (Destination, Index, Item.Value);
+            Put (Destination, Index, "#");
+         else
+            Put (Destination, Index, Item.Base);
+            Put (Destination, Index, "#");
+            Put (Destination, Index, Item.Value);
+            Put (Destination, Index, "#E");
+            Put (Destination, Index, Item.Exponent);
+         end if;
+      end if;
+      Pointer := Index;
+   end Put;
+
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Item        : Mark
+             )  is
+      use Strings_Edit;
+   begin
+      Put (Destination, Pointer, "<stub>");
+   end Put;
+
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Item        : Null_Aggregate
+             )  is
+      use Strings_Edit;
+   begin
+      Put (Destination, Pointer, "[]");
+   end Put;
+
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Item        : Numeric_Literal
+             )  is
+      use Strings_Edit;
+      Index : Integer := Pointer;
+   begin
+      if Item.Malformed then
+         Put (Destination, Index, "<malformed>");
+      elsif Item.Exponent = Integer'First then
+         Put (Destination, Index, "<underflown>");
+      elsif Item.Exponent = Integer'Last then
+         Put (Destination, Index, "<overflown>");
+      elsif Item.Base = 10 then
+         if Item.Exponent = 0 then
+            Put (Destination, Index, Item.Value);
+         else
+            Put (Destination, Index, Item.Value);
+            Put (Destination, Index, "E");
+            Put (Destination, Index, Item.Exponent);
+         end if;
+      else
+         if Item.Exponent = 0 then
+            Put (Destination, Index, Item.Base);
+            Put (Destination, Index, "#");
+            Put (Destination, Index, Item.Value);
+            Put (Destination, Index, "#");
+         else
+            Put (Destination, Index, Item.Base);
+            Put (Destination, Index, "#");
+            Put (Destination, Index, Item.Value);
+            Put (Destination, Index, "#E");
+            Put (Destination, Index, Item.Exponent);
+         end if;
+      end if;
+      Pointer := Index;
+   end Put;
+
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Item        : Raise_Expression
+             )  is
+      use Strings_Edit;
+      Index : Integer := Pointer;
+   begin
+      Put (Destination, Index, "(raise ");
+      Put (Destination, Index, Item.Name);
+      if Item.Has_Message then
+         Put (Destination, Index, " with ");
+         Put (Destination, Index, Item.Message);
+      end if;
+      Put (Destination, Index, ")");
+      Pointer := Index;
+   end Put;
+
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Item        : Real_Literal
+             )  is
+      use Strings_Edit;
+      Index    : Integer := Pointer;
+      Exponent : Integer := Item.Exponent;
+
+      function "abs" (S : String) return String is
+      begin
+         if S'Length <= 1 then
+            if Exponent = -1 then
+               Exponent := 0;
+               return "0." & S;
+            else
+               return S & ".0";
+            end if;
+         elsif Exponent = 0 then
+            return S & ".0";
+         elsif Exponent = -S'Length then
+            Exponent := 0;
+            return "0." & S;
+         elsif Exponent < 0 and then Exponent > -S'Length then
+            Exponent := 0;
+            return S (S'First..S'Last + Item.Exponent) &
+                   '.'                                 &
+                   S (S'Last + Item.Exponent + 1..S'Last);
+         else
+            Exponent := Exponent + S'Length - 1;
+            return S (S'First) & '.' & S (S'First + 1..S'Last);
+         end if;
+      end "abs";
+   begin
+      if Item.Malformed then
+         Put (Destination, Index, "<malformed>");
+      elsif Item.Exponent = Integer'First then
+         Put (Destination, Index, "<underflown>");
+      elsif Item.Exponent = Integer'Last then
+         Put (Destination, Index, "<overflown>");
+      else
+         declare
+            Value : constant String := abs Item.Value;
+         begin
+            if Item.Base = 10 then
+               if Exponent = 0 then
+                  Put (Destination, Index, Value);
+               else
+                  Put (Destination, Index, Value);
+                  Put (Destination, Index, "E");
+                  Put (Destination, Index, Exponent);
+               end if;
+            elsif Exponent = 0 then
+               Put (Destination, Index, Item.Base);
+               Put (Destination, Index, "#");
+               Put (Destination, Index, Value);
+               Put (Destination, Index, "#");
+            else
+               Put (Destination, Index, Item.Base);
+               Put (Destination, Index, "#");
+               Put (Destination, Index, Value);
+               Put (Destination, Index, "#E");
+               Put (Destination, Index, Exponent);
+            end if;
+         end;
+      end if;
+      Pointer := Index;
+   end Put;
+
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Item        : String_Literal
+             )  is
+      use Strings_Edit;
+   begin
+      Put (Destination, Pointer, Quote (Item.Value));
+   end Put;
+
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Item        : Subtype_Indication
+             )  is
+      use Strings_Edit;
+      Index : Integer := Pointer;
+   begin
+      if Item.Not_Null then
+         Put (Destination, Index, "not null ");
+      end if;
+      Put (Destination, Index, Item.Mark);
+      case Item.Constraint.Mode is
+         when No_Constraint =>
+            null;
+         when Fixed_Point_Constraint =>
+            Put (Destination, Index, " delta ");
+            Put (Destination, Index, Item.Constraint.Delta_Constraint);
+         when Floating_Point_Constraint =>
+            Put (Destination, Index, " digits ");
+            Put (Destination, Index, Item.Constraint.Digits_Constraint);
+         when Index_Constraint | Discriminant_Constraint =>
+            Put (Destination, Index, " ");
+            Put (Destination, Index, Item.Constraint.Constraint);
+      end case;
+      case Item.Mode is
+         when Subtype_Range_Mode =>
+            Put (Destination, Index, " range ");
+            Put (Destination, Index, Item.Range_Constraint);
+         when Range_Mode | Subtype_Mode =>
+            null;
+         when Unconstrained_Mode =>
+            Put (Destination, Index, " range <>");
+      end case;
+      Pointer := Index;
+   end Put;
+
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                List        : Subtype_Indication_Array;
+                Prefix      : String := "(";
+                Delimiter   : String := ", ";
+                Suffix      : String := ")"
+             )  is
+      use Strings_Edit;
+      Index : Integer := Pointer;
+   begin
+      if List'Length > 0 then
+         Put (Destination, Index, Prefix);
+         for Item in List'Range loop
+            if Item > List'First then
+               Put (Destination, Index, Delimiter);
+            end if;
+            Put (Destination, Index, List (Item));
+         end loop;
+         Put (Destination, Index, Suffix);
+         Pointer := Index;
+      end if;
+   end Put;
+
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Item        : Subtype_Mark
+             )  is
+      use Strings_Edit;
+      Index : Integer := Pointer;
+   begin
+      Put (Destination, Index, Item.Name);
+      case Item.Attribute is
+         when Class_Attribute =>
+            Put (Destination, Index, "'Class");
+         when No_Attribute =>
+            null;
+         when Base_Attribute =>
+            Put (Destination, Index, "'Base");
+         when Base_Range_Attribute =>
+            Put (Destination, Index, "'Base'Range");
+         when Dimension_Range_Attribute =>
+            Put (Destination, Index, "'Range (");
+            Put (Destination, Index, Item.Dimension);
+            Put (Destination, Index, ")");
+         when Range_Attribute =>
+            Put (Destination, Index, "'Range");
+      end case;
+      Pointer := Index;
+   end Put;
+
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Item        : Target_Name
+             )  is
+      use Strings_Edit;
+   begin
+      Put (Destination, Pointer, "@");
+   end Put;
+
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Item        : Universal_Boolean
+             )  is
+      use Strings_Edit;
+   begin
+      if Item.Value then
+         Put (Destination, Pointer, "True");
+      else
+         Put (Destination, Pointer, "False");
+      end if;
+   end Put;
+
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Item        : Universal_Integer
+             )  is
+      use Strings_Edit.Unbounded_Integer_Edit;
+   begin
+      Put (Destination, Pointer, Get_Value (Item));
+   end Put;
+
+   procedure Put
+             (  Destination : in out String;
+                Pointer     : in out Integer;
+                Item        : Universal_Real
+             )  is
+      use Strings_Edit.Unbounded_Rational_Edit;
+      use Strings_Edit.Unbounded_Unsigned_Edit;
+      use Strings_Edit;
+      Obelus : constant String := Character'Val (16#C3#) &
+                                  Character'Val (16#B7#);
+      Value  : constant Unbounded_Rational := Get_Value (Item);
+      Index  : Integer := Pointer;
+   begin
+      if Is_Zero (Value) then
+         Put (Destination, Index, "0.0");
+      elsif Is_One (Get_Denominator (Value)) then
+         if Is_Negative (Value) then
+            Put (Destination, Index, "-");
+         end if;
+         Put (Destination, Index, Get_Numerator (Value));
+         Put (Destination, Index, ".0");
+      elsif Is_One (Get_Denominator (Value)) then
+         Put
+         (  Destination => Destination,
+            Pointer     => Index,
+            Value       => Value,
+            Fraction    => Fraction
+         );
+      else
+         declare
+            Shifted : constant Unbounded_Rational :=
+                           abs Value * Half_Word (10) ** Fraction;
+            Rounded : constant Unbounded_Integer := Round (Shifted);
+         begin
+            if Rounded = Shifted then
+               Put
+               (  Destination => Destination,
+                  Pointer     => Index,
+                  Value       => Value,
+                  Fraction    => Fraction
+               );
+               while Destination (Index - 1) = '0' loop
+                  Index := Index - 1;
+               end loop;
+            else
+               if Is_Negative (Value) then
+                  Put (Destination, Index, "-");
+               end if;
+               Put (Destination, Index, Get_Numerator (Value));
+               Put (Destination, Index, Obelus);
+               Put (Destination, Index, Get_Denominator (Value));
+            end if;
+         end;
+      end if;
+      Pointer := Index;
+   end Put;
+
+   procedure Set_Constant_Folding
+             (  Context : in out Ada_Expression;
+                Enable  : Boolean
+             )  is
+   begin
+      Context.Fold := Enable;
+   end Set_Constant_Folding;
+
+   function Store
+            (  Context : access Ada_Expression'Class;
+               Value   : Unbounded_Unsigned
+            )  return Half_Word_Array_Ptr is
+      type Arena_Ptr is access Half_Word_Array;
+      for Arena_Ptr'Storage_Pool use Context.Pool.all;
+      Data : constant Arena_Ptr :=
+                  new Half_Word_Array (1..Get_Length (Value));
+   begin
+      for Digit in Data'Range loop
+         Data (Digit) := Get_Digit (Value, Digit);
+      end loop;
+      return Data.all'Unchecked_Access;
+   end Store;
+
+   procedure Store
+             (  Context : in out Ada_Expression;
+                Item    : in out Tokens.Argument_Token
+             )  is
+      This : Node'Class renames Ref (Item.Value).all;
+   begin
+      if This in Universal_Integer then
+         declare
+            Object : Universal_Integer renames
+                     Universal_Integer (This);
+            Inversed : constant Boolean := Object.Negative;
+         begin
+            if Object.Value /= null then
+               Object.Negative := Is_Negative (Object.Value.all);
+               Object.Data := Store
+                              (  Context'Access,
+                                 Get_Mantissa (Object.Value.all)
+                              );
+               Free (Object.Value);
+               if Inversed then -- Inversed value
+                  declare
+                     type Area_Ptr is access Expression;
+                     for Area_Ptr'Storage_Pool use Context.Pool.all;
+                     Ptr  : constant Area_Ptr :=
+                                 new Expression'
+                                     (  Count     => 1,
+                                        Location  => Item.Location,
+                                        Operation => Mul_Inv,
+                                        Operands  => (1 => Item)
+                                     );
+                  begin
+                     Item.Value := Ptr.all'Unchecked_Access;
+                  end;
+               end if;
+            end if;
+         end;
+      elsif This in Universal_Real then
+         declare
+            Object : Universal_Real renames Universal_Real (This);
+         begin
+            if Object.Value /= null then
+               Object.Negative := Is_Negative (Object.Value.all);
+               Object.Numerator :=
+                   Store
+                   (  Context'Access,
+                      Get_Numerator (Object.Value.all)
+                   );
+               Object.Denominator :=
+                  Store
+                  (  Context'Access,
+                     Get_Denominator (Object.Value.all)
+                  );
+               Free (Object.Value);
+            end if;
+         end;
+      end if;
+   end Store;
+
+   procedure Store
+             (  Context : in out Ada_Expression;
+                List    : in out Argument_List
+             )  is
+   begin
+      for Argument in List'Range loop
+         Store (Context, List (Argument));
+      end loop;
+   end Store;
+
+   use Operator_Tables;
+   use Reserved_Words_Tables;
 begin
    Add_Operator     (Infixes,   "|",         Alternative, 0,  0);
-   Add_Operator     (Infixes,   "in",        Member,      1,  1);
-   Add_Operator     (Infixes,   "..",        Ellipsis,    2,  2);
-   Add_Operator     (Infixes,   "xor",       Logical_Xor, 3,  3);
+   Add_Operator     (Infixes,   "xor",       Logical_Xor, 1,  1);
+   Add_Operator     (Infixes,   "in",        Member,      2,  2);
+   Add_Operator     (Infixes,   "..",        Ellipsis,    3,  3);
 
    Add_Operator     (Infixes,   "=",         EQ,          4,  4);
    Add_Operator     (Infixes,   "/=",        NE,          4,  4);
@@ -1616,5 +3217,100 @@ begin
    Keyword_Tables.Add (Keywords, "raise",    Raise_Keyword);
    Keyword_Tables.Add (Keywords, "for",      For_Keyword);
    Keyword_Tables.Add (Keywords, "parallel", Parallel_Keyword);
+
+   Add (Operators, "&",   Concatenate);
+   Add (Operators, "*",   Mul);
+   Add (Operators, "**",  Pow);
+   Add (Operators, "+",   Add);
+   Add (Operators, "-",   Sub);
+   Add (Operators, "/",   Div);
+   Add (Operators, "/=",  NE);
+   Add (Operators, "<",   LT);
+   Add (Operators, "<=",  LE);
+   Add (Operators, "=",   EQ);
+   Add (Operators, ">",   GT);
+   Add (Operators, ">=",  GE);
+   Add (Operators, "abs", Abs_Value);
+   Add (Operators, "and", Logical_And);
+   Add (Operators, "mod", Modulus);
+   Add (Operators, "not", Logical_Not);
+   Add (Operators, "or",  Logical_Or);
+   Add (Operators, "rem", Remainder);
+   Add (Operators, "xor", Logical_Xor);
+
+   Add (Reserved_Words, "abort",        Abort_Word);
+   Add (Reserved_Words, "abs",          Abs_Word);
+   Add (Reserved_Words, "abstract",     Abstract_Word);
+   Add (Reserved_Words, "accept",       Accept_Word);
+   Add (Reserved_Words, "access",       Access_Word);
+   Add (Reserved_Words, "aliased",      Aliased_Word);
+   Add (Reserved_Words, "all",          All_Word);
+   Add (Reserved_Words, "and",          And_Word);
+   Add (Reserved_Words, "array",        Array_Word);
+   Add (Reserved_Words, "at",           At_Word);
+   Add (Reserved_Words, "begin",        Begin_Word);
+   Add (Reserved_Words, "body",         Body_Word);
+   Add (Reserved_Words, "case",         Case_Word);
+   Add (Reserved_Words, "constant",     Constant_Word);
+   Add (Reserved_Words, "declare",      Declare_Word);
+   Add (Reserved_Words, "delay",        Delay_Word);
+   Add (Reserved_Words, "delta",        Delta_Word);
+   Add (Reserved_Words, "digits",       Digits_Word);
+   Add (Reserved_Words, "do",           Do_Word);
+   Add (Reserved_Words, "else",         Else_Word);
+   Add (Reserved_Words, "elsif",        Elsif_Word);
+   Add (Reserved_Words, "end",          End_Word);
+   Add (Reserved_Words, "entry",        Entry_Word);
+   Add (Reserved_Words, "exception",    Exception_Word);
+   Add (Reserved_Words, "exit",         Exit_Word);
+   Add (Reserved_Words, "for",          For_Word);
+   Add (Reserved_Words, "function",     Function_Word);
+   Add (Reserved_Words, "generic",      Generic_Word);
+   Add (Reserved_Words, "goto",         Goto_Word);
+   Add (Reserved_Words, "if",           If_Word);
+   Add (Reserved_Words, "in",           In_Word);
+   Add (Reserved_Words, "interface",    Interface_Word);
+   Add (Reserved_Words, "is",           Is_Word);
+   Add (Reserved_Words, "limited",      Limited_Word);
+   Add (Reserved_Words, "loop",         Loop_Word);
+   Add (Reserved_Words, "mod",          Mod_Word);
+   Add (Reserved_Words, "new",          New_Word);
+   Add (Reserved_Words, "not",          Not_Word);
+   Add (Reserved_Words, "null",         Null_Word);
+   Add (Reserved_Words, "of",           Of_Word);
+   Add (Reserved_Words, "or",           Or_Word);
+   Add (Reserved_Words, "others",       Others_Word);
+   Add (Reserved_Words, "out",          Out_Word);
+   Add (Reserved_Words, "overriding",   Overriding_Word);
+   Add (Reserved_Words, "package",      Package_Word);
+   Add (Reserved_Words, "parallel",     Parallel_Word);
+   Add (Reserved_Words, "pragma",       Pragma_Word);
+   Add (Reserved_Words, "private",      Private_Word);
+   Add (Reserved_Words, "procedure",    Procedure_Word);
+   Add (Reserved_Words, "protected",    Protected_Word);
+   Add (Reserved_Words, "raise",        Raise_Word);
+   Add (Reserved_Words, "range",        Range_Word);
+   Add (Reserved_Words, "record",       Record_Word);
+   Add (Reserved_Words, "rem",          Rem_Word);
+   Add (Reserved_Words, "renames",      Renames_Word);
+   Add (Reserved_Words, "requeue",      Requeue_Word);
+   Add (Reserved_Words, "return",       Return_Word);
+   Add (Reserved_Words, "reverse",      Reverse_Word);
+   Add (Reserved_Words, "select",       Select_Word);
+   Add (Reserved_Words, "separate",     Separate_Word);
+   Add (Reserved_Words, "some",         Some_Word);
+   Add (Reserved_Words, "subtype",      Subtype_Word);
+   Add (Reserved_Words, "synchronized", Synchronized_Word);
+   Add (Reserved_Words, "tagged",       Tagged_Word);
+   Add (Reserved_Words, "task",         Task_Word);
+   Add (Reserved_Words, "terminate",    Terminate_Word);
+   Add (Reserved_Words, "then",         Then_Word);
+   Add (Reserved_Words, "type",         Type_Word);
+   Add (Reserved_Words, "until",        Until_Word);
+   Add (Reserved_Words, "use",          Use_Word);
+   Add (Reserved_Words, "when",         When_Word);
+   Add (Reserved_Words, "while",        While_Word);
+   Add (Reserved_Words, "with",         With_Word);
+   Add (Reserved_Words, "xor",          Xor_Word);
 
 end Parsers.Generic_Ada_Parser;

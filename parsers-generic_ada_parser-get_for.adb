@@ -3,7 +3,7 @@
 --     Parsers.Generic_Ada_Parser.                 Luebeck            --
 --        Get_For                                  Summer, 2025       --
 --  Separate body implementation                                      --
---                                Last revision :  11:48 10 Aug 2025  --
+--                                Last revision :  10:48 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -67,9 +67,9 @@ begin
             if not Got_It then
                Raise_Exception
                (  Parsers.Syntax_Error'Identity,
-                  (  "The right bracket closing the left bracket at "
+                  (  "The parenthesis '(' opened at "
                   &  Image (Left_At)
-                  &  " expected at "
+                  &  " is expected to be closed by ')' at "
                   & Image (Link (Code))
                )  );
             end if;
@@ -145,7 +145,8 @@ begin
          );
       end if;
       Get_Identifier
-      (  Code,
+      (  Context,
+         Code,
          Line (Pointer..Last),
          Pointer,
          Identifier
@@ -222,11 +223,17 @@ begin
          Options := Options or For_Container;
       end if;
       Get_Line (Code, Line, Pointer, Last);
-      Argument.Value := new For_Expression (Count, Options, For_Type);
       declare
-         Item : Tokens.Arguments.Frame (1..2);
-         This : For_Expression'Class renames
-                For_Expression'Class (Argument.Value.all);
+         type Arena_Ptr is access For_Expression;
+         for Arena_Ptr'Storage_Pool use Context.Pool.all;
+         Result : constant Arena_Ptr :=
+                       new For_Expression
+                           (  Count,
+                              Options,
+                              For_Type
+                           );
+         This   : For_Expression renames Result.all;
+         Item   : Tokens.Arguments.Frame (1..2);
       begin
          for Index in reverse This.Aspects'Range loop
             declare
@@ -252,6 +259,7 @@ begin
          if 0 /= (Options and For_Key) then
             This.Key := Key;
          end if;
+         Argument.Value    := This'Unchecked_Access;
          Argument.Location := Where & Link (Code);
          return;
       end;

@@ -12,7 +12,7 @@
 <BODY bgcolor="#FFFFFF" link="#0000FF" vlink="#800080">
 <P align="center">
 <BIG><BIG><BIG><b>SIMPLE COMPONENTS</b></BIG></BIG><br>
-<EM>version 4.80</EM><BR>
+<EM>version 4.81</EM><BR>
 by Dmitry A. Kazakov</BIG><BR>
 (<A HREF="mailto:mailbox@dmitry-kazakov.de">mailbox@dmitry-kazakov.de</A>)<br>
 <a href="http://www.dmitry-kazakov.de"><img border="0" src="home.jpg" alt="[Home]" width="40" height="40"></a></p>
@@ -303,11 +303,11 @@ MAX! client implementation</a></td>
 		<td style="border-top-style: none; border-top-width: medium; border-bottom-style: solid; border-bottom-width: 1px" colspan="2">Source distribution (any platform)</td>
 		<td style="border-top-style: none; border-top-width: medium; border-bottom-style: solid; border-bottom-width: 1px">&nbsp;</td>
 		<td style="border-top-style: none; border-top-width: medium; border-bottom-style: solid; border-bottom-width: 1px" colspan="2">
-		<a href="http://www.dmitry-kazakov.de/ada/components_4_80.tgz">components_4_80.tgz</a>
+		<a href="http://www.dmitry-kazakov.de/ada/components_4_81.tgz">components_4_81.tgz</a>
 		(<b>tar</b> + <b>gzip</b>, Windows users may use WinZip)</td>
 		<td>&nbsp;</td>
 		<td align="center" colspan="4">
-		<a href="http://www.dmitry-kazakov.de/ada/components_4_80.tgz">
+		<a href="http://www.dmitry-kazakov.de/ada/components_4_81.tgz">
 <img src="download.jpg" align=middle alt="[Download]" width="29" height="29"></a></td>
 	</tr>
 </table>
@@ -13994,6 +13994,14 @@ Index is illegal.</p>
 return</font> Address;</tt></blockquote>
 <p>This function returns the address of the last allocated storage element or 
 Null_Address.</p>
+<h4><a name="7.1.1"></a>7.1.1. Stack pool information output</h4>
+<p><a name="Stack_Storage.Text_IO"></a>The child package <a href="#Stack_Storage">
+Stack_Storage</a>.<a href="#Stack_Storage.Text_IO">Text_IO</a> provides 
+subprograms to output stack pool statistics:</p>
+<blockquote>
+<tt><font color="#0000FF">procedure</font> Put_Statistics (<b>File</b> : 
+File_Type; <b>Stack</b> : <a href="#Stack_Storage.Pool">Pool</a>);<br>
+<font color="#0000FF">procedure</font> Put_Statistics (<b>Stack</b> : <a href="#Stack_Storage.Pool">Pool</a>);</tt></blockquote>
 <p align="right">
   <A name="7.2"></A><A href="#7.1"><IMG src="prev.gif" alt="[Back]" width="29"
       height="29"></A><A href="#22"><IMG
@@ -25762,28 +25770,33 @@ be used for debugging. It provides:</p>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Code</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 : <a href="#Parsers.Generic_Source.Source_Type">Source_Type</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
-Expand_Tabs</b> : Boolean := False<br>
+Expand_Tabs</b> : Boolean := False;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Message</b>&nbsp;&nbsp;&nbsp;&nbsp; : String&nbsp; := &quot;&quot;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br>
 <font color="#0000FF">procedure</font> Put_Line<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp; <b>Code</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 : <a href="#Parsers.Generic_Source.Source_Type">Source_Type</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
-Expand_Tabs</b> : Boolean := False<br>
+Expand_Tabs</b> : Boolean := False;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Message</b>&nbsp;&nbsp;&nbsp;&nbsp; : String&nbsp; := &quot;&quot;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
 </blockquote>
 <p>These procedures output the current source code line following current source 
 cursors. The output might look like: </p>
 <blockquote>
 <p><tt>123.0 + ( Value - 1)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ^^^^^|</tt></p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ^^^^^|Message</tt></p>
 </blockquote>
 <p>The parameter <b>File</b> is the text file to write. It is the standard 
 output if missing. <b>Code</b> is the source code. The parameter <b>Expand_Tabs</b> 
 when <i><font color="#800000">true</font></i> forms the second output line in 
 accordance with the tabulations expanded in the first line. The tabulations of 
-the first line are not explicitly expanded, but output as-is.</p>
+the first line are not explicitly expanded, but output as-is. The parameter 
+Message specifies the message to show.</p>
 <p><a name="Parsers.Multiline_Source.Location_Text_IO"></a>The package
-<a href="#Parsers">Parsers</a>.<a href="#Parsers.Multiline_Source.Location_Text_IO">Multiline_Source.Location_Text_IO</a> is an instance of
+<a href="#Parsers">Parsers</a>.<a href="#Parsers.Multiline_Source">Multiline_Source</a>.<a href="#Parsers.Multiline_Source.Location_Text_IO">Location_Text_IO</a> is an instance of
 <a href="#Parsers">Parsers</a>.<a href="#Parsers.Generic_Source.Text_IO">Generic_Source.Text_IO</a> for 
 the multi-line source provided in the package
 <a href="#Parsers">Parsers</a>.<a href="#Parsers.Multiline_Source">Multiline_Source</a>.</p>
@@ -26202,13 +26215,18 @@ record</font><br>
 </blockquote>
 <p>The source position.</p>
 <blockquote>
-<p><tt><font color="#0000FF">function</font> &quot;<font color="#FF0000">&lt;</font>&quot; (<b>Left</b>,
+<p><tt><font color="#0000FF">function</font> &quot;<font color="#FF0000">&lt;</font>&quot;&nbsp; (<b>Left</b>,
+<b>Right</b> : Position) <font color="#0000FF">return</font> Boolean;<font color="#0000FF"><br>
+function</font> &quot;<font color="#FF0000">&lt;=</font>&quot; (<b>Left</b>,
+<b>Right</b> : Position) <font color="#0000FF">return</font> Boolean;<font color="#0000FF"><br>
+function</font> &quot;<font color="#FF0000">&gt;</font>&quot;&nbsp; (<b>Left</b>,
+<b>Right</b> : Position) <font color="#0000FF">return</font> Boolean;<font color="#0000FF"><br>
+function</font> &quot;<font color="#FF0000">&gt;=</font>&quot; (<b>Left</b>,
 <b>Right</b> : Position) <font color="#0000FF">return</font> Boolean;</tt></p>
 </blockquote>
-<p>The source positions are comparable using both <tt> &quot;<font color="#FF0000">=</font>&quot;</tt>
-and <tt> &quot;<font color="#FF0000">&lt;</font>&quot;</tt> .</p>
+<p>The source positions are comparable.</p>
 <blockquote>
-<p><tt><font color="#0000FF">type</font> Location <font color="#0000FF">is 
+<p><tt><font color="#0000FF"><a name="Parsers.Multiline_Source.Location"></a>type</font> Location <font color="#0000FF">is 
 record</font><br>
 &nbsp;&nbsp; First : Position;<br>
 &nbsp;&nbsp; Next&nbsp; : Position;<br>
@@ -26216,6 +26234,22 @@ record</font><br>
 </blockquote>
 <p>The source locations are specified by the first character position and the 
 position of the first character next to location.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> &quot;<font color="#FF0000">&lt;</font>&quot; (<b>Left</b>,
+<b>Right</b> : 
+<a href="#Parsers.Multiline_Source.Location">Location</a>) <font color="#0000FF">return</font> Boolean;<font color="#0000FF"><br>
+function</font> &quot;<font color="#FF0000">&gt;</font>&quot; (<b>Left</b>,
+<b>Right</b> : 
+<a href="#Parsers.Multiline_Source.Location">Location</a>) <font color="#0000FF">return</font> Boolean;</tt></p>
+</blockquote>
+<p>Comparisons of location are strong and return <font color="#800000"><i>false</i></font> 
+when locations intersect.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Contains (<b>Left</b>,
+<b>Right</b> : Position) <font color="#0000FF">return</font> Boolean;</tt></p>
+</blockquote>
+<p>This function returns <font color="#800000"><i>true</i></font> if <b>Left</b> 
+location contains <b>Right</b> location.</p>
 <blockquote>
 <p><tt><font color="#0000FF"><a name="Parsers.Multiline_Source.Source"></a>type</font> Source<font color="#0000FF"> is<br>
 &nbsp;&nbsp; abstract new </font>Ada.Finalization.Limited_Controlled<font color="#0000FF"> 
@@ -26241,14 +26275,31 @@ line. The constructor allocates the buffer of some reasonable size. When a new
 line is requested the buffer can be replaced by a larger one if necessary. </p>
 <blockquote>
 <p><tt><font color="#0000FF">procedure</font> Finalize (<b>Code</b> :
-<font color="#0000FF">in out </font>Source);</tt></p>
+<font color="#0000FF">in out </font><a href="#Parsers.Multiline_Source.Source">Source</a>);</tt></p>
 </blockquote>
 <p>The destructor deallocates the buffer.</p>
 <blockquote>
 <p><tt><font color="#0000FF">procedure</font> Initialize (<b>Code</b> :
-<font color="#0000FF">in out </font>Source);</tt></p>
+<font color="#0000FF">in out </font><a href="#Parsers.Multiline_Source.Source">Source</a>);</tt></p>
 </blockquote>
 <p>The constructor creates the buffer.</p>
+<blockquote>
+<p><tt><font color="#0000FF">procedure </font>Get<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Source</b>&nbsp; 
+: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Pointer</b> : <font color="#0000FF">in out</font> Integer;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Value</b>&nbsp;&nbsp; : <font color="#0000FF">out </font>
+<a href="#Parsers.Multiline_Source.Location">Location</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure takes location from the string <b>Source</b> starting at <b>
+Pointer</b>. After successful completion <b>Pointer</b> is advanced to the first 
+character following the location. Layout_Error is propagated when <b>Pointer</b> 
+is not in the range <b>Source</b>'First..<b>Source</b>'Last + 1. End_Error is 
+propagated when there is no location specification. Data_Error is propagated on 
+syntax errors.</p>
 <blockquote>
 <p><tt><font color="#0000FF">procedure</font> Get_Line (<b>Code</b> :
 <font color="#0000FF">in out </font>Source)<font color="#0000FF"> is abstract</font>;</tt></p>
@@ -26267,16 +26318,39 @@ String;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Prefix</b>&nbsp; 
 : String := &quot;<font color="#FF0000">at </font>&quot;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
-return</font> Location;</tt></p>
+return</font> <a href="#Parsers.Multiline_Source.Location">Location</a>;</tt></p>
 </blockquote>
 <p>This function searches for a location image in an error message string. The 
 image is searched backwards for an appearance of <b>Prefix</b>. If an image does 
 not follow <b>Prefix</b> search continues. The result is the location decoded 
 according to the format used by <a href="#Parsers.Generic_Source.Image">Image</a>. 
 If no image found the result is ((0,0), (0,0)).</p>
+<BLOCKQUOTE>
+  <tt><font color="#0000FF">procedure</FONT> Put<BR>
+  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ( &nbsp;<b>Destination</b> : <font color="#0000FF">in
+  out</FONT> String;<BR>
+  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<b>Pointer</b>
+  &nbsp; &nbsp; : <font color="#0000FF">in
+  out</FONT> Integer;<BR>
+  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<b>Value</b> &nbsp;
+  &nbsp; &nbsp; : <a href="#Parsers.Multiline_Source.Location">Location</a>;<BR>
+  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<b>Field</b> &nbsp;
+  &nbsp; &nbsp; : Natural&nbsp; &nbsp;:= <FONT color="#800000">0</FONT>;<BR>
+  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<b>Justify</b>
+  &nbsp; &nbsp; : Alignment := Left;<BR>
+  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<b>Fill</b> &nbsp;
+  &nbsp; &nbsp; &nbsp;: Character := ' '<BR>
+  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; );</tt></BLOCKQUOTE>
+<P>
+This procedure places the location
+into the output string <b>Destination</b>. The string is written
+starting from the <b>Destination (Pointer)</b>. The exception
+Layout_Error is propagated if the value of <b>Pointer</b> is not
+in <b>Destination</b>'Range or there is no room for the output.</p>
 <blockquote>
 <p><tt><font color="#0000FF"><a name="Parsers.Multiline_Source.Skip"></a>procedure</font> Skip (<b>Code</b> :
-<font color="#0000FF">in out</font> Source'Class; <b>Link</b> : Location);</tt></p>
+<font color="#0000FF">in out</font> <a href="#Parsers.Multiline_Source.Source">Source</a>'Class; <b>Link</b> : 
+<a href="#Parsers.Multiline_Source.Location">Location</a>);</tt></p>
 </blockquote>
 <p>This procedure advances the source <b>Code</b> to the location <b>Link</b>, 
 so that the result of <a href="#Parsers.Generic_Source.Link">Link</a> (<b>Code</b>) 
@@ -26284,6 +26358,15 @@ would equal to the value of the parameter <b>Link</b>. Layout_Error is
 propagated when the source is beyond the first position of <b>Link</b>. It is 
 also propagated when some parts of <b>Link</b> do not belong to the source <b>
 Code</b>.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function </font>Value (<b>Source</b> : String)
+<font color="#0000FF">return</font> <a href="#Parsers.Multiline_Source.Location">
+Location</a>;</tt></p>
+</blockquote>
+<p>This function converts string to location. The location can be surrounded by 
+spaces and tabs. All string must be matched otherwise Data_Error is propagated. 
+It is also propagated on syntax errors, End_Error is propagated when there is no 
+location specification.</p>
 <p>The following sample code illustrates use of 
 <a href="#Parsers.Multiline_Source.Skip">Skip</a> and
 <a href="#Parsers.Multiline_Source.Get_Location">Get_Location</a> for error 
@@ -28139,7 +28222,7 @@ instance of <a href="#Parsers">Parsers</a>.<a href="#Parsers.Generic_Operation">
 <blockquote>
 <blockquote>
 <p><tt><font color="#0000FF"><a name="Parsers.Generic_Token.Descriptors"></a>package</font> Descriptors <font color="#0000FF">is<br>
-&nbsp;&nbsp; new</font> Generic_Operation (Operation_Token, Priority_Type);</tt></p>
+&nbsp;&nbsp; new</font> Generic_Operation (<a href="#Parsers.Generic_Token.Operation_Token">Operation_Token</a>, Priority_Type);</tt></p>
 </blockquote>
 </blockquote>
 <ul>
@@ -28170,7 +28253,8 @@ Location : <a href="#Parsers.Generic_Source.Location_Type">Location_Type</a>;<br
 field Value identifies the argument. The field Location is the argument 
 location.</p>
 <blockquote>
-<p><tt><font color="#0000FF">type</font> Operation_Token <font color="#0000FF">is record</font><br>
+<p><tt><font color="#0000FF"><a name="Parsers.Generic_Token.Operation_Token">
+</a>type</font> Operation_Token <font color="#0000FF">is record</font><br>
 &nbsp;&nbsp;
 Operation : <a href="#Parsers.Generic_Token.Operation_Type">Operation_Type</a>;<br>
 &nbsp;&nbsp;
@@ -28516,6 +28600,34 @@ On_Wrong_Right_Bracket</a> raises Syntax_Error.</li>
 Result</b>&nbsp; : <font color="#0000FF">out</font> 
 <a href="#Parsers.Generic_Token.Argument_Token">Argument_Token</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp;
+<font color="#0000FF">renames</font> Implementation.Parse;<font color="#0000FF"><br>
+procedure</font> Parse<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Context</b> :
+<font color="#0000FF">in out</font> Implementation.Lexer'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Code</b>&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out </font>
+<a href="#Parsers.Generic_Source.Source_Type">Source_Type</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Left</b>&nbsp;&nbsp;&nbsp; 
+: <a href="#Parsers.Generic_Token.Operation_Token">Operation_Token</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Result</b>&nbsp; : <font color="#0000FF">out</font> 
+<a href="#Parsers.Generic_Token.Argument_Token">Argument_Token</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp;
+<font color="#0000FF">renames</font> Implementation.Parse;<font color="#0000FF"><br>
+procedure</font> Parse<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Context</b> :
+<font color="#0000FF">in out</font> Implementation.Lexer'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Code</b>&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out </font>
+<a href="#Parsers.Generic_Source.Source_Type">Source_Type</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Operand</b> 
+: 
+<a href="#Parsers.Generic_Token.Argument_Token">Argument_Token</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Result</b>&nbsp; : <font color="#0000FF">out</font> 
+<a href="#Parsers.Generic_Token.Argument_Token">Argument_Token</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp;
 <font color="#0000FF">renames</font> Implementation.Parse;</tt></p>
 </blockquote>
 <p>This class-wide procedure renames <a href="#Parsers">Parsers</a>.<a href="#Parsers.Generic_Lexer">Generic_Lexer</a>.<a href="#Parsers.Generic_Lexer.Parse">Parse</a>. Upon successful completion <b>Result</b> is one 
@@ -28523,9 +28635,11 @@ of the expression. Note that <b>Result</b> is of
 <a href="#Parsers.Generic_Token.Argument_Token">Argument_Token</a> type. So it 
 contains both the expression result and its location, which is usually the 
 expression location. The state of <b>Code</b> indicates how far the expression 
-parsing advanced even in case of an exception. Parse is recursive-call safe as 
+parsing advanced even in case of an exception. <a href="#Parsers.Generic_Lexer.Parse">Parse</a> is recursive-call safe as 
 long as implementations of the abstract operations do not change <b>Context</b> 
-and <b>Code</b> in an inappropriate way.</p>
+and <b>Code</b> in an inappropriate way. The parameter <b>Left</b> if used instructs the parser to assume a left brackets given 
+upfront. <b>Left</b> describes the bracket. When <b>Operand</b> is specified the 
+parser starts with it.</p>
 <H4><a name="13.5.2"></a>13.5.2. Table-driven segmented lexers</H4>
 <p><a name="Parsers.Generic_Token.Segmented_Lexer"></a>The child generic package
 <a href="#Parsers">Parsers</a>.<a href="#Parsers.Generic_Token">Generic_Token</a>.<a href="#Parsers.Generic_Token.Segmented_Lexer">Segmented_Lexer</a> provides table driven infix expression 
@@ -28575,12 +28689,40 @@ operand in the source.</li>
 </ul>
 <blockquote>
 <p><tt><font color="#0000FF">procedure</font> Parse<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Context :
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Context</b> :
 <font color="#0000FF">in out</font> Token_Lexer.Implementation.Lexer'Class;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Code&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Code</b>&nbsp;&nbsp;&nbsp; 
 : <font color="#0000FF">in out</font> 
 <a href="#Parsers.Generic_Source.Source_Type">Source_Type</a>;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Result&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Result</b>&nbsp; 
+: <font color="#0000FF">out</font> 
+<a href="#Parsers.Generic_Token.Argument_Token">Argument_Token</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp;
+<font color="#0000FF">renames</font> Token_Lexer.Implementation.Parse;<font color="#0000FF"><br>
+procedure</font> Parse<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Context</b> :
+<font color="#0000FF">in out</font> Token_Lexer.Implementation.Lexer'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Code</b>&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> 
+<a href="#Parsers.Generic_Source.Source_Type">Source_Type</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Left</b>&nbsp;&nbsp;&nbsp; 
+: <a href="#Parsers.Generic_Token.Operation_Token">Operation_Token</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Result</b>&nbsp; 
+: <font color="#0000FF">out</font> 
+<a href="#Parsers.Generic_Token.Argument_Token">Argument_Token</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp;
+<font color="#0000FF">renames</font> Token_Lexer.Implementation.Parse;<font color="#0000FF"><br>
+procedure</font> Parse<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Context</b> :
+<font color="#0000FF">in out</font> Token_Lexer.Implementation.Lexer'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Code</b>&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font> 
+<a href="#Parsers.Generic_Source.Source_Type">Source_Type</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Operand</b> 
+: 
+<a href="#Parsers.Generic_Token.Argument_Token">Argument_Token</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Result</b>&nbsp; 
 : <font color="#0000FF">out</font> 
 <a href="#Parsers.Generic_Token.Argument_Token">Argument_Token</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp;
@@ -28591,9 +28733,11 @@ of the expression. Note that <b>Result</b> is of
 <a href="#Parsers.Generic_Token.Argument_Token">Argument_Token</a> type. So it 
 contains both the expression result and its location, which is usually the 
 expression location. The state of <b>Code</b> indicates how far the expression 
-parsing advanced even in case of an exception. Parse is recursive-call safe as 
+parsing advanced even in case of an exception. <a href="#Parsers.Generic_Lexer.Parse">Parse</a> is recursive-call safe as 
 long as implementations of the abstract operations do not change <b>Context</b> 
-and <b>Code</b> in an inappropriate way.</p>
+and <b>Code</b> in an inappropriate way. The parameter <b>Left</b> if used instructs the parser to assume a left brackets given 
+upfront. <b>Left</b> describes the bracket. When <b>Operand</b> is specified the 
+parser starts with it.</p>
 <p align="right">
   <A name="13.6"></A><a href="#13.5"><IMG src="prev.gif" alt="[Back]" width="29"
       height="29"></a><A href="#22"><IMG
@@ -28681,13 +28825,47 @@ Semicolon_Class'Range =&gt;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Result</b>&nbsp; : 
 <font color="#0000FF">out</font> <a href="#Parsers.Generic_Token.Argument_Type">Argument_Type</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-);</tt></p>
+);<br>
+<font color="#0000FF">procedure</font> Parse<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(&nbsp; <b>Context</b> : <font color="#0000FF">in out</font> 
+<a href="#Parsers.Generic_Token.Generic_Token_Lexer.Lexer">Lexer</a>'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<b>Code</b>&nbsp;&nbsp;&nbsp; : <font color="#0000FF">in out</font> 
+<a href="#Parsers.Generic_Source.Source_Type">Source_Type</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Left</b>&nbsp;&nbsp;&nbsp; 
+: <a href="#Parsers.Generic_Token.Operation_Type">Operation_Type</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Result</b>&nbsp; : 
+<font color="#0000FF">out</font> <a href="#Parsers.Generic_Token.Argument_Type">Argument_Type</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<font color="#0000FF"><br>
+procedure</font> Parse<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(&nbsp; <b>Context</b> : <font color="#0000FF">in out</font> 
+<a href="#Parsers.Generic_Token.Generic_Token_Lexer.Lexer">Lexer</a>'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<b>Code</b>&nbsp;&nbsp;&nbsp; : <font color="#0000FF">in out</font> 
+<a href="#Parsers.Generic_Source.Source_Type">Source_Type</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Operand</b> 
+: <a href="#Parsers.Generic_Token.Argument_Type">Argument_Type</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Result</b>&nbsp; : 
+<font color="#0000FF">out</font> <a href="#Parsers.Generic_Token.Argument_Type">Argument_Type</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
 </blockquote>
 <p>is used to scan the source <b>Code</b>. Upon successful completion <b>Result</b> is one of the expression. 
 In any outcome the source cursor indicates how far the expression parsing has 
 managed to proceed. <a href="#Parsers.Generic_Lexer.Parse">Parse</a> is recursive-call safe as long as implementations of the abstract operations do not change 
 <b>Context</b> and <b>Code</b> in an inappropriate way. It means that an implementation of an operation may in turn call 
-<a href="#Parsers.Generic_Lexer.Parse">Parse</a> to get a subexpression from source if that necessary.</p>
+<a href="#Parsers.Generic_Lexer.Parse">Parse</a> to get a subexpression from source 
+if necessary. The parser can also be started with a part of expression already 
+recognized:</p>
+<ul>
+	<li>When a left bracket is already recognized in the source, this can be 
+	specified by the parameter <b>Left</b>. The parser will then expect a 
+	closing bracket at the expression end;</li>
+	<li>When an operand is already recognized, it is specified as the parameter
+	<b>Operand</b>. The parser continues in the postfix context.</li>
+</ul>
 <p><u><b>Abstract primitive operations</b></u>: A type derived from 
 <a href="#Parsers.Generic_Lexer.Lexer">Lexer</a> has to implement the following abstract 
 operations:</p>
@@ -28975,44 +29153,6 @@ Alternatively it may raise an exception which would then abort parsing
 propagating out of
 <a href="#Parsers.Generic_Lexer.Parse">Parse</a>.</p>
 <blockquote>
-<p><tt><font color="#0000FF">procedure</font> On_Parsing_Error<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Context</b> 
-: <font color="#0000FF">in out</font> 
-<a href="#Parsers.Generic_Token.Generic_Token_Lexer.Lexer">Lexer</a>;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Code</b>&nbsp;&nbsp;&nbsp; 
-: <font color="#0000FF">in out</font> 
-<a href="#Parsers.Generic_Source.Source_Type">Source_Type</a>;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
-Error</b>&nbsp;&nbsp; : Exception_Occurrence <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
-</blockquote>
-<p>This procedure is called when parsing ends with an error. The default 
-implementation does nothing.</p>
-<blockquote>
-<p><tt><font color="#0000FF">procedure</font> On_Parsing_Start<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Context</b> 
-: <font color="#0000FF">in out</font> 
-<a href="#Parsers.Generic_Token.Generic_Token_Lexer.Lexer">Lexer</a>;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Code</b>&nbsp;&nbsp;&nbsp; 
-: <font color="#0000FF">in out</font> 
-<a href="#Parsers.Generic_Source.Source_Type">Source_Type</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
-</blockquote>
-<p>This procedure is called before parsing starts. The default implementation 
-does nothing.</p>
-<blockquote>
-<p><tt><font color="#0000FF">procedure</font> On_Parsing_Stop<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; 
-<b>Context</b> 
-: <font color="#0000FF">in out</font>
-<a href="#Parsers.Generic_Token.Generic_Token_Lexer.Lexer">Lexer</a>;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-<b>Code</b>&nbsp;&nbsp;&nbsp; 
-: <font color="#0000FF">in out</font>
-<a href="#Parsers.Generic_Source.Source_Type">Source_Type</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
-</blockquote>
-<p>This procedure is called after successful parsing starts. The default 
-implementation does nothing.</p>
-<blockquote>
 <p><tt><font color="#0000FF">
 <a name="Parsers.Generic_Lexer.On_Missing_Right_Bracket"></a>procedure</font> On_Missing_Right_Bracket<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -29034,6 +29174,21 @@ The handler can modify the left bracket specified by the parameter <b>Left</b> a
 in the parameter <b>Right</b>. Alternatively it may raise an exception which would then 
 abort parsing and propagate out of
 <a href="#Parsers.Generic_Lexer.Parse">Parse</a>.</p>
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> On_Success<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; 
+<b>Context</b> 
+: <font color="#0000FF">in out</font>
+<a href="#Parsers.Generic_Token.Generic_Token_Lexer.Lexer">Lexer</a>;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+<b>Code</b>&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">in out</font>
+<a href="#Parsers.Generic_Source.Source_Type">Source_Type</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Result</b>&nbsp; : 
+<font color="#0000FF">in out</font> <a href="#Parsers.Generic_Token.Argument_Type">Argument_Type</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure is called after successful parsing. It can adjust source 
+and/or result if necessary. The default 
+implementation does nothing.</p>
 <blockquote>
 <p><tt><font color="#0000FF"><a name="Parsers.Generic_Lexer.On_Wrong_Comma"></a>procedure</font> On_Wrong_Comma<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -29095,6 +29250,14 @@ one (the parameter <b>Right</b>) or both to make them compatible. Upon return <b
 propagate out of <a href="#Parsers.Generic_Lexer.Parse">Parse</a>.</li>
 </ul>
 <p><u><b>Primitive operations having an implementation</b></u>:</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="Parsers.Generic_Lexer.Mark"></a>procedure</font> 
+Mark (<b>Context</b> : <font color="#0000FF">in out</font> 
+<a href="#Parsers.Generic_Token.Generic_Token_Lexer.Lexer">Lexer</a>);</tt></p>
+</blockquote>
+<p>This procedure marks the argument stack. Each call to
+<a href="#Parsers.Generic_Lexer.Mark">Mark</a> must be matched by a call to
+<a href="#Parsers.Generic_Lexer.Release">Release</a>.</p>
 <blockquote>
 <p><tt><font color="#0000FF">function</font> Is_Expected<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Context</b>&nbsp; : 
@@ -29261,6 +29424,13 @@ Argument</b> :
 </blockquote>
 <p>This procedure can be used to directly manipulate the arguments stack. It 
 pushes <b>Argument</b> onto the arguments stack.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="Parsers.Generic_Lexer.Release"></a>procedure</font> 
+Release (<b>Context</b> : <font color="#0000FF">in out</font> 
+<a href="#Parsers.Generic_Token.Generic_Token_Lexer.Lexer">Lexer</a>);</tt></p>
+</blockquote>
+<p>This procedure releases the argument stack up to the mark set by a call to
+<a href="#Parsers.Generic_Lexer.Mark">Mark</a>.</p>
 <p><u><b>Informational operations</b></u>:</p>
 <blockquote>
 <p><tt><font color="#0000FF">function</font> Get_Operation_Stack_Depth (<b>Context</b> 
@@ -30354,10 +30524,6 @@ stack stubs (fragments bounds). The type Stack defined in the package: </p>
 <p><tt><font color="#0000FF">generic<br>
 &nbsp;&nbsp; with package</font> Sources <font color="#0000FF">is new</font> <a href="#Parsers">Parsers</a>.<a href="#Parsers.Generic_Source">Generic_Source</a> 
 (&lt;&gt;);<br>
-&nbsp;&nbsp; Initial_Size : System.Storage_Elements.Storage_Count :=
-<font color="#800000">2048</font>;<br>
-&nbsp;&nbsp; Items_Number&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-: Positive := <font color="#800000">128</font>;<br>
 &nbsp;&nbsp; Argument_Frame_Segment_Size : Positive := <font color="#800000">128</font>;<br>
 &nbsp;&nbsp; Argument_Frame_Minimal_Size : Positive := <font color="#800000">64</font>;<br>
 &nbsp;&nbsp; Argument_Frame_Increment&nbsp;&nbsp;&nbsp; : Natural&nbsp; :=
@@ -30375,25 +30541,72 @@ stack stubs (fragments bounds). The type Stack defined in the package: </p>
 <font color="#0000FF">package</font> <a href="#Parsers">Parsers</a>.<a href="#Parsers.Generic_Ada_Parser">Generic_Ada_Parser</a>
 <font color="#0000FF">is</font> ...</tt></p>
 </blockquote>
-<p>The nodes of the syntax tree are allocated on a stack. The stack is 
-provided by a stack pool. This allows to remove the whole tree by deallocating 
-its first allocated node or any other pool object allocated before it. Tree_Pool 
-is the stack storage pool used for this. The formal parameters <i>Initial_Size</i> and 
-<i>Items_Number</i> control pool allocation, see <a href="#Stack_Storage">
-Stack_Storage</a>. Other formal parameters control allocation of <a href="#Parsers">Parsers</a>.<a href="#Parsers.Generic_Token">Generic_Token</a>.<a href="#Parsers.Generic_Token.Segmented_Lexer">Segmented_Lexer</a>.</p>
+<p>The formal parameters control allocation of <a href="#Parsers">Parsers</a>.<a href="#Parsers.Generic_Token">Generic_Token</a>.<a href="#Parsers.Generic_Token.Segmented_Lexer">Segmented_Lexer</a>.</p>
 <p>The 
 analyzer has the type Ada_Expression defined in the package:</p>
 <blockquote>
-<p><tt><font color="#0000FF">type</font> Ada_Expression <font color="#0000FF">is<br>
-&nbsp;&nbsp; new</font> Blank_Skipping_Lexers.Lexer<br>
+<p><tt><font color="#0000FF">
+<a name="Parsers.Generic_Ada_Parser.Ada_Expression"></a>type</font> Ada_Expression<br>
+&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Tree_Pool : <font color="#0000FF">access</font> <a href="#Stack_Storage">
+Stack_Storage</a>.Pool<br>
+&nbsp;&nbsp;&nbsp;&nbsp; ) <font color="#0000FF">is new</font> Blank_Skipping_Lexers.Lexer<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Prefixes&nbsp; =&gt; Prefixes'Access,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Infixes&nbsp;&nbsp; =&gt; 
-Infixes'Access,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Infixes&nbsp;&nbsp; =&gt; Infixes'Access,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Postfixes =&gt; 
 Postfixes'Access<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">with null 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">with null 
 record</font>;</tt></p>
 </blockquote>
+<p>To parse the source the following procedure is used: </p>
+<blockquote>
+<p>
+<tt><font color="#0000FF">procedure</font> &lt;<i>instance</i>&gt;.<a href="#Parsers.Generic_Lexer">Lexer</a>.<a href="#Parsers.Generic_Lexer.Parse">Parse</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(&nbsp; <b>Context</b> : <font color="#0000FF">in out</font> 
+<a href="#Parsers.Generic_Ada_Parser.Ada_Expression">Ada_Expression</a>'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<b>Code</b>&nbsp;&nbsp;&nbsp; : <font color="#0000FF">in out</font> 
+<a href="#Parsers.Generic_Source.Source_Type">Source_Type</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Result</b>&nbsp; : 
+<font color="#0000FF">out</font> &lt;<i>instance</i>&gt;.<a href="#Parsers.Generic_Token">Tokens</a>.<a href="#Parsers.Generic_Token.Argument_Token">Argument_Token</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+);</tt></p>
+</blockquote>
+<p>Here &lt;<i>instance</i>&gt; the name of the instance of the package <a href="#Parsers">Parsers</a>.<a href="#Parsers.Generic_Ada_Parser">Generic_Ada_Parser</a>. 
+The result is a record containing the access to the top node (<a href="#Parsers.Generic_Ada_Parser.Node_Ptr">Node_Ptr</a>) 
+and the location of the expression in the source.</p>
+<blockquote>
+<p>
+<tt><font color="#0000FF">function</font> Get_Constant_Folding (<b>Context</b> : 
+<a href="#Parsers.Generic_Ada_Parser.Ada_Expression">Ada_Expression</a>)
+<font color="#0000FF">return</font> Boolean;</tt></p>
+</blockquote>
+<p>This function return current universal expression folding mode.</p>
+<blockquote>
+<p>
+<tt><font color="#0000FF">procedure</font> Set_Constant_Folding<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Context</b> :
+<font color="#0000FF">in out</font> 
+<a href="#Parsers.Generic_Ada_Parser.Ada_Expression">Ada_Expression</a>;<br>
+<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+Enable</b>&nbsp; : Boolean<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure sets universal expression folding mode. When folding is 
+enabled expressions in integer and real literals are computed when possible. The 
+logical terms are joined and appended at the expression end. For example</p>
+<blockquote>
+<p>
+<tt>1 &gt; 2 <font color="#0000FF">or</font> X <font color="#0000FF">or</font> 2 &gt; 
+3 -&gt; X<br>
+1 &gt; 2 <font color="#0000FF">or</font> X <font color="#0000FF">or</font> 2 &lt; 3 -&gt; 
+X <font color="#0000FF">or</font> True</tt></p>
+</blockquote>
+<p>The latter is not folded to <i><font color="#800000">true</font></i> because 
+X may raise an exception. Short-circuit operations when folded remove arguments 
+that will be never evaluated.</p>
 <p>The analyzer 
 recognizes an Ada expression in the source and stops at its end. The type 
 Operations defines the Ada operations:</p>
@@ -30657,27 +30870,23 @@ advanced error messaging mechanism than exception information.</p>
 <p>The package defines the type Node a tagged abstract base type of all parsing 
 tree nodes:</p>
 <blockquote>
-<p><tt><font color="#0000FF">type</font> Node<font color="#0000FF"> is abstract 
+<p><tt><font color="#0000FF"><a name="Parsers.Generic_Ada_Parser.Node"></a>type</font> Node<font color="#0000FF"> is abstract 
 tagged limited null record</font>;<br>
-<font color="#0000FF">function</font> Image (Item : Node) <font color="#0000FF">
+<font color="#0000FF">function</font> Image (Item : 
+<a href="#Parsers.Generic_Ada_Parser.Node">Node</a>) <font color="#0000FF">
 return</font> String <font color="#0000FF">is abstract</font>;<br>
-<font color="#0000FF">type</font> Node_Ptr <font color="#0000FF">is access</font> 
-Node'Class;<br>
-<font color="#0000FF">for</font> Node_Ptr'Storage_Pool <font color="#0000FF">use</font> 
-Tree_Pool;</tt></p>
+<font color="#0000FF"><a name="Parsers.Generic_Ada_Parser.Node_Ptr"></a>type</font> Node_Ptr <font color="#0000FF">is access 
+constant</font> 
+<a href="#Parsers.Generic_Ada_Parser.Node">Node</a>'Class;</tt></p>
 </blockquote>
 <p>The nodes of the syntax tree are allocated on a stack. The stack is 
 provided by a stack pool. This allows to remove the whole tree by deallocating 
 its first allocated node or any other pool object allocated before it. Tree_Pool 
+access discriminant 
 is the stack storage pool used for this.</p>
-<blockquote>
-<p><tt>Tree_Pool : <a href="#Stack_Storage">
-Stack_Storage</a>.Pool (Initial_Size,
-Items_Number);</tt></p>
-</blockquote>
 <p>Nodes have the primitive operation 
 Image used for dumping a parsing tree. The following concrete types are derived
-from Node:</p>
+from <a href="#Parsers.Generic_Ada_Parser.Node">Node</a>:</p>
 <TABLE border="5" cellpadding="3" cellspacing="0">
   <TR>
     <TD bgcolor="#008080" height="19"><FONT color="#FFFFFF"><B>Parsing tree 
@@ -30743,13 +30952,260 @@ from Node:</p>
     <TD height="19" align="left">Raise expression. The discriminant Has_Message 
 	specifies if exception message is present.</TD>
   </tr>
-  <TR>
+  <tr>
     <TD height="19">String_Literal</TD>
     <TD height="19" align="left">String expression term</TD>
+  </tr>
+  <TR>
+    <TD height="19">Universal_Boolean</TD>
+    <TD height="19" align="left">A Boolean result of folded expression, e.g. 1 &gt; 
+	2 <font face="Times New Roman">&#8594;</font> True</TD>
+  </TR>
+  <TR>
+    <TD height="19">Universal_Integer</TD>
+    <TD height="19" align="left"><i>universal_integer</i>
+	(<a href="https://www.adaic.org/resources/add_content/standards/05rm/html/RM-3-5-4.html#I1704">3.5.4(30)</a>)</TD>
+  </TR>
+  <TR>
+    <TD height="19">Universal_Real</TD>
+    <TD height="19" align="left"><i>universal_real</i>
+	(<a href="https://www.adaic.org/resources/add_content/standards/05rm/html/RM-3-5-6.html#I1721">3.5.6(4)</a>)</TD>
   </TR>
 </TABLE>
 
-<H3><font size="3">13.9.1. Grapth output</font></H3>
+<p>When folding is enabled no Real_Literal or Integer_Literal are created. 
+Conversely without folding no Universal_Boolean, Universal_Integer, 
+Universal_Real are.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="Parsers.Generic_Ada_Parser.Argument_List">
+</a>type </font>Argument_List<font color="#0000FF"> is array </font>(Positive
+<font color="#0000FF">range</font> &lt;&gt;)<font color="#0000FF"> of </font> <a href="#Parsers.Generic_Token.Argument_Token">Argument_Token</a>;</tt></p>
+</blockquote>
+<p>Other types declared in the package represent basic Ada constructs subtype 
+mark and subtype indication ARM
+<a href="http://ada-auth.org/standards/22rm/html/RM-3-2-2.html">3.2.2</a>.</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="Parsers.Generic_Ada_Parser.Subtype_Mark">
+</a>type</font> Subtype_Mark<br>
+&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Attribute : Constraint_Attribute := 
+No_Attribute<br>
+&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">is<br>
+record</font><br>
+&nbsp;&nbsp; Name : <a href="#Parsers.Generic_Token.Argument_Token">Argument_Token</a>;<br>
+&nbsp;&nbsp; <font color="#0000FF">case</font> Attribute <font color="#0000FF">
+is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; when</font> Dimension_Range_Attribute =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dimension : <a href="#Parsers.Generic_Token.Argument_Token">Argument_Token</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">&nbsp;when others</font> =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">null</font>;<br>
+&nbsp;&nbsp; <font color="#0000FF">end case</font>;<br>
+<font color="#0000FF">end record</font>;</tt></p>
+</blockquote>
+<p>This type corresponds to subtype mark. <i>Name</i> is an identifier. <i>
+Attribute</i> is the attribute applied to the name.</p>
+<blockquote>
+	<p><tt><font color="#0000FF">
+	<a name="Parsers.Generic_Ada_Parser.Attribute_Type"></a>type </font>
+	Attribute_Type<font color="#0000FF"> is<br>
+&nbsp;</font>&nbsp;&nbsp;&nbsp; (&nbsp; Class_Attribute,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; No_Attribute,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	<font color="#008000">-- No attribute</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Base_Attribute,<br>
+	<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dimension_Range_Attribute,
+	<font color="#008000">-- X'Range (&lt;expression&gt;)</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Base_Range_Attribute,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	<font color="#008000">-- X'Base{'Base}'Range</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Range_Attribute,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	<font color="#008000">-- X'Range<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	-- Other attributes in alphabetic order </font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Access_Attribute, Adjacent_Attribute,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Address_Attribute, Aft,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Alignment_Attribute,<br>
+	<font color="#0000FF">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	...<br>
+&nbsp;&nbsp;&nbsp;&nbsp; </font>&nbsp;&nbsp; Wide_Image_Attribute, 
+	Wide_Value_Attribute,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Wide_Wide_Image_Attribute, 
+	Wide_Wide_Value_Attribute,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Wide_Wide_Width_Attribute, 
+	Wide_Width_Attribute,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Width_Attribute, Write_Attribute<br>
+&nbsp;&nbsp;&nbsp;&nbsp; );<br>
+	<font color="#0000FF">subtype</font> Constraint_Attribute
+	<font color="#0000FF">is</font>
+	<a href="#Parsers.Generic_Ada_Parser.Attribute_Type">Attribute_Type</a><br>
+&nbsp;&nbsp; <font color="#0000FF">range</font> Class_Attribute..Range_Attribute;<br>
+	<font color="#0000FF">subtype</font> Subtype_Mark_Attribute
+	<font color="#0000FF">is</font>
+	<a href="#Parsers.Generic_Ada_Parser.Attribute_Type">Attribute_Type</a><br>
+&nbsp;&nbsp; <font color="#0000FF">range</font> Class_Attribute..Base_Attribute;<br>
+	<font color="#0000FF">subtype</font> Scalar_Stubtype_Attribute
+	<font color="#0000FF">is</font>
+	<a href="#Parsers.Generic_Ada_Parser.Attribute_Type">Attribute_Type</a><br>
+&nbsp;&nbsp; <font color="#0000FF">range</font> No_Attribute..Range_Attribute;</tt></p>
+</blockquote>
+<p>Special attribute values are:</p>
+<ul>
+	<li><i>No_Attribute</i> used when no attribute is given;</li>
+	<li><i>Dimension_Range_Attribute</i> corresponds to the range attribute with 
+	the array dimension specified: <i>X</i>'Range (&lt;dimension&gt;);</li>
+	<li><i>Base_Range</i> corresponds to the case when the range attribute is 
+	applied to the base type of a scalar type <i>X</i>'Base'Range.</li>
+</ul>
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="Parsers.Generic_Ada_Parser.Subtype_Constraint_Mode"></a>type </font>
+Subtype_Constraint_Mode<font color="#0000FF"> is<br>
+</font>&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; No_Constraint,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<font color="#008000">-- [&lt;mark&gt;]</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Fixed_Point_Constraint,&nbsp;&nbsp;&nbsp;
+<font color="#008000">-- [&lt;mark&gt;] delta &lt;expression&gt;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Floating_Point_Constraint,
+<font color="#008000">-- [&lt;mark&gt;] digits &lt;expression&gt;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Index_Constraint,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<font color="#008000">-- [&lt;mark&gt;] (indices)</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Discriminant_Constraint&nbsp;&nbsp;&nbsp;
+<font color="#008000">-- [&lt;mark&gt;] (discriminants)</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This enumeration specifies the variants of a subtype indication constraint. 
+It is used as a discriminant in:</p>
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="Parsers.Generic_Ada_Parser.Subtype_Constraint"></a>type </font>
+Subtype_Constraint<br>
+&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Mode :
+<a href="#Parsers.Generic_Ada_Parser.Subtype_Constraint_Mode">
+Subtype_Constraint_Mode</a> := No_Constraint<br>
+&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">is<br>
+record<br>
+&nbsp;&nbsp; case </font>Mode<font color="#0000FF"> is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; when </font>No_Constraint =&gt;<font color="#0000FF"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; null</font>;<font color="#0000FF"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; when </font>Fixed_Point_Constraint =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Delta_Constraint&nbsp; : <a href="#Parsers.Generic_Token">Tokens</a>.<a href="#Parsers.Generic_Token.Argument_Token">Argument_Token</a>;<br>
+<font color="#0000FF">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; when</font> 
+Floating_Point_Constraint =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Digits_Constraint : <a href="#Parsers.Generic_Token">Tokens</a>.<a href="#Parsers.Generic_Token.Argument_Token">Argument_Token</a>;<font color="#0000FF"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; when </font>Index_Constraint | 
+Discriminant_Constraint =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Constraint&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <a href="#Parsers.Generic_Token">Tokens</a>.<a href="#Parsers.Generic_Token.Argument_Token">Argument_Token</a>;<font color="#0000FF"><br>
+&nbsp;&nbsp; end case</font>;<font color="#0000FF"><br>
+end record</font>;</tt></p>
+</blockquote>
+<p>The subtype constraint applies to the subtype mark in a subtype indication.</p>
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="Parsers.Generic_Ada_Parser.Subtype_Indication_Mode"></a>type </font>
+Stubtype_Indication_Mode is<br>
+&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Subtype_Mode,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Subtype_Range_Mode,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Range_Mode,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Unconstrained_Mode<br>
+&nbsp;&nbsp;&nbsp;&nbsp; );<font color="#0000FF"><br>
+subtype </font>Constrained_Mode <font color="#0000FF">is </font>
+<a href="#Parsers.Generic_Ada_Parser.Subtype_Indication_Mode">
+Stubtype_Indication_Mode</a><font color="#0000FF"><br>
+&nbsp;&nbsp; range </font>Subtype_Mode..Subtype_Range_Mode;</tt></p>
+</blockquote>
+<p>This enumeration is used in subtype indication:</p>
+<TABLE border="5" cellpadding="3" cellspacing="0">
+  <TR>
+    <TD bgcolor="#008080" height="19" valign="top"><font color="#FFFFFF"><b>Mode</b></font></TD>
+    <TD bgcolor="#008080" height="19" align="left" valign="top">
+    <font color="#FFFFFF"><b>Comment</b></font></TD>
+    <TD bgcolor="#008080" height="19" align="left" valign="top">
+    <font color="#FFFFFF"><b>Example</b></font></TD>
+  </TR>
+  <tr>
+    <TD height="19" valign="top"><i>Subtype_Mode</i> </TD>
+    <TD height="19" align="left" valign="top">No range given after the subtype 
+	mark and the subtype constraint</TD>
+    <TD height="19" align="left" valign="top"><tt>S</tt></TD>
+  </tr>
+  <tr>
+    <TD height="19" valign="top"><i>Subtype_Range_Mode</i> </TD>
+    <TD height="19" align="left" valign="top">A values range added after the 
+	subtype mark and the constraint</TD>
+    <TD height="19" align="left" valign="top"><tt>S&nbsp;<font color="#0000FF">range</font>&nbsp;<font color="#800000">1</font>..<font color="#800000">10</font></tt></TD>
+  </tr>
+  <tr>
+    <TD height="19" valign="top"><i>Range_Mode</i></TD>
+    <TD height="19" align="left" valign="top">The subtype mark is an expression 
+	specifying a range. This the case when a subtype indication can be 
+	alternated by a plain range. For example in an array definition (ARM
+	<a href="http://ada-auth.org/standards/22rm/html/RM-3-6.html">3.6</a>) </TD>
+    <TD height="19" align="left" valign="top"><tt><font color="#800000">1</font>..<font color="#800000">10</font></tt></TD>
+  </tr>
+  <tr>
+    <TD height="19" valign="top"><i>Unconstrained_Mode</i></TD>
+    <TD height="19" align="left" valign="top">Unconstrained range</TD>
+    <TD height="19" align="left" valign="top"><tt>S&nbsp;<font color="#0000FF">range</font>&nbsp;&lt;&gt;</tt></TD>
+  </tr>
+  </TABLE>
+
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="Parsers.Generic_Ada_Parser.Subtype_Indication"></a>type S</font>ubtype_Indication<br>
+&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Mode&nbsp;&nbsp;&nbsp;&nbsp; :
+<a href="#Parsers.Generic_Ada_Parser.Subtype_Indication_Mode">
+Stubtype_Indication_Mode</a> := Subtype_Mode;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Not_Null : Boolean := False<br>
+&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">is<br>
+record</font><br>
+&nbsp;&nbsp; Mark&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+<a href="#Parsers.Generic_Ada_Parser.Subtype_Mark">Subtype_Mark</a>;<br>
+&nbsp;&nbsp; Constraint :
+<a href="#Parsers.Generic_Ada_Parser.Subtype_Constraint">Subtype_Constraint</a>;<font color="#0000FF"><br>
+&nbsp;&nbsp; case </font>Mode<font color="#0000FF"> is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; when </font>Subtype_Range_Mode =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Range_Constraint : <a href="#Parsers.Generic_Token">Tokens</a>.<a href="#Parsers.Generic_Token.Argument_Token">Argument_Token</a>;<font color="#0000FF"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; when </font>Range_Mode | Subtype_Mode | 
+Unconstrained_Mode =&gt;<font color="#0000FF"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; null</font>;<font color="#0000FF"><br>
+&nbsp;&nbsp; end case</font>;<font color="#0000FF"><br>
+end record</font>;</tt></p>
+</blockquote>
+<p>The subtype indication consists of null exclusion, subtype mark, constraint 
+and range constraint. For example:</p>
+
+<blockquote>
+<table border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td colspan="4" align="center"><i>Delta_Constraint</i></td>
+	</tr>
+	<tr>
+		<td align="center">&nbsp;</td>
+		<td align="center">|</td>
+		<td colspan="2" align="center">&nbsp;</td>
+	</tr>
+	<tr>
+		<td align="center"><tt>S</tt></td>
+		<td align="center"><tt><font color="#0000FF">delta</font>
+		<font color="#800000">0.01 </font></tt></td>
+		<td colspan="2" align="center"><tt><font color="#0000FF">range</font>
+		<font color="#800000">0.1</font>..<font color="#800000">1.0</font></tt></td>
+	</tr>
+	<tr>
+		<td style="border-left-style: none; border-left-width: medium" align="center">
+		|</td>
+		<td style="border-left-style: none; border-left-width: medium; border-right-style:none; border-right-width:medium" colspan="2" align="center">&nbsp;</td>
+		<td style="border-left-style: none; border-left-width: medium; border-right-style:none; border-right-width:medium" align="center">
+		|</td>
+	</tr>
+	<tr>
+		<td style="border-left-style: none; border-left-width: medium" align="center">
+		<i>Mark</i></td>
+		<td style="border-left-style: none; border-left-width: medium; border-right-style:none; border-right-width:medium" colspan="2" align="center">&nbsp;</td>
+		<td style="border-left-style: none; border-left-width: medium; border-right-style:none; border-right-width:medium" align="center">
+		<i>Range_Constraint</i></td>
+	</tr>
+	</table>
+</blockquote>
+<H3><font size="3">13.9.1. Graph output</font></H3>
 <p><a name="13.9.1"></a>The syntax tree can be used with the
 <a href="https://www.graphviz.org/">Graphviz</a> open source graph visualization 
 software. The package <a href="#Parsers">Parsers</a>.<a href="#Parsers.Generic_Ada_Parser">Generic_Ada_Parser</a>.Generic_Dot provides 
@@ -30764,7 +31220,7 @@ subroutines to output a syntax tree in the DOT format:</p>
 <blockquote>
 <p><tt><font color="#0000FF">procedure</font> Put<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Tree</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-: Tokens.<a href="#Parsers.Generic_Token.Argument_Token">Argument_Token</a>;<br>
+: <a href="#Parsers.Generic_Token">Tokens</a>.<a href="#Parsers.Generic_Token.Argument_Token">Argument_Token</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 Output</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Stream_IO.File_Type;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
@@ -30772,7 +31228,7 @@ Show_Locations</b> : Boolean := True<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br>
 <font color="#0000FF">procedure</font> Put<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Tree</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-: Tokens.<a href="#Parsers.Generic_Token.Argument_Token">Argument_Token</a>;<br>
+: <a href="#Parsers.Generic_Token">Tokens</a>.<a href="#Parsers.Generic_Token.Argument_Token">Argument_Token</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 Output</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : File_Type;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
@@ -30780,7 +31236,7 @@ Show_Locations</b> : Boolean := True<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br>
 <font color="#0000FF">procedure</font> Put<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Tree</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-: Tokens.<a href="#Parsers.Generic_Token.Argument_Token">Argument_Token</a>;<br>
+: <a href="#Parsers.Generic_Token">Tokens</a>.<a href="#Parsers.Generic_Token.Argument_Token">Argument_Token</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 Output</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 <font color="#0000FF">access</font> Root_Stream_Type'Class;<br>
@@ -30789,7 +31245,7 @@ Show_Locations</b> : Boolean := True<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<font color="#0000FF"><br>
 procedure</font> Put<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Tree</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-: Tokens.<a href="#Parsers.Generic_Token.Argument_Token">Argument_Token</a>;<br>
+: <a href="#Parsers.Generic_Token">Tokens</a>.<a href="#Parsers.Generic_Token.Argument_Token">Argument_Token</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Name&nbsp;
 </b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : String;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
@@ -30857,23 +31313,37 @@ subroutines to output a syntax tree in the text format:</p>
 <font color="#0000FF">package</font> <a href="#Parsers">Parsers</a>.<a href="#Parsers.Generic_Ada_Parser">Generic_Ada_Parser</a>.<a href="#Parsers.Generic_Ada_Parser.Generic_Text_IO">Generic_Text_IO</a>
 <font color="#0000FF">is</font> ...</tt></p>
 </blockquote>
+<p>The enumeration type declared in the package <a href="#Parsers">Parsers</a>:</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="Parsers.Nesting"></a>type</font> Nesting is (Top, Child, Inline);</tt></p>
+</blockquote>
+<p>is used to control the output:</p>
+<ul>
+	<li><i>Top</i>&nbsp; - as a top node;</li>
+	<li><i>Child</i> - as a child node (a list element)</li>
+	<li><i>Inline</i> - as a continuation of an output line</li>
+</ul>
 <p>The package defines the following subprograms:</p>
 <blockquote>
 <p><tt><font color="#0000FF">procedure</font> Put<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Tree</b>&nbsp;&nbsp; 
-: Tokens.<a href="#Parsers.Generic_Token.Argument_Token">Argument_Token</a>;<br>
+: <a href="#Parsers.Generic_Token">Tokens</a>.<a href="#Parsers.Generic_Token.Argument_Token">Argument_Token</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 Output</b> : File_Type := Standard_Output;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
-Prefix</b> : String := &quot;&quot;<br>
+Prefix</b> : String&nbsp; := &quot;&quot;'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Nested</b> : Nesting := Top<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br>
 <font color="#0000FF">procedure</font> Put<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Tree</b>&nbsp;&nbsp; 
-: Tokens.<a href="#Parsers.Generic_Token.Argument_Token">Argument_Token</a>;<br>
+: <a href="#Parsers.Generic_Token">Tokens</a>.<a href="#Parsers.Generic_Token.Argument_Token">Argument_Token</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Name</b>&nbsp;&nbsp; 
 : String;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
-Prefix</b> : String := &quot;&quot;<br>
+Prefix</b> : String&nbsp; := &quot;&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Nested</b> : Nesting := Top<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
 </blockquote>
 <p>The example. The following expression at the source line 313</p>
@@ -30908,6 +31378,29 @@ Prefix</b> : String := &quot;&quot;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	0.0 at 357:33..35</tt></p>
 </blockquote>
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Put<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Tree</b>&nbsp;&nbsp; 
+: Aspect_Items_Array;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Output</b> : File_Type := Standard_Output;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Prefix</b> : String&nbsp;&nbsp;&nbsp; := &quot;&quot;'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Nested</b> : Nesting&nbsp;&nbsp; := Top<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br>
+<font color="#0000FF">procedure</font> Put<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Tree</b>&nbsp;&nbsp; 
+: Aspect_Items_Array;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Name</b>&nbsp;&nbsp; 
+: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Prefix</b> : String&nbsp; := &quot;&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Nested</b> : Nesting := Top<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>These procedures output aspect specification.</p>
 <p align="right">
   <A name="13.10"></A><a href="#13.9"><IMG src="prev.gif" alt="[Back]" width="29"
       height="29"></a><A href="#22"><IMG
@@ -32398,9 +32891,9 @@ the storage pool as an array of half-word
 <table border="1" cellpadding="5" cellspacing="0">
 	<tr>
 		<td>Note that 
-<a href="#Unbounded_Unsigneds">Unbounded_Unsigneds</a> cannot be used 
+<a href="#Unbounded_Unsigneds.Unbounded_Unsigned">Unbounded_Unsigned</a> objects cannot be used 
 		concurrently. Also aliasing of mutable arguments is not allowed. E.g. 
-		the same variable cannot passed to the same subprogram as an actual of 
+		the same variable cannot be passed to the same subprogram as an actual of 
 		two arguments at least one of which has <font color="#0000FF">out</font> 
 		or <font color="#0000FF">in out</font> mode.
 		</td>
@@ -32784,6 +33277,53 @@ is 0.</p>
 
 <blockquote>
 	<p><tt>
+	<font color="#0000FF">procedure</font> Log<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<b>&nbsp; Left&nbsp;&nbsp;</b>:
+	<a href="#Unbounded_Unsigneds.Unbounded_Unsigned">Unbounded_Unsigned</a>;<br>
+&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Base&nbsp;
+	</b>: 
+	<a href="#Unbounded_Unsigneds.Half_Word">Half_Word</a>;<br>
+	<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Power&nbsp;</b>: <font color="#0000FF">out</font>  
+	<a href="#Unbounded_Unsigneds.Half_Word">Half_Word</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+	Exact</b> : <font color="#0000FF">out</font> Boolean<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure computes logarithm of <b>Left</b> of the base <b>Base</b>. The result is 
+returned into <b>
+Power</b>. It is the greatest number such that <b>Base<sup>Power</sup></b>
+<font face="Times New Roman">&#8804;</font> <b>Left</b>. <b>Exact</b> is set to <i>
+<font color="#800000">true</font></i> if the result is exact. Constraint_Error 
+is propagated when <b>Left</b> is zero or <b>Base</b> is less than 2..</p>
+
+<blockquote>
+	<p><tt>
+	<font color="#0000FF">subtype </font> Mod_2_Remainder<font color="#0000FF"> 
+	is </font> Integer<font color="#0000FF"> range </font> 
+	<font color="#800080">-1</font>..<font color="#800080">2</font>;<font color="#0000FF"><br>
+	procedure</font> Log2<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<b>&nbsp; Left&nbsp;&nbsp;&nbsp;&nbsp; </b>&nbsp;:
+	<a href="#Unbounded_Unsigneds.Unbounded_Unsigned">Unbounded_Unsigned</a>;<br>
+&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Power&nbsp;&nbsp;&nbsp;
+	</b>&nbsp;: <font color="#0000FF">out</font> <a href="#Unbounded_Unsigneds.Bit_Count">Bit_Count</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+	Remainder</b> : <font color="#0000FF">out</font>
+	<a href="#Unbounded_Unsigneds.Unbounded_Unsigned">Unbounded_Unsigned</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure computes binary logarithm of <b>Left</b>. The result is <b>
+Power</b>. When the remainder is in range -1..1 it is stored in <b>Remainder</b> 
+and then <b>Left</b> has one of the following forms:</p>
+<ul>
+	<li>2<sup><b>Power</b></sup> - 1</li>
+	<li>2<sup><b>Power</b></sup></li>
+	<li>2<sup><b>Power</b></sup> + 1</li>
+</ul>
+<p>Otherwise <b>Remainder</b> is set to 2. It can be obtained as
+<a href="#Unbounded_Unsigneds.Clear_Bit">Clear_Bit</a> (<b>Left</b>, <b>Power</b>).</p>
+
+<blockquote>
+	<p><tt>
 	<font color="#0000FF">function</font> Max (<b>Left</b>,
 	<b>Right</b> : <a href="#Unbounded_Unsigneds.Unbounded_Unsigned">
 	Unbounded_Unsigned</a>) <font color="#0000FF">return</font>
@@ -33078,32 +33618,6 @@ complexity of O(<i>N<sup>log3</sup></i>) of <a href="#Unbounded_Unsigneds.digit"
 digit</a> multiplications. The parameter <b>Threshold</b> specifies the number 
 of <a href="#Unbounded_Unsigneds.digit">digits</a> when to fall back to the 
 classroom multiplication algorithm.</p>
-
-<blockquote>
-	<p><tt>
-	<font color="#0000FF">subtype </font> Mod_2_Remainder<font color="#0000FF"> 
-	is </font> Integer<font color="#0000FF"> range </font> 
-	<font color="#800080">-1</font>..<font color="#800080">2</font>;<font color="#0000FF"><br>
-	procedure</font> Log2<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<b>&nbsp; Left&nbsp;&nbsp;&nbsp;&nbsp; </b>&nbsp;:
-	<a href="#Unbounded_Unsigneds.Unbounded_Unsigned">Unbounded_Unsigned</a>;<br>
-&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Power&nbsp;&nbsp;&nbsp;
-	</b>&nbsp;: <font color="#0000FF">out</font> <a href="#Unbounded_Unsigneds.Bit_Count">Bit_Count</a>;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
-	Remainder</b> : <font color="#0000FF">out</font>
-	<a href="#Unbounded_Unsigneds.Unbounded_Unsigned">Unbounded_Unsigned</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
-</blockquote>
-<p>This procedure computes binary logarithm of <b>Left</b>. The result is <b>
-Power</b>. When the remainder is in range -1..1 it is stored in <b>Remainder</b> 
-and then <b>Left</b> has one of the following forms:</p>
-<ul>
-	<li>2<sup><b>Power</b></sup> - 1</li>
-	<li>2<sup><b>Power</b></sup></li>
-	<li>2<sup><b>Power</b></sup> + 1</li>
-</ul>
-<p>Otherwise <b>Remainder</b> is set to 2. It can be obtained as
-<a href="#Unbounded_Unsigneds.Clear_Bit">Clear_Bit</a> (<b>Left</b>, <b>Power</b>).</p>
 
 <blockquote>
 	<p><tt><font color="#0000FF">function</font> Phi (<b>Left</b> : 
@@ -34116,9 +34630,9 @@ implementation of arbitrary length signed&nbsp;numbers. The package provides the
 <table border="1" cellpadding="5" cellspacing="0">
 	<tr>
 		<td>Note that 
-<a href="#Unbounded_Integers.Unbounded_Integer">Unbounded_Integer</a> cannot be 
+<a href="#Unbounded_Integers.Unbounded_Integer">Unbounded_Integer</a> objects cannot be 
 		used concurrently. Also aliasing of mutable arguments is not allowed. 
-		E.g. the same variable cannot passed to the same subprogram as an actual 
+		E.g. the same variable cannot be passed to the same subprogram as an actual 
 		of two arguments at least one of which has <font color="#0000FF">out</font> 
 		or <font color="#0000FF">in out</font> mode.
 		</td>
@@ -36664,9 +37178,10 @@ package provides the type:</p>
 <table border="1" cellpadding="5" cellspacing="0">
 	<tr>
 		<td>Note that 
-<a href="#Unbounded_Rrationals.Unbounded_Rrational">Unbounded_Rational</a> cannot be 
+<a href="#Unbounded_Rrationals.Unbounded_Rrational">Unbounded_Rational</a> 
+		objects cannot be 
 		used concurrently. Also aliasing of mutable arguments is not allowed. 
-		E.g. the same variable cannot passed to the same subprogram as an actual 
+		E.g. the same variable cannot be passed to the same subprogram as an actual 
 		of two arguments at least one of which has <font color="#0000FF">out</font> 
 		or <font color="#0000FF">in out</font> mode.
 		</td>
@@ -38794,9 +39309,22 @@ Therefore this function must be used with great care.</p>
 <p><tt><font color="#0000FF">function</font> Column_Count (<b>Command</b> : 
 <a href="#SQLite.Statement">Statement</a>) <font color="#0000FF">return</font> Natural;</tt></p>
 </blockquote>
-<p>This function returns the number of columns of the result set of <b>Command</b>, 
+<p>This function returns the number of columns in the result set of <b>Command</b>, 
 when it is executed. This function is used after <a href="#SQLite.Step">Step</a>. 
 Constraint_Error is propagated when <b>Command</b> is invalid.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Column_Name<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Command</b>&nbsp; 
+: <a href="#SQLite.Statement">Statement</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Position</b> : Positive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp;
+<font color="#0000FF">return</font> String;</tt></p>
+</blockquote>
+<p>This function returns the name of the column <b>Position</b> in the result set of <b>Command</b>. 
+The columns are counted from 1. Constraint_Error is propagated when <b>Command</b> 
+is invalid.</p>
 
 <blockquote>
 <p><tt><font color="#0000FF">procedure</font> Column_Type<br>
@@ -38807,7 +39335,7 @@ Position</b> : Positive<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp;
 <font color="#0000FF">return</font> Datatype;</tt></p>
 </blockquote>
-<p>This function returns the type of column <b>Position</b> in the result set of <b>Command</b>. 
+<p>This function returns the type of the column <b>Position</b> in the result set of <b>Command</b>. 
 The columns are counted from 1. Constraint_Error is propagated when <b>Command</b> 
 is invalid.</p>
 <blockquote>
@@ -73032,9 +73560,15 @@ Python</a> class</TD>
     Pool</a></TD>
   </tr>
 	<tr>
-    <TD bgcolor="#C0C0C0">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" style="border-bottom-style: none; border-bottom-width: medium">&nbsp;</TD>
     <TD colspan="20" style="border-left-style: solid; border-left-width: 1px"><a href="#Stack_Storage.Mark_And_Release">Mark_And_Release</a></TD>
     <TD>Mark and release storage pools of limited controlled objects</TD>
+  </tr>
+	<tr>
+    <TD bgcolor="#C0C0C0" style="border-top-style: none; border-top-width: medium">&nbsp;</TD>
+    <TD colspan="20" style="border-left-style: solid; border-left-width: 1px">
+	<a href="#Stack_Storage.Text_IO">Text_IO</a></TD>
+    <TD>Stack pool statistics output</TD>
   </tr>
 	<tr>
     <TD colspan="21"><a href="#Storage_Streams">Storage_Streams</a></TD>
@@ -75309,7 +75843,7 @@ controls the method to use:</p>
 	used:</p>
 <ul>
 	<li><i>ODBC32</i> for Windows ODBC driver;</li>
-	<li><i>unixODBC</i> for Linux ODBC driver.</li>
+	<li><i>unixODBC</i> for Linux ODBC driver.GNAT 16.1.1 20260625</li>
 </ul>
 	<p><i>Target_OS</i> controls choice of bindings to the low-level OS primitives:<ul>
 	<li><i>Windows</i> or <i>Windows_NT</i> are used for MS-Windows. This is 
@@ -75343,6 +75877,8 @@ controls the method to use:</p>
 The following versions were tested with the compilers:</i>
 <ul>
   <li>
+<i>GNAT 16.1.1 20260625</i></li>
+	<li>
 <i>GNAT Studio Community 2020 (20200427)</i></li>
 	<li>
 <i>GNAT Community 2019 (20190517-83)</i></li>
@@ -75356,6 +75892,42 @@ The following versions were tested with the compilers:</i>
 <ul>
 	<li><i>GtkAda 3.14.15</i></li>
 	<li><i>GtkAda April 5, 2022 (GTK 3.24.33)</i></li>
+</ul>
+<P>Changes (2 July 2026) to the version 4.80:</p>
+<ul>
+	<li>Compatibility to GNAT 16.1.1. This GNAT 16.1.1 has the recurring 
+	issue/bug related to the visibility of names from formal generic packages;</li>
+	<li>Constant expression folding was added to Ada expression parser&nbsp; (Parsers.Generic_Ada_Parser). Folding 
+	is optional. If enabled expressions in universal types and constant Boolean 
+	expressions are folded. e.g. 1 + 2 + A (5) -&gt; 3 + A (5);</li>
+	<li>The subprograms Get, Put, Value were added to the package Parsers.Multiline_Source;</li>
+	<li>The call-back On_Success was added to the Generic_Lexer's parser;</li>
+	<li>The procedures Mark and Release were added to the package 
+	Parsers.Generic_Lexer;</li>
+	<li>The package Stack_Storage.Text_IO was added to output stack pool 
+	statistics;</li>
+	<li>Parameter Message was added to the procedure Put_Line of the package 
+	Parsers.Generic_Source.Text_IO;</li>
+	<li>Ada expression parser supports 
+	raise-statements outside immediate pair of parentheses;</li>
+	<li>Checking positional and named aggregates was added in the Ada expression 
+	parser;</li>
+	<li>Checking positional and named parameters was added in the Ada expression 
+	parser;</li>
+	<li>Array objects were added to the declare expressions in the Ada 
+	expression parser;</li>
+	<li>Aspects recognition was added to the declare expressions in the Ada 
+	expression parser;</li>
+	<li>Subtype marks and indications were added in the Ada expression parser;</li>
+	<li>Attributes were added in the Ada expression parser;</li>
+	<li>Target name @ support was added in the Ada expression parser;</li>
+	<li>The parser can start with the first operand already recognized;</li>
+	<li>An ability to parse an expression in parenthesis with a consumed left 
+	parenthesis was added;</li>
+	<li>Comparisons of Unbounded_Integer bug fixed;</li>
+	<li>Log procedure was added to Unbounded_Unsigneds;</li>
+	<li>Column_Name function was added to the SQLIte bindings (contributed by 
+	Xavier Grave).</li>
 </ul>
 <P>Changes (29 March 2026) to the version 4.79:</p>
 <ul>
@@ -76641,7 +77213,9 @@ persistent storage test</a><br>
 &nbsp;&nbsp;&nbsp; <A href="#6.2">6.2. Segmented stacks</A>
 <hr>
 <b><big><big>7</big></big></b>&nbsp;<A href="#7"><big>Pools</big></a><br>
-&nbsp;&nbsp;&nbsp; <a href="#7.1">7.1. Stack pool</a><BR>
+&nbsp;&nbsp;&nbsp; <a href="#7.1">7.1. Stack pool</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="#Stack_Storage.Text_IO">7.1.1. Stack 
+pool information output</a><BR>
 &nbsp;&nbsp;&nbsp; <a href="#7.2">7.2. Mark and release pool for controlled objects</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#7.3">7.3. Persistent storage memory pool</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="#7.3.1">7.3.1. Concurrent access to the container file</a><br>

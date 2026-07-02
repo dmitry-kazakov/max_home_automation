@@ -3,7 +3,7 @@
 --     Parsers.Generic_Lexer                       Luebeck            --
 --  Interface                                      Winter, 2004       --
 --                                                                    --
---                                Last revision :  11:48 10 Aug 2025  --
+--                                Last revision :  10:48 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -333,6 +333,11 @@ package body Parsers.Generic_Lexer is
          end;
    end Do_Sublist;
 
+   procedure Mark (Context : in out Lexer) is
+   begin
+      Mark (Context.Arguments);
+   end Mark;
+
    procedure On_Postmodifier
              (  Context   : in out Lexer;
                 Code      : in out Source_Type;
@@ -368,6 +373,14 @@ package body Parsers.Generic_Lexer is
       Reset_Pointer (Code);
       Got_It := False;
    end On_Premodifier;
+
+   procedure On_Start
+             (  Context  : in out Lexer;
+                Code     : in out Source_Type
+             )  is
+   begin
+      null;
+   end On_Start;
 
    procedure On_Unexpected
              (  Context : in out Lexer;
@@ -411,7 +424,8 @@ package body Parsers.Generic_Lexer is
       )  );
    end Enclose;
 
-   function Get_Operation_Stack_Depth (Context : Lexer) return Natural is
+   function Get_Operation_Stack_Depth (Context : Lexer)
+      return Natural is
    begin
       return Get_Depth (Context);
    end Get_Operation_Stack_Depth;
@@ -432,9 +446,22 @@ package body Parsers.Generic_Lexer is
       return True;
    end Is_Expected;
 
-   procedure Parse
+   type Initial_Mode is (None, Have_Bracket, Have_Operand);
+   type Initial_State (Mode : Initial_Mode) is record
+      case Mode is
+         when None =>
+            null;
+         when Have_Bracket =>
+            Left : Operation_Type;
+         when Have_Operand =>
+            Operand : Argument_Type;
+      end case;
+   end record;
+
+   procedure Do_Parse
              (  Context : in out Lexer'Class;
                 Code    : in out Source_Type;
+                State   : Initial_State;
                 Result  : out Argument_Type
              )  is
       Got_Modifier : Boolean := False;
@@ -445,118 +472,35 @@ package body Parsers.Generic_Lexer is
    begin
       Push_Start (Context);
       Mark (Context.Arguments);
-      Turnover : loop
-         --
-         -- One turnover: prefixes-operand-postfixes-infix
-         --
+      case State.Mode is
+         when None =>
+            null;
+         when Have_Bracket =>
+            Push_Left_Bracket (Context, State.Left);
+         when Have_Operand =>
+            Push (Context.Arguments, State.Operand);
+            goto Postfix_Context;
+      end case;
+      --
+      -- One turnover: prefixes-operand-postfixes-infix
+      --
 <<Prefix_Context>>
-         loop
-            --
-            -- Getting a prefix operation
-            --
-            Get_Blank (Context, Code, Got_It);
-            if not Got_It then
-               --
-               -- Missing operand due to end of source
-               --
-               Set_Pointer (Code, Get_Pointer (Code));
-               case Top (Context).Class is
-                  when Default =>
-                     Pop (Context);
-                  when Stub =>
-                     On_Missing_Operand (Context, Code, Result);
-                     Push (Context.Arguments, Result);
-                  when Operator | Sublist | Tuple | Ligature =>
-                     On_Missing_Operand
-                     (  Context,
-                        Code,
-                        Top (Context).Operation,
-                        Result
-                     );
-                     Push (Context.Arguments, Result);
-                  when Switch =>
-                     null;
-               end case;
-               exit Turnover;
-            end if;
-            Get_Prefix (Context, Code, Token, Got_It);
-            if Got_Modifier then
-               Got_Modifier := False;
-               if Got_It then
-                  On_Premodifier
-                  (  Context,
-                     Code,
-                     Token,
-                     Modifier,
-                     Got_It
-                  );
-               else
-                  On_Missing_Operation
-                  (  Context,
-                     Code,
-                     Modifier,
-                     Token,
-                     Got_It
-                  );
-               end if;
-            end if;
-            exit when not Got_It;
-            case Token.Class is
-               when Bracket =>
-                  Push_Left_Bracket
-                  (  Context,
-                     Token.Operation
-                  );
-                  Got_Argument := False;
-               when Operator =>
-                  Do_Prefix
-                  (  Context,
-                     Code,
-                     Token.Operation,
-                     Token.Left,
-                     Token.Right,
-                     Got_It
-                  );
-                  exit when not Got_It;
-                  Got_Argument := False;
-               when Postmodifier =>
-                  Do_Postmodifier
-                  (  Context,
-                     Code,
-                     Got_Argument,
-                     Token.Operation,
-                     Got_It
-                  );
-                  if not Got_It then
-                     Set_Pointer (Code, Get_Pointer (Code));
-                     On_Missing_Operand
-                     (  Context,
-                        Code,
-                        Token.Operation,
-                        Result
-                     );
-                     exit Turnover;
-                  end if;
-               when Premodifier =>
-                  Modifier     := Token.Operation;
-                  Got_Modifier := True;
-               when others =>
-                  raise Constraint_Error;
-            end case;
-         end loop;
+      loop
          --
-         -- Getting an operand
+         -- Getting a prefix operation
          --
-         Get_Operand (Context, Code, Result, Got_It);
-         Got_Argument := True;
+         Get_Blank (Context, Code, Got_It);
          if not Got_It then
+            --
+            -- Missing operand due to end of source
+            --
             Set_Pointer (Code, Get_Pointer (Code));
             case Top (Context).Class is
                when Default =>
                   Pop (Context);
-                  exit Turnover;
-               when Stub | Switch =>
+               when Stub =>
                   On_Missing_Operand (Context, Code, Result);
+                  Push (Context.Arguments, Result);
                when Operator | Sublist | Tuple | Ligature =>
                   On_Missing_Operand
                   (  Context,
@@ -564,74 +508,13 @@ package body Parsers.Generic_Lexer is
                      Top (Context).Operation,
                      Result
                   );
+                  Push (Context.Arguments, Result);
+               when Switch =>
+                  null;
             end case;
+            goto Done;
          end if;
-         Push (Context.Arguments, Result);
-         loop
-            --
-            -- Getting a postfix operation
-            --
-            Get_Blank (Context, Code, Got_It);
-            exit Turnover when not Got_It;
-            Get_Postfix (Context, Code, Token, Got_It);
-            if Got_Modifier then
-               if Got_It then
-                  On_Premodifier
-                  (  Context,
-                     Code,
-                     Token,
-                     Modifier,
-                     Got_It
-                  );
-                  Got_Modifier := not Got_It;
-               end if;
-            end if;
-            exit when not Got_It;
-            case Token.Class is
-               when Bracket =>
-                  Do_Right_Bracket
-                  (  Context,
-                     Code,
-                     Token.Operation,
-                     Got_It
-                  );
-                 if Top (Context).Class = Switch then
-                    Pop (Context);
-                    goto Prefix_Context;
-                  end if;
-                  exit when not Got_It;
-                  Got_Argument := False;
-               when Operator =>
-                  Do_Postfix
-                  (  Context,
-                     Code,
-                     Token.Operation,
-                     Token.Left,
-                     Token.Right,
-                     Got_It
-                  );
-                  exit when not Got_It;
-                  Got_Argument := False;
-               when Postmodifier =>
-                  Do_Postmodifier
-                  (  Context,
-                     Code,
-                     Got_Argument,
-                     Token.Operation,
-                     Got_It
-                  );
-                  exit Turnover when not Got_It;
-               when Premodifier =>
-                  Modifier     := Token.Operation;
-                  Got_Modifier := True;
-               when others =>
-                  raise Constraint_Error;
-            end case;
-         end loop;
-         --
-         -- Getting an infix operation
-         --
-         Get_Infix (Context, Code, Token, Got_It);
+         Get_Prefix (Context, Code, Token, Got_It);
          if Got_Modifier then
             Got_Modifier := False;
             if Got_It then
@@ -654,28 +537,14 @@ package body Parsers.Generic_Lexer is
          end if;
          exit when not Got_It;
          case Token.Class is
-            when Comma =>
-               Do_Comma
+            when Bracket =>
+               Push_Left_Bracket
                (  Context,
-                  Code,
-                  Token.Operation,
-                  True,
-                  Got_It
+                  Token.Operation
                );
-               exit when not Got_It;
-               Got_Argument := False;
-            when Ligature =>
-               Do_Comma
-               (  Context,
-                  Code,
-                  Token.Operation,
-                  False,
-                  Got_It
-               );
-               exit when not Got_It;
                Got_Argument := False;
             when Operator =>
-               Do_Binary
+               Do_Prefix
                (  Context,
                   Code,
                   Token.Operation,
@@ -685,32 +554,216 @@ package body Parsers.Generic_Lexer is
                );
                exit when not Got_It;
                Got_Argument := False;
-            when Index =>
-               Do_Left_Bracket
+            when Postmodifier =>
+               Do_Postmodifier
                (  Context,
                   Code,
+                  Got_Argument,
                   Token.Operation,
-                  Token.Priority
+                  Got_It
                );
-               Got_Argument := False;
-            when Semicolon_Class'Range =>
-               Do_Sublist
+               if not Got_It then
+                  Set_Pointer (Code, Get_Pointer (Code));
+                  On_Missing_Operand
+                  (  Context,
+                     Code,
+                     Token.Operation,
+                     Result
+                  );
+                  goto Done;
+               end if;
+            when Premodifier =>
+               Modifier     := Token.Operation;
+               Got_Modifier := True;
+            when others =>
+               raise Constraint_Error;
+         end case;
+      end loop;
+      --
+      -- Getting an operand
+      --
+      Get_Operand (Context, Code, Result, Got_It);
+      Got_Argument := True;
+      if not Got_It then
+         Set_Pointer (Code, Get_Pointer (Code));
+         case Top (Context).Class is
+            when Default =>
+               Pop (Context);
+               goto Done;
+            when Stub | Switch =>
+               On_Missing_Operand (Context, Code, Result);
+            when Operator | Sublist | Tuple | Ligature =>
+               On_Missing_Operand
+               (  Context,
+                  Code,
+                  Top (Context).Operation,
+                  Result
+               );
+         end case;
+      end if;
+      Push (Context.Arguments, Result);
+
+<<Postfix_Context>>
+      loop
+         --
+         -- Getting a postfix operation
+         --
+         Get_Blank (Context, Code, Got_It);
+         if not Got_It then
+            goto Done;
+         end if;
+         Get_Postfix (Context, Code, Token, Got_It);
+         if Got_Modifier then
+            if Got_It then
+               On_Premodifier
+               (  Context,
+                  Code,
+                  Token,
+                  Modifier,
+                  Got_It
+               );
+               Got_Modifier := not Got_It;
+            end if;
+         end if;
+         exit when not Got_It;
+         case Token.Class is
+            when Bracket =>
+               Do_Right_Bracket
                (  Context,
                   Code,
                   Token.Operation,
-                  Token.Class,
-                  Token.Priority,
+                  Got_It
+               );
+              if Top (Context).Class = Switch then
+                 Pop (Context);
+                 goto Prefix_Context;
+               end if;
+               exit when not Got_It;
+               Got_Argument := False;
+            when Operator =>
+               Do_Postfix
+               (  Context,
+                  Code,
+                  Token.Operation,
+                  Token.Left,
+                  Token.Right,
                   Got_It
                );
                exit when not Got_It;
                Got_Argument := False;
-            when Premodifier | Postmodifier =>
-               Reset_Pointer (Code);
-               exit;
+            when Postmodifier =>
+               Do_Postmodifier
+               (  Context,
+                  Code,
+                  Got_Argument,
+                  Token.Operation,
+                  Got_It
+               );
+               if not Got_It then
+                  goto Done;
+               end if;
+            when Premodifier =>
+               Modifier     := Token.Operation;
+               Got_Modifier := True;
             when others =>
                raise Constraint_Error;
          end case;
-      end loop Turnover;
+      end loop;
+      --
+      -- Getting an infix operation
+      --
+      Get_Infix (Context, Code, Token, Got_It);
+      if Got_Modifier then
+         Got_Modifier := False;
+         if Got_It then
+            On_Premodifier
+            (  Context,
+               Code,
+               Token,
+               Modifier,
+               Got_It
+            );
+         else
+            On_Missing_Operation
+            (  Context,
+               Code,
+               Modifier,
+               Token,
+               Got_It
+            );
+         end if;
+      end if;
+      if not Got_It then
+         goto Done;
+      end if;
+      case Token.Class is
+         when Comma =>
+            Do_Comma
+            (  Context,
+               Code,
+               Token.Operation,
+               True,
+               Got_It
+            );
+            if not Got_It then
+               goto Done;
+            end if;
+            Got_Argument := False;
+         when Ligature =>
+            Do_Comma
+            (  Context,
+               Code,
+               Token.Operation,
+               False,
+               Got_It
+            );
+            if not Got_It then
+               goto Done;
+            end if;
+            Got_Argument := False;
+         when Operator =>
+            Do_Binary
+            (  Context,
+               Code,
+               Token.Operation,
+               Token.Left,
+               Token.Right,
+               Got_It
+            );
+            if not Got_It then
+               goto Done;
+            end if;
+            Got_Argument := False;
+         when Index =>
+            Do_Left_Bracket
+            (  Context,
+               Code,
+               Token.Operation,
+               Token.Priority
+            );
+            Got_Argument := False;
+         when Semicolon_Class'Range =>
+            Do_Sublist
+            (  Context,
+               Code,
+               Token.Operation,
+               Token.Class,
+               Token.Priority,
+               Got_It
+            );
+            if not Got_It then
+               goto Done;
+            end if;
+            Got_Argument := False;
+         when Premodifier | Postmodifier =>
+            Reset_Pointer (Code);
+            goto Done;
+         when others =>
+            raise Constraint_Error;
+      end case;
+      goto Prefix_Context;
+
+<<Done>>
       Set_Pointer (Code, Get_Pointer (Code));
       loop
          begin
@@ -739,12 +792,58 @@ package body Parsers.Generic_Lexer is
          Pop (Context.Arguments, List);
          Result := List (List'First);
       end;
-      Release (Context.Arguments);
+      if Is_Empty (Context.Arguments) then
+         Release (Context.Arguments);
+      else
+         raise Program_Error;
+      end if;
    exception
       when others =>
          Push_Abort (Context);
          Release (Context.Arguments);
          raise;
+   end Do_Parse;
+
+   procedure On_Success
+             (  Context : in out Lexer;
+                Code    : in out Source_Type;
+                Result  : in out Argument_Type
+             )  is
+   begin
+      null;
+   end On_Success;
+
+   procedure Parse
+             (  Context : in out Lexer'Class;
+                Code    : in out Source_Type;
+                Left    : Operation_Type;
+                Result  : out Argument_Type
+             )  is
+   begin
+      Do_Parse (Context, Code, (Have_Bracket, Left), Result);
+      On_Success (Context, Code, Result);
+   end Parse;
+
+   procedure Parse
+             (  Context : in out Lexer'Class;
+                Code    : in out Source_Type;
+                Result  : out Argument_Type
+             )  is
+      Unused : Operation_Type;
+   begin
+      Do_Parse (Context, Code, (Mode => None), Result);
+      On_Success (Context, Code, Result);
+   end Parse;
+
+   procedure Parse
+             (  Context : in out Lexer'Class;
+                Code    : in out Source_Type;
+                Operand : Argument_Type;
+                Result  : out Argument_Type
+             )  is
+   begin
+      Do_Parse (Context, Code, (Have_Operand, Operand), Result);
+      On_Success (Context, Code, Result);
    end Parse;
 
    procedure Pop
@@ -762,5 +861,10 @@ package body Parsers.Generic_Lexer is
    begin
       Push (Context.Arguments, Argument);
    end Push;
+
+   procedure Release (Context : in out Lexer) is
+   begin
+      Release (Context.Arguments);
+   end Release;
 
 end Parsers.Generic_Lexer;

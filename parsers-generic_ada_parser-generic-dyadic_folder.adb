@@ -1,0 +1,150 @@
+--                                                                    --
+--  package                         Copyright (c)  Dmitry A. Kazakov  --
+--     Parsers.Generic_Ada_Parser.                 Luebeck            --
+--        Dyadic_Folder                            Summer, 2026       --
+--                                                                    --
+--  Separate generic body         Last revision :  10:48 02 Jul 2026  --
+--                                                                    --
+--  This  library  is  free software; you can redistribute it and/or  --
+--  modify it under the terms of the GNU General Public  License  as  --
+--  published by the Free Software Foundation; either version  2  of  --
+--  the License, or (at your option) any later version. This library  --
+--  is distributed in the hope that it will be useful,  but  WITHOUT  --
+--  ANY   WARRANTY;   without   even   the   implied   warranty   of  --
+--  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU  --
+--  General  Public  License  for  more  details.  You  should  have  --
+--  received  a  copy  of  the GNU General Public License along with  --
+--  this library; if not, write to  the  Free  Software  Foundation,  --
+--  Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.    --
+--                                                                    --
+--  As a special exception, if other files instantiate generics from  --
+--  this unit, or you link this unit with other files to produce  an  --
+--  executable, this unit does not by  itself  cause  the  resulting  --
+--  executable to be covered by the GNU General Public License. This  --
+--  exception  does not however invalidate any other reasons why the  --
+--  executable file might be covered by the GNU Public License.       --
+--____________________________________________________________________--
+
+separate (Parsers.Generic_Ada_Parser)
+   function Dyadic_Folder
+            (  Context     : access Ada_Expression'Class;
+               Operation   : Tokens.Operation_Token;
+               Int_Op      : access function
+                                    (  Left, Right : Unbounded_Integer
+                                    )  return Unbounded_Integer;
+               Int_Rev_Op  : access function
+                                    (  Left, Right : Unbounded_Integer
+                                    )  return Unbounded_Integer;
+               Real_Op     : access function
+                                    (  Left, Right : Unbounded_Rational
+                                    )  return Unbounded_Rational;
+               Real_Rev_Op : access function
+                                    (  Left, Right : Unbounded_Rational
+                                    )  return Unbounded_Rational;
+               List        : Tokens.Arguments.Frame
+            )  return Tokens.Argument_Token is
+   Append : Boolean := False;
+   Count  : Natural := 0;
+   Left   : Tokens.Argument_Token := List (List'First);
+
+   procedure Fold (Right : Tokens.Argument_Token) is
+      This : Node'Class renames Ref (Left.Value).all;
+      That : Node'Class renames Ref (Right.Value).all;
+   begin
+      if This in Universal_Integer then
+         declare
+            First : Universal_Integer renames Universal_Integer (This);
+         begin
+            if First.Value /= null and then That in Universal_Integer
+            then
+               declare
+                  Second : Universal_Integer renames
+                           Universal_Integer (That);
+               begin
+                  if Second.Value /= null then
+                     if Append then
+                        First.Value.all :=
+                           Int_Rev_Op
+                           (  First.Value.all,
+                              Second.Value.all
+                           );
+                     else
+                        First.Value.all :=
+                           Int_Op
+                           (  First.Value.all,
+                              Second.Value.all
+                           );
+                     end if;
+                  end if;
+                  Left.Location := Left.Location & Right.Location;
+                  Free (Second.Value);
+                  return;
+               end;
+            end if;
+         exception
+            when others => -- No folding on errors
+               null;
+         end;
+      elsif This in Universal_Real then
+         declare
+            First : Universal_Real renames Universal_Real (This);
+         begin
+            if First.Value /= null and then That in Universal_Real then
+               declare
+                  Second : Universal_Real renames Universal_Real (That);
+               begin
+                  if Second.Value /= null then
+                     if Append then
+                        First.Value.all :=
+                           Real_Rev_Op
+                           (  First.Value.all,
+                              Second.Value.all
+                           );
+                     else
+                        First.Value.all :=
+                           Real_Op
+                           (  First.Value.all,
+                              Second.Value.all
+                           );
+                     end if;
+                     Left.Location := Left.Location & Right.Location;
+                     Free (Second.Value);
+                     return;
+                  end if;
+               end;
+            end if;
+         exception
+            when others => -- No folding on errors
+               null;
+         end;
+      end if;
+      Push (Context.all, Left);
+      Count  := Count + 1;
+      Left   := Right;
+      Append := True;
+   end Fold;
+
+begin
+   for Index in List'First + 1..List'Last loop
+      Fold (List (Index));
+   end loop;
+   if Count = 0 then -- All operands folded
+      return Left;
+   end if;
+   declare
+      type Arena_Ptr is access Expression;
+      for Arena_Ptr'Storage_Pool use Context.Pool.all;
+      Result : constant Arena_Ptr :=
+                    new Expression (Count + 1, Operation.Operation);
+      This   : Expression renames Result.all;
+   begin
+      This.Location := Operation.Location;
+      Pop (Context.all, This.Operands (1..Count));
+      This.Operands (Count + 1) := Left;
+      Store (Context.all, This.Operands);
+      return
+      (  This'Unchecked_Access,
+         Operation.Location & Link (List)
+      );
+   end;
+end Dyadic_Folder;

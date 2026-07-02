@@ -3,7 +3,7 @@
 --     Parsers.Generic_Ada_Parser.                 Luebeck            --
 --        Get_If                                   Summer, 2025       --
 --  Separate body implementation                                      --
---                                Last revision :  11:48 10 Aug 2025  --
+--                                Last revision :  10:48 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -87,18 +87,20 @@ begin
             if Pointer > Last or else Line (Pointer) /= ')' then
                Raise_Exception
                (  Parsers.Syntax_Error'Identity,
-                  (  "Bracket closing if expression's left bracket at "
+                  (  "The if expression's parenthesis '(' at "
                   &  Image (Left)
-                  &  " is expected at "
+                  &  " is expected to be closed by ')' at "
                   &  Image (Link (Code))
                )  );
             end if;
          end;
-         Argument.Value := new If_Expression (Count, Got_It);
          declare
-            Item : Tokens.Arguments.Frame (1..2);
-            This : If_Expression'Class renames
-                   If_Expression'Class (Argument.Value.all);
+            type Arena_Ptr is access If_Expression;
+            for Arena_Ptr'Storage_Pool use Context.Pool.all;
+            Result : constant Arena_Ptr :=
+                          new If_Expression (Count, Got_It);
+            This   : If_Expression renames Result.all;
+            Item   : Tokens.Arguments.Frame (1..2);
          begin
             for Index in reverse This.Alternatives'Range loop
                declare
@@ -113,6 +115,7 @@ begin
             if Has_Else then
                This.Else_Alternative := Default;
             end if;
+            Argument.Value    := This'Unchecked_Access;
             Argument.Location := Where;
             return;
          end;

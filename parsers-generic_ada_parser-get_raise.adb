@@ -3,7 +3,7 @@
 --     Parsers.Generic_Ada_Parser.                 Luebeck            --
 --        Get_Raise                                Summer, 2025       --
 --  Separate body implementation                                      --
---                                Last revision :  11:48 10 Aug 2025  --
+--                                Last revision :  10:48 02 Jul 2026  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -30,6 +30,7 @@ separate (Parsers.Generic_Ada_Parser)
              (  Context  : in out Ada_Expression;
                 Code     : in out Lexers.Lexer_Source_Type;
                 Argument : out Tokens.Argument_Token;
+                Enclosed : Boolean;
                 Left     : Location_Type
              )  is
    Has_Message : Boolean := False;
@@ -53,31 +54,26 @@ begin
       Lexers.Parse (Context, Code, Message);
       Get_Blank (Context, Code);
    end if;
+   if Enclosed and then not Has_Bracket (Code) then
+      Raise_Exception
+      (  Parsers.Syntax_Error'Identity,
+         (  "The raise expression's parenthesis '(' at "
+         &  Image (Left)
+         &  " is expected to be closed by ')' at "
+         &  Image (Link (Code))
+      )  );
+   end if;
    declare
-      Line    : Line_Ptr_Type;
-      Pointer : Integer;
-      Last    : Integer;
-   begin
-      Get_Line (Code, Line, Pointer, Last);
-      if Pointer > Last or else Line (Pointer) /= ')' then
-         Raise_Exception
-         (  Parsers.Syntax_Error'Identity,
-            (  "Bracket closing raise expression's left bracket at "
-            &  Image (Left)
-            &  " is expected at "
-            &  Image (Link (Code))
-         )  );
-      end if;
-   end;
-   Argument.Value    := new Raise_Expression (Has_Message);
-   Argument.Location := Where & Link (Code);
-   declare
-      This : Raise_Expression'Class renames
-             Raise_Expression'Class (Argument.Value.all);
+      type Arena_Ptr is access Raise_Expression;
+      for Arena_Ptr'Storage_Pool use Context.Pool.all;
+      Result : constant Arena_Ptr := new Raise_Expression (Has_Message);
+      This   : Raise_Expression renames Result.all;
    begin
       This.Name := Name;
       if Has_Message then
          This.Message := Message;
       end if;
+      Argument.Value    := This'Unchecked_Access;
+      Argument.Location := Where & Link (Code);
    end;
 end Get_Raise;
